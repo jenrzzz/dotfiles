@@ -1,9 +1,17 @@
 # Make vim the default editor
 export EDITOR="vim"
+export SVN_EDITOR="vim"
+
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
 # Highlight section titles in manual pages
 export LESS_TERMCAP_md="$ORANGE"
+
+# Add RVM to PATH
+export PATH=$PATH:$HOME/.rvm/bin
+
+# Set Node's path (in homebrew's lib)
+export NODE_PATH=/usr/local/lib/node_modules
 
 # Larger bash history (allow 32³ entries; default is 500)
 export HISTSIZE=32768
