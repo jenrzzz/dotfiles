@@ -23,8 +23,11 @@ alias l="ls -FGl"
 # List all files colorized in long format, including dot files
 alias la="ls -GFla"
 
+# List long, but don't show hidden files
+alias ll="ls -GFl"
+
 # List only directories
-alias lsd='ls -l | grep "^d"'
+alias lsd='ls -FGl | grep "^d"'
 
 # Always use color output for `ls`
 if [[ "$OSTYPE" =~ ^darwin ]]; then

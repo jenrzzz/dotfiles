@@ -43,6 +43,7 @@ set mouse=a             " Enable mouse
 set laststatus=2        " Always show status line
 set shortmess=atI       " Skip intro message
 set title               " Show filename in titlebar
+let &titleold=getcwd()  " Set the xterm title to the cwd on exit
 set showcmd             " Show the (partial) command as it's being typed
 
 " Centralize backups, swapfiles, and undo history
@@ -59,31 +60,42 @@ endif
 
 
 set expandtab
-" Expand tabs in C files to spaces
-au BufRead,BufNewFile *.{c,h,java} set expandtab
-au BufRead,BufNewFile *.{c,h,java} set shiftwidth=2
-au BufRead,BufNewFile *.{c,h,java} set tabstop=2
-
-" Do not expand tabs in assembly file.  Make them 8 chars wide.
-au BufRead,BufNewFile *.s set noexpandtab
-au BufRead,BufNewFile *.s set shiftwidth=8
-au BufRead,BufNewFile *.s set tabstop=8
 
 " Show syntax
 syntax on
 
 " Use relative numbers except in insert mode or when vim loses focus
 au FocusLost * set number
-autocmd InsertEnter * set number
+au InsertEnter * set number
 au FocusGained * set relativenumber
-autocmd InsertLeave * set relativenumber
+au InsertLeave * set relativenumber
 
+
+"""" Set the correct tab lengths and other stuff depending on what
+"""" kind of file is being edited.
 " Use Ruby syntax highlighting for Puppet manifests
 au BufRead,BufNewFile *.{pp} set syntax=ruby
 
 au BufRead,BufNewFile *.{rb,erb} set expandtab
 au BufRead,BufNewFile *.{rb,erb} set tabstop=2
 au BufRead,BufNewFile *.{rb,erb} set shiftwidth=2
+
+au BufRead,BufNewFile *.{py} set tabstop=4
+au BufRead,BufNewFile *.{py} set shiftwidth=4
+
+" Expand tabs in C files to spaces
+au BufRead,BufNewFile *.{c,h,java} set shiftwidth=4
+au BufRead,BufNewFile *.{c,h,java} set tabstop=4
+
+" Do not expand tabs in assembly file.  Make them 8 chars wide.
+au BufRead,BufNewFile *.s set noexpandtab
+au BufRead,BufNewFile *.s set shiftwidth=8
+au BufRead,BufNewFile *.s set tabstop=8
+
+" Use 4-space tabs for html and erb
+au BufRead,BufNewFile *.{erb,htm,html} set expandtab
+au BufRead,BufNewFile *.{erb.htm,html} set shiftwidth=4
+au BufRead,BufNewFile *.{erb,html,html} set tabstop=4
 
 " This is my prefered colorscheme, open a file with gvim to view others
 :colors elflord
