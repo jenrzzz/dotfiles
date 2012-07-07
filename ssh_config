@@ -3,19 +3,25 @@ Compression yes
 ## CRBS
 Host      *.crbs.ucsd.edu
 User      l_jlafave
+ForwardAgent    yes
 
 Host      light
 HostName  light.crbs.ucsd.edu
 User      l_jlafave
+DynamicForward  8080
+ForwardAgent    yes
 
 Host      devilray
 HostName  devilray.crbs.ucsd.edu
 User      l_jlafave
+ForwardAgent    yes
 
 ## Edge Tech
 Host      edge
 HostName  vps.edgetechsd.com
 User      jenner2
+DynamicForward  8080
+ForwardAgent    yes
 
 Host      sas2
 HostName  sas2.sdfa.lan
