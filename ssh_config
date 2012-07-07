@@ -1,0 +1,20 @@
+Compression yes
+
+## CRBS
+Host      *.crbs.ucsd.edu
+User      l_jlafave
+
+Host      light
+HostName  light.crbs.ucsd.edu
+
+Host      devilray
+HostName  devilray.crbs.ucsd.edu
+
+## Edge Tech
+Host      edge
+HostName  vps.edgetechsd.com
+User      jenner2
+
+Host      sas2
+HostName  sas2.sdfa.lan
+User      jenner
