@@ -16,7 +16,7 @@ else
 		echo "Copying dotfiles..."
     doIt
     echo "Copying ssh config..."
-    ([[-d ~/.ssh]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
+    ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
 	fi
 fi
 unset doIt
