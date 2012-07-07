@@ -6,9 +6,11 @@ User      l_jlafave
 
 Host      light
 HostName  light.crbs.ucsd.edu
+User      l_jlafave
 
 Host      devilray
 HostName  devilray.crbs.ucsd.edu
+User      l_jlafave
 
 ## Edge Tech
 Host      edge
