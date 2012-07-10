@@ -1,0 +1,2 @@
+--type-add puppet=.pp
+--type-add pp=.pp
