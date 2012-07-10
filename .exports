@@ -7,8 +7,8 @@ export MANPAGER="less -X"
 # Highlight section titles in manual pages
 export LESS_TERMCAP_md="$ORANGE"
 
-# Add RVM to PATH
-export PATH=$PATH:$HOME/.rvm/bin
+# Add RVM and /usr/local to PATH
+export PATH=$PATH:$HOME/.rvm/bin:/usr/local/bin
 
 # Set Node's path (in homebrew's lib)
 export NODE_PATH=/usr/local/lib/node_modules
