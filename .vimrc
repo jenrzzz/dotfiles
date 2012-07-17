@@ -126,13 +126,20 @@ noremap <leader>ss :call StripWhitespace()<CR>
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
+""" BUNDLES
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+" let Vundle manage Vundle
+" required!
+Bundle 'gmarik/vundle'
+" ------- User bundles go here ---------
+Bundle 'vim-ruby/vim-ruby.git'
+Bundle 'tpope/vim-rails.git'
+filetype plugin indent on
+
 " Automatic commands
 if has("autocmd")
-	" Enable file type detection
-	filetype on
-  filetype indent on
-  filetype plugin on
-
 " Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 endif
