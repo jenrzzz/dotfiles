@@ -76,9 +76,9 @@ au InsertLeave * set relativenumber
 " Use Ruby syntax highlighting for Puppet manifests
 au BufRead,BufNewFile *.{pp} set syntax=ruby
 
-au BufRead,BufNewFile *.{rb,erb} set expandtab
-au BufRead,BufNewFile *.{rb,erb} set tabstop=2
-au BufRead,BufNewFile *.{rb,erb} set shiftwidth=2
+au BufRead,BufNewFile *.{rb,erb,yml} set expandtab
+au BufRead,BufNewFile *.{rb,erb,yml} set softtabstop=2
+au BufRead,BufNewFile *.{rb,erb,yml} set shiftwidth=2
 
 au BufRead,BufNewFile *.{py} set tabstop=4
 au BufRead,BufNewFile *.{py} set shiftwidth=4
