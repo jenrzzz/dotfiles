@@ -23,6 +23,7 @@ set incsearch			" incremental searching
 set bs=2			    " fix backspacing in insert mode
 set bg=light
 set tabstop=2
+set smarttab
 set clipboard=unnamed   " Use the OS clipboard by default
 set wildmenu            " Enhance command-line completion
 set ttyfast             " Optimize for fast terminal connections
