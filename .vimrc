@@ -76,11 +76,12 @@ au InsertLeave * set relativenumber
 " Use Ruby syntax highlighting for Puppet manifests
 au BufRead,BufNewFile *.{pp} set syntax=ruby
 
-au BufRead,BufNewFile *.{rb,erb,yml} set expandtab
-au BufRead,BufNewFile *.{rb,erb,yml} set softtabstop=2
-au BufRead,BufNewFile *.{rb,erb,yml} set shiftwidth=2
+au BufRead,BufNewFile *.{rb,yml} set expandtab
+au BufRead,BufNewFile *.{rb,yml} set softtabstop=2
+au BufRead,BufNewFile *.{rb,yml} set shiftwidth=2
 
-au BufRead,BufNewFile *.{py} set tabstop=4
+au BufRead,BufNewFile *.{py} set expandtab
+au BufRead,BufNewFile *.{py} set softtabstop=4
 au BufRead,BufNewFile *.{py} set shiftwidth=4
 
 " Expand tabs in C files to spaces
@@ -94,7 +95,7 @@ au BufRead,BufNewFile *.s set tabstop=8
 
 " Use 4-space tabs for html and erb
 au BufRead,BufNewFile *.{erb,htm,html} set expandtab
-au BufRead,BufNewFile *.{erb.htm,html} set shiftwidth=4
+au BufRead,BufNewFile *.{erb,htm,html} set shiftwidth=4
 au BufRead,BufNewFile *.{erb,html,html} set tabstop=4
 
 " This is my prefered colorscheme, open a file with gvim to view others
