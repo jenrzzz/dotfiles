@@ -37,7 +37,7 @@ set output-meta on
 set convert-meta off
 
 # Use vi mode
-set -o vi
+#set -o vi
 
 # Use Alt/Meta + Delete to delete the preceding word
 "\e[3;3~": kill-word
