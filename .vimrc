@@ -22,7 +22,7 @@ set showmatch			" ensure Dyck language
 set incsearch			" incremental searching
 set bs=2			    " fix backspacing in insert mode
 set bg=light
-set tabstop=2
+set tabstop=4
 set smarttab
 set clipboard=unnamed   " Use the OS clipboard by default
 set wildmenu            " Enhance command-line completion
@@ -78,8 +78,8 @@ au InsertLeave * set relativenumber
 au BufRead,BufNewFile *.{pp} set syntax=ruby
 
 au BufRead,BufNewFile *.{rb,yml} set expandtab
-au BufRead,BufNewFile *.{rb,yml} set softtabstop=2
-au BufRead,BufNewFile *.{rb,yml} set shiftwidth=2
+au BufRead,BufNewFile *.{rb,yml} set softtabstop=4
+au BufRead,BufNewFile *.{rb,yml} set shiftwidth=4
 
 au BufRead,BufNewFile *.{py} set expandtab
 au BufRead,BufNewFile *.{py} set softtabstop=4
