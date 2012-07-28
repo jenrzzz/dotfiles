@@ -42,9 +42,12 @@ set nostartofline       " Don't reset cursor to start of line when moving around
 set laststatus=2        " Always show status line
 set shortmess=atI       " Skip intro message
 set title               " Show filename in titlebar
-let &titleold=getcwd()  " Set the xterm title to the cwd on exit
-let g:Powerline_symbols = 'fancy' " use fance powerline
 set showcmd             " Show the (partial) command as it's being typed
+let &titleold=getcwd()  " Set the xterm title to the cwd on exit
+
+" powerline stuff
+let g:Powerline_symbols = 'fancy' " use fance powerline
+call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
 
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups
