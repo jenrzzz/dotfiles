@@ -47,6 +47,7 @@ let &titleold=getcwd()  " Set the xterm title to the cwd on exit
 
 " powerline stuff
 let g:Powerline_symbols = 'fancy' " use fance powerline
+let g:Powerline_stl_path_style = 'relative'
 
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups
@@ -60,7 +61,7 @@ if exists("&relativenumber")
     au BufReadPost * set relativenumber
 endif
 
-if exists("&mouse")
+if has('mouse')
     set mouse=a
 endif
 
@@ -132,6 +133,9 @@ Bundle 'vim-ruby/vim-ruby.git'
 Bundle 'tpope/vim-rails.git'
 Bundle 'surround.vim'
 Bundle 'Lokaltog/vim-powerline'
+if has('ruby')
+    Bundle 'wincent/Command-T'
+endif
 
 filetype plugin indent on
 
