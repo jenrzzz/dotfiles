@@ -5,9 +5,9 @@
 ###############################################################################
 
 # Set computer name (as done via System Preferences → Sharing)
-scutil --set ComputerName "MathBook Pro"
-scutil --set HostName "MathBook Pro"
-scutil --set LocalHostName "MathBook-Pro"
+scutil --set ComputerName "vinylscratch"
+scutil --set HostName "vinylscratch"
+scutil --set LocalHostName "vinylscratch"
 
 # Menu bar: disable transparency
 # defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false
