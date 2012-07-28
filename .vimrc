@@ -133,8 +133,14 @@ Bundle 'vim-ruby/vim-ruby.git'
 Bundle 'tpope/vim-rails.git'
 Bundle 'surround.vim'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'jQuery'
+Bundle 'Markdown'
+Bundle 'Align'
+Bundle 'file-line'
+
 if has('ruby')
     Bundle 'wincent/Command-T'
+    let g:CommandTMatchWindowAtTop=1 " show window at top
 endif
 
 filetype plugin indent on
