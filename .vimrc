@@ -47,7 +47,6 @@ let &titleold=getcwd()  " Set the xterm title to the cwd on exit
 
 " powerline stuff
 let g:Powerline_symbols = 'fancy' " use fance powerline
-call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
 
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups
@@ -141,3 +140,5 @@ if has("autocmd")
 " Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 endif
+
+call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
