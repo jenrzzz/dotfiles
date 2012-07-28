@@ -137,6 +137,9 @@ Bundle 'jQuery'
 Bundle 'Markdown'
 Bundle 'Align'
 Bundle 'file-line'
+Bundle 'tComment'
+nnoremap // :TComment<CR>
+vnoremap // :TComment<CR>
 
 if has('ruby')
     Bundle 'wincent/Command-T'
