@@ -43,6 +43,7 @@ set laststatus=2        " Always show status line
 set shortmess=atI       " Skip intro message
 set title               " Show filename in titlebar
 let &titleold=getcwd()  " Set the xterm title to the cwd on exit
+let g:Powerline_symbols = 'fancy' " use fance powerline
 set showcmd             " Show the (partial) command as it's being typed
 
 " Centralize backups, swapfiles, and undo history
