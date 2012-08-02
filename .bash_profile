@@ -41,6 +41,6 @@ complete -o "nospace" -W "Finder Dock Mail Safari iTunes iCal Address\ Book Syst
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
 
-if which fortune 2>&1 >/dev/null; then
+if which fortune &>/dev/null; then
     fortune -a
 fi
