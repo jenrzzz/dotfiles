@@ -59,6 +59,12 @@ endif
 if exists("&relativenumber")
     set relativenumber
     au BufReadPost * set relativenumber
+
+    " Use relative numbers except in insert mode or when vim loses focus
+    au FocusLost * set number
+    au InsertEnter * set number
+    au FocusGained * set relativenumber
+    au InsertLeave * set relativenumber
 endif
 
 if has('mouse')
@@ -72,12 +78,6 @@ set softtabstop=4
 
 " Show syntax
 syntax on
-
-" Use relative numbers except in insert mode or when vim loses focus
-au FocusLost * set number
-au InsertEnter * set number
-au FocusGained * set relativenumber
-au InsertLeave * set relativenumber
 
 
 """" Set the correct tab lengths and other stuff depending on what
