@@ -153,3 +153,7 @@ if has("autocmd")
 " Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 endif
+
+" Source extra shortcuts for rails
+source $HOME/.vim/test_runners.vim
+source $HOME/.vim/rails_shortcuts.vim
