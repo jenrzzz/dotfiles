@@ -91,7 +91,7 @@ function responsetime() {
 }
 
 function tmux_create_or_attach() {
-        if 'tmux list-sessions | grep "$1"'; then
+        if tmux list-sessions | grep "$1"; then
             tmux attach -t "$1"
         else
             tmux new -s "$1"
