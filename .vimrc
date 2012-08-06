@@ -129,15 +129,24 @@ call vundle#rc()
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'vim-ruby/vim-ruby.git'
-Bundle 'tpope/vim-rails.git'
-Bundle 'surround.vim'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-cucumber'
+Bundle 'tpope/vim-haml'
+Bundle 'kchmck/vim-coffee-script'
+
+Bundle 'surround.vim'
+Bundle 'rake.vim'
+Bundle 'jgdavey/tslime.vim'
+Bundle 'nanotech/jellybeans.vim'
+
 Bundle 'jQuery'
 Bundle 'Markdown'
 Bundle 'Align'
 Bundle 'file-line'
 Bundle 'tComment'
+
 nnoremap // :TComment<CR>
 vnoremap // :TComment<CR>
 
