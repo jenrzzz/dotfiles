@@ -17,6 +17,9 @@ alias s="cd ~/Source"
 alias o="open"
 alias oo="open ."
 
+# tmux environments
+alias dev="tmux_create_or_attach dev"
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
     colorflag="--color"
