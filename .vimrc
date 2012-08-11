@@ -99,6 +99,10 @@ au BufRead,BufNewFile *.s set tabstop=8
 map <C-J> :next <CR>
 map <C-K> :prev <CR>
 
+" Use F7/F8 to move through tabs.
+map <F7> :tabp <CR>
+map <F8> :tabn <CR>
+
 " Spelling toggle via F10 and F11
 map <F10> <Esc>setlocal spell spelllang=en_us<CR>
 map <F11> <Esc>setlocal nospell<CR>
