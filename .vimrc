@@ -92,9 +92,6 @@ au BufRead,BufNewFile *.s set noexpandtab
 au BufRead,BufNewFile *.s set shiftwidth=8
 au BufRead,BufNewFile *.s set tabstop=8
 
-" This is my prefered colorscheme, open a file with gvim to view others
-:colors elflord
-
 " For switching between many opened file by using ctrl+l or ctrl+h
 map <C-J> :next <CR>
 map <C-K> :prev <CR>
@@ -122,6 +119,12 @@ function! StripWhitespace()
 	call setreg('/', old_query)
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
+
+try
+    colorscheme jellybeans
+catch /^Vim\%((\a\+)\)\=:E185/
+    colorscheme elflord
+endtry
 
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
