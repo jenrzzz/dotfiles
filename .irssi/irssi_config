@@ -108,7 +108,10 @@ chatnets = {
   };
   AwesomeIRC = { type = "IRC"; };
   SILC = { type = "SILC"; };
-  secfo = { type = "IRC"; };
+  secfo = { 
+    type = "IRC"; 
+    autsendcmd = "/^quote NickServ identify JL083192; wait 10000";
+  };
 };
 
 channels = (
@@ -118,7 +121,8 @@ channels = (
   { name = "#ruby"; chatnet = "Freenode"; autojoin = "Yes"; },
   { name = "#reddit"; chatnet = "Freenode"; autojoin = "Yes"; },
   { name = "#reddit-mlp"; chatnet = "Freenode"; autojoin = "Yes"; },
-  { name = "#sinatra"; chatnet = "Freenode"; autojoin = "Yes"; }
+  { name = "#sinatra"; chatnet = "Freenode"; autojoin = "Yes"; },
+  { name = "#hak5"; chatnet = "secfo"; autojoin = "Yes"; }
 );
 
 aliases = {
