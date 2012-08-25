@@ -152,7 +152,7 @@ function tmux_create_or_attach() {
 function gs() {
     if [[ $1 == "-q" ]]; then
         shift 1
-        open "http://google.com/search?q=%22$*%22"
+        open "http://google.com/search?q=\"$*\""
     else
         open "https://google.com/search?q=$*"
     fi

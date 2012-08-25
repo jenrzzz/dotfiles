@@ -47,7 +47,11 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 
 if command -v fortune &>/dev/null; then
     if command -v cowsay &>/dev/null; then
-        cowsay `fortune`
+        if [[ `date "+%u"` =~ [567] ]]; then
+            fortune -a | cowsay -f bong
+        else
+            fortune | cowsay
+        fi
     else
         fortune
     fi

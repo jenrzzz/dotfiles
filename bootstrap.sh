@@ -5,7 +5,7 @@ STARTWD=`pwd`
 echo -n "Updating dotfiles... "
 git pull
 function doIt() {
-	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" --exclude "ssh_config" --quiet -av . ~
+	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" --exclude "ssh_config" --exclude "init" --quiet -av . ~
 }
 function cp_ssh_cfg() {
   cp ssh_config ~/.ssh/config && chmod 0600 ~/.ssh/config
