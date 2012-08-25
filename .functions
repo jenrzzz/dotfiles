@@ -148,3 +148,7 @@ function tmux_create_or_attach() {
             tmux new -s "$1"
         fi
 }
+
+function gs() {
+    open "https://google.com/search?q=$1"
+}

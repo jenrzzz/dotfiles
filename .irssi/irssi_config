@@ -305,7 +305,7 @@ settings = {
   "perl/core/scripts" = {
     chanact_header = " ";
     chanact_separator = "    ";
-    chanact_display = "[$H$N]$M$C$S";
+    chanact_display = "%W[$H$N%W]$M$C$S";
   };
 };
 hilights = (
