@@ -150,5 +150,5 @@ function tmux_create_or_attach() {
 }
 
 function gs() {
-    open "https://google.com/search?q=$1"
+    open "https://google.com/search?q=$*"
 }
