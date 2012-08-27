@@ -120,11 +120,6 @@ function! StripWhitespace()
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
 
-try
-    colorscheme jellybeans
-catch /^Vim\%((\a\+)\)\=:E185/
-    colorscheme elflord
-endtry
 
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
@@ -172,6 +167,13 @@ if has("autocmd")
 " Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 endif
+
+" Set colorscheme last in case a bundle needs to load
+try
+    colorscheme jellybeans
+catch /^Vim\%((\a\+)\)\=:E185/
+    colorscheme elflord
+endtry
 
 " Source extra shortcuts for rails
 source $HOME/.vim/test_runners.vim
