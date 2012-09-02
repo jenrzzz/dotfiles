@@ -147,6 +147,7 @@ alias pupup27='ssh -A -t l_jlafave@puppetmaster.crbs.ucsd.edu ssh root@localhost
 # Quick connections
 alias light='ssh -A l_jlafave@light.crbs.ucsd.edu -D 8080'
 alias devilray='ssh -A l_jlafave@devilray.crbs.ucsd.edu'
+alias unicorn_='ssh -A l_jlafave@unicorn.crbs.ucsd.edu'
 alias edge='ssh -A jenner2@vps.edgetechsd.com'
 alias lobster='ssh -A l_jlafave@lobster.crbs.ucsd.edu'
 alias pt0='ssh -A crbs-operator@prethumper-1-0.crbs.ucsd.edu'
