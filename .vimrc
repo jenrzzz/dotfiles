@@ -84,8 +84,8 @@ syntax on
 """" Set the correct tab lengths and other stuff depending on what
 """" kind of file is being edited. " Use Ruby syntax highlighting for Puppet manifests
 au BufRead,BufNewFile *.{pp,rb} set syntax=ruby
-au BufRead,BufNewFile *.{pp,rb} set shiftwidth=2
-au BufRead,BufNewFile *.{pp,rb} set softtabstop=2
+au BufRead,BufNewFile *.{pp,rb,coffee} set shiftwidth=2
+au BufRead,BufNewFile *.{pp,rb,coffee} set softtabstop=2
 
 " Do not expand tabs in assembly file.  Make them 8 chars wide.
 au BufRead,BufNewFile *.s set noexpandtab
