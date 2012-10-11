@@ -147,6 +147,7 @@ Bundle 'kchmck/vim-coffee-script'
 
 Bundle 'surround.vim'
 Bundle 'rake.vim'
+Bundle 'jrk/vim-ocaml'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'nanotech/jellybeans.vim'
 
