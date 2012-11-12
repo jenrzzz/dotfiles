@@ -84,11 +84,11 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
 # File size
 if stat -c '' . > /dev/null 2>&1; then
-	# GNU `stat`
-	alias fs="stat -c \"%s bytes\""
+        # GNU `stat`
+        alias fs="stat -c \"%s bytes\""
 else
-	# OS X `stat`
-	alias fs="stat -f \"%z bytes\""
+        # OS X `stat`
+        alias fs="stat -f \"%z bytes\""
 fi
 
 # ROT13-encode text. Works for decoding, too! ;)
@@ -130,7 +130,7 @@ alias badge="tput bel"
 
 # One of @janmoesen’s ProTip™s
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-	alias "$method"="lwp-request -m '$method'"
+        alias "$method"="lwp-request -m '$method'"
 done
 
 # Stuff I never really use but cannot delete either because of http://xkcd.com/530/
@@ -155,3 +155,4 @@ alias lobster='ssh -A l_jlafave@lobster.crbs.ucsd.edu'
 alias pt0='ssh -A crbs-operator@prethumper-1-0.crbs.ucsd.edu'
 alias pt1='ssh -A crbs-operator@prethumper-1-1.crbs.ucsd.edu'
 alias luna='ssh -A jenner@luna.jfave.com'
+alias sas2='ssh -A jenner@mail.sdfa.org'
