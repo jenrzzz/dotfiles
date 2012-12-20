@@ -9,9 +9,6 @@ for file in ~/.{path,bash_prompt,exports,aliases,functions,extra}; do
 done
 unset file
 
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
 
@@ -56,3 +53,7 @@ if command -v fortune &>/dev/null; then
         fortune
     fi
 fi
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+eval `gdircolors ~/.dircolors-solarized/dircolors.256dark`

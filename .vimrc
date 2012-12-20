@@ -146,6 +146,7 @@ Bundle 'tpope/vim-rvm'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
+Bundle 'adimit/prolog.vim'
 
 Bundle 'surround.vim'
 Bundle 'rake.vim'

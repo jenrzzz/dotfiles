@@ -8,7 +8,7 @@ export MANPAGER="less -X"
 export LESS_TERMCAP_md="$ORANGE"
 
 # Add RVM and /usr/local to PATH
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH:/usr/local/share/npm/bin
 
 # Set Node's path (in homebrew's lib)
 export NODE_PATH=/usr/local/lib/node_modules
@@ -21,3 +21,4 @@ export HISTCONTROL=ignoredups
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
 export JAVA_HOME=`/usr/libexec/java_home`
+export ANT_HOME="/usr/local/Cellar/ant/1.8.4/libexec/"
