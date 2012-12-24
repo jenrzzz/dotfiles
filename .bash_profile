@@ -56,4 +56,11 @@ fi
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
-eval `gdircolors ~/.dircolors-solarized/dircolors.256dark`
+
+# Setup dircolors
+if [[ -d ~/.dircolors-solarized ]]; then
+    eval `gdircolors ~/.dircolors-solarized/dircolors.256dark`
+fi
+
+# rbenv shim
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
