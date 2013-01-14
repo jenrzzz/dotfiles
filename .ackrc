@@ -1,0 +1,7 @@
+# Only search case-sensitive if input is mixed case
+--smart-case
+
+# New types
+--type-set=puppet=.pp
+--type-set=plaintext=.md,.mdown,.mkdn,.textile,.rst,.txt
+--type-set=erb=.erb,.rhtml
