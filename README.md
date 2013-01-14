@@ -1,185 +1,100 @@
-# tmux-powerline
-This is a set of scripts (segments) for making a nice and dynamic tmux statusbar where elements can come and disappears depending on events. I really like the look of [Lokaltog/vim-powerline](https://github.com/Lokaltog/vim-powerline) and I decided I wanted the same for tmux.
+# Mathias’s dotfiles
 
-The following segments exists for now:
-* LAN & WAN IP addresses.
-* Now Playing for MPD, Spotify (GNU/Linux native or wine, OS X), iTunes (OS X), Rhythmbox, Banshee, MOC, Audacious, Rdio (OS X), cmus and Last.fm (last scrobbled track).
-* New mail count for GMail, Maildir, mbox and Apple Mail.
-* GNU/Linux and Macintosh OS X battery status (uses [richo/dotfiles/bin/battery](https://github.com/richoH/dotfiles/blob/master/bin/battery)).
-* Weather in Celsius, Fahrenheit and Kelvin using Yahoo Weather.
-* System load, cpu usage and uptime.
-* Git, SVN and Mercurial branch in CWD.
-* Date and time.
-* Hostname.
-* tmux info.
-* CWD in pane.
-* Current X keyboard layout.
-* Network download/upload speed.
+## Installation
 
-Check [segments/](https://github.com/erikw/tmux-powerline/tree/master/segments) for more undocumented segments and details.
+### Using Git and the bootstrap script
 
-# Screenshots
-**Full screenshot**
-
-![Full screenshot](https://github.com/erikw/tmux-powerline/raw/master/img/full.png)
-
-**left-status**
-
-Current tmux session, window and pane, hostname and LAN & WAN IP address.
-
-![left-status](https://github.com/erikw/tmux-powerline/raw/master/img/left-status.png)
-
-**right-status**
-
-New mails, now playing, average load, weather, date and time.
-
-![right-status](https://github.com/erikw/tmux-powerline/raw/master/img/right-status.png)
-
-Now I've read my inbox so the mail segment disappears!
-
-![right-status, no mail](https://github.com/erikw/tmux-powerline/raw/master/img/right-status_no_mail.png)
-
-After pausing the music there's no need for showing NP anymore. Also the weather has become much nicer!
-
-![right-status, no mpd](https://github.com/erikw/tmux-powerline/raw/master/img/right-status_no_mpd.png)
-
-Remaining battery.
-
-![right-status, weather and battery](https://github.com/erikw/tmux-powerline/raw/master/img/right-status_weather_battery.png)
-
-# Requirements
-Requirements for the lib to work are:
-
-* Recent tmux version
-* `bash --version` >= 4.0
-* A patched font. Follow instructions at [Lokaltog/vim-powerline/fontpatcher](https://github.com/Lokaltog/vim-powerline/tree/develop/fontpatcher) or [download](https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts) a new one. However you can use other substitute symbols as well; see `config.sh`.
-
-## Segment Requirements
-Requirements for some segments. You only need to fullfill the requirements for those segments you want to use.
-
-* wan_ip.sh, np_lastfm.sh, weather_yahoo.sh: curl, bc
-* np_mpd.sh: [libmpdclient](http://sourceforge.net/projects/musicpd/files/libmpdclient/)
-* xkb_layout.sh: X11, XKB
-* mail_count_gmail.sh: wget.
-* ifstat.sh: ifstat (there is a simpler segment not using ifstat but samples /sys/class/net)
-* tmux_mem_cpu_load.sh: [tmux-mem-cpu-load](https://github.com/thewtex/tmux-mem-cpu-load)
-
-## OS X specific requirements
-
-**You still need to follow the first part of these instructions even if you are running zsh or something else as your default shell!**
-
-tmux-powerline uses associative arrays in bash, which were added in bash version 4.0. OS X Lion ships with an antiquated version of bash ( run
-`bash --version` to see your version). In order to use tmux-powerline, you need to install a newer version of bash, fortunately,
-[brew](http://mxcl.github.com/homebrew/) makes this very easy. If you don't have brew, [install it](https://github.com/mxcl/homebrew/wiki/installation). Alternatively the older [MacPorts](http://www.macports.org/) can be used.
-Then follow these steps:
+You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
 
 ```bash
-$ brew install bash
+git clone https://github.com/mathiasbynens/dotfiles.git && cd dotfiles && ./bootstrap.sh
 ```
 
-**If you're using something other than bash (or if you don't want this newer version of bash as your default shell) you should be done now**. If something
-seems broken, try following the last two steps and see if it helps:
+To update, `cd` into your local `dotfiles` repository and then:
 
 ```bash
-$ sudo bash -c "echo /usr/local/Cellar/bash/%INSTALLED_VERSION%/bin/bash >> /private/etc/shells"
-$ chsh -s /usr/local/Cellar/bash/%INSTALLED_VERSION%/bin/bash
+./bootstrap.sh
 ```
 
-The first command installs bash through brew, the second registers the new shell with the system and the third changes to the new shell for your user.
-If you later upgrade bash through brew, don't forget to do the last two steps again with the new version number. After doing the above and restarting your
-terminal, running `echo $SHELL` should result in the following:
+Alternatively, to update while avoiding the confirmation prompt:
 
 ```bash
-$ echo $SHELL
-/usr/local/Cellar/bash/%INSTALLED_VERSION%/bin/bash
+./bootstrap.sh -f
 ```
 
-The `grep` tool is outdatted on OS X 10.8 Mountain Lion so you might have to upgrade it. Unfortunately the main homebrew repo 
-[does not contain grep](https://github.com/mxcl/homebrew/pull/3473) so use the following command to get the lastest version.
+### Git-free install
+
+To install these dotfiles without Git:
 
 ```bash
-brew install https://raw.github.com/Homebrew/homebrew-dupes/master/grep.rb
+cd; curl -#L https://github.com/mathiasbynens/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.sh}
 ```
 
-# Installation
-Just check out the repository with:
+To update later on, just run that command again.
 
-```console
-$ cd ~/some/path/
-$ git clone git://github.com/erikw/tmux-powerline.git
-```
+### Specify the `$PATH`
 
-Now edit your `~/.tmux.conf` to use the scripts:
+If `~/.path` exists, it will be sourced along with the other files, before any feature testing (such as [detecting which version of `ls` is being used](https://github.com/mathiasbynens/dotfiles/blob/aff769fd75225d8f2e481185a71d5e05b76002dc/.aliases#L21-26)) takes place.
 
-<!-- Close syntax enought. -->
-```vim
-set-option -g status on
-set-option -g status-interval 2
-set-option -g status-utf8 on
-set-option -g status-justify "centre"
-set-option -g status-left-length 60
-set-option -g status-right-length 90
-set-option -g status-left "#(~/path/to/tmux-powerline/status-left.sh)"
-set-option -g status-right "#(~/path/to/tmux-powerline/status-right.sh)"
-```
-
-Set the maximum lengths to something that suits your configuration of segments and size of terminal (the maximum segments length will be handled better in the future). Segments needs to use different tools or options depending on platform. Currently there is only a distinction between Linux systems and OS X systems. `config.sh` tries to detect what machine your're on with `uname`. If needed you can override this setting with the PLATFORM variable there (or wherever you want to define it).
-
-
-Also I recommend you to use the [tmux-colors-solarized](https://github.com/seebi/tmux-colors-solarized) theme (as well as solarized for [everything else](http://ethanschoonover.com/solarized) :)):
+Here’s an example `~/.path` file that adds `~/utils` to the `$PATH`:
 
 ```bash
-source ~/path/to/tmux-colors-solarized/tmuxcolors.conf
+export PATH="$HOME/utils:$PATH"
 ```
-Some segments e.g. cwd and cvs_branch needs to find the current working directory of the active pane. To achive this we let tmux save the path each time the shell prompt is displayed. Put the line below in your `~/.bashrc` or where you define you PS1 variable. zsh users can put it in e.g. `~/.zshrc` and may change `PS1` to `PROMPT` (but that's not necessary).
+
+### Add custom commands without creating a new fork
+
+If `~/.extra` exists, it will be sourced along with the other files. You can use this to add a few custom commands without the need to fork this entire repository, or to add commands you don’t want to commit to a public repository.
+
+My `~/.extra` looks something like this:
 
 ```bash
-PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+# PATH additions
+export PATH="~/bin:$PATH"
+
+# Git credentials
+# Not in the repository, to prevent people from accidentally committing under my name
+GIT_AUTHOR_NAME="Mathias Bynens"
+GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+git config --global user.name "$GIT_AUTHOR_NAME"
+GIT_AUTHOR_EMAIL="mathias@mailinator.com"
+GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+git config --global user.email "$GIT_AUTHOR_EMAIL"
 ```
 
-You can toggle the visibility of the statusbars by adding the following to your `~/.tmux.conf`:
+You could also use `~/.extra` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/mathiasbynens/dotfiles/fork_select) instead, though.
 
-```vim
-bind C-[ run '~/path/to/tmux-powerline/mute_statusbar.sh left'		# Mute left statusbar.
-bind C-] run '~/path/to/tmux-powerline/mute_statusbar.sh right'		# Mute right statusbar.
-```
+### Sensible OS X defaults
 
-# Configuration
-
-Edit the two status scripts to suit you needs. A number of common segments are included that covers some general functions like time, date, battery etc. The segments can be moved around and does not needs to be in the order (or same file) as they are now. It should be quite easy to add you own segments.
-
-```console
-$ $EDITOR ~/path/to/tmux-powerline/status-left.sh
-$ $EDITOR ~/path/to/tmux-powerline/status-right.sh
-```
-
-
-Here is one segment configuration explained so you'll know how to make you own.
+When setting up a new Mac, you may want to set some sensible OS X defaults:
 
 ```bash
-declare -A time 								# The name of the array.
-time+=(["script"]="${segments_path}/time.sh")	# mandatory, the shell script producing the output text to be shown.
-time+=(["foreground"]="colour136")				# mandatory, the text foreground color.
-time+=(["background"]="colour235")				# mandatory, the text background color.
-time+=(["separator"]="${separator_left_thin}")	# mandatory, the separator to use. Can be (as described in `lib.sh`) any of separator_(left|right)_(bold|thin)
-time+=(["separator_fg"]="default")				# optional, overrides the default blending coloring of the separator with a custom colored foreground.
-register_segment "time"							# Registers the name of the array declared above.
+./.osx
 ```
-# Debugging
 
-Some segments might not work on your system for various reasons such as missing programs or different versions not having the same options. If a segment fails the printing should be aborted. To investigate further why a segment fails you can run
+### Install Homebrew formulae
+
+When setting up a new Mac, you may want to install some common Homebrew formulae (after installing Homebrew, of course):
 
 ```bash
-$ bash -x ~/path/to/failing/segment.sh
+./.brew
 ```
-To see all output even if some segment fails you can set `DEBUG_MODE="true"` in `config.sh`.
 
-## Common problems
+## Feedback
 
-### VCS_branch is not updating
-The issue is probably that the update of the current directory in the active pane is not updated correctly. Make sure that your PS1 or PROMPT variable actually contains the line from the installation step above by simply inspecing the output of `echo $PS1`. You might have placed the PS1 line in you shell confugration such that it is overwritten later. The simplest solution is to put it at the very end to make sure that nothing overwrites it. See [issue #52](https://github.com/erikw/tmux-powerline/issues/52).
+Suggestions/improvements
+[welcome](https://github.com/mathiasbynens/dotfiles/issues)!
 
+## Thanks to…
 
-# Hacking
-
-This project can only gain positively from contributions. Fork today and make your own enhancments and segments to share back!
+* [Gianni Chiappetta](http://gf3.ca/) for sharing his [amazing collection of dotfiles](https://github.com/gf3/dotfiles)
+* [Matijs Brinkhuis](http://hotfusion.nl/) and his [homedir repository](https://github.com/matijs/homedir)
+* [Jan Moesen](http://jan.moesen.nu/) and his [ancient `.bash_profile`](https://gist.github.com/1156154) + [shiny _tilde_ repository](https://github.com/janmoesen/tilde)
+* [Ben Alman](http://benalman.com/) and his [dotfiles repository](https://github.com/cowboy/dotfiles)
+* [Nicolas Gallagher](http://nicolasgallagher.com/) and his [dotfiles repository](https://github.com/necolas/dotfiles)
+* [Tom Ryder](http://blog.sanctum.geek.nz/) and his [dotfiles repository](https://github.com/tejr/dotfiles)
+* [Chris Gerke](http://www.randomsquared.com/) and his [tutorial on creating an OS X SOE master image](http://chris-gerke.blogspot.com/2012/04/mac-osx-soe-master-image-day-7.html) + [_Insta_ repository](https://github.com/cgerke/Insta)
+* @ptb and [his _OS X Lion Setup_ repository](https://github.com/ptb/Mac-OS-X-Lion-Setup)
+* [Lauri ‘Lri’ Ranta](http://lri.me/) for sharing [loads of hidden preferences](http://lri.me/hiddenpreferences.txt)
+* [Tim Esselens](http://devel.datif.be/)
+* anyone who [contributed a patch](https://github.com/mathiasbynens/dotfiles/contributors) or [made a helpful suggestion](https://github.com/mathiasbynens/dotfiles/issues)
