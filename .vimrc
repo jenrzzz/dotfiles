@@ -130,7 +130,8 @@ call vundle#rc()
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'Lokaltog/vim-powerline'
+Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'goldfeld/vim-seek'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
