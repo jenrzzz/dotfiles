@@ -96,9 +96,11 @@ set backupskip=/tmp/*,/private/tmp/*
 map <C-J> :next <CR>
 map <C-K> :prev <CR>
 
-" Use F7/F8 to move through tabs.
+" Use F7/F8 or ,n/,m to move through tabs.
 map <F7> :tabp <CR>
 map <F8> :tabn <CR>
+map <Leader>n :tabp <CR>
+map <Leader>m :tabn <CR>
 
 " Spelling toggle via F10 and F11
 map <F10> <Esc>setlocal spell spelllang=en_us<CR>
@@ -120,7 +122,6 @@ function! StripWhitespace()
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
 
-
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
@@ -133,9 +134,18 @@ call vundle#rc()
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'jgdavey/tslime.vim'
+Bundle 'scrooloose/nerdtree'
+
+" motion
 Bundle 'goldfeld/vim-seek'
+Bundle 'surround.vim'
+
+" syntax/filetype/tags
+Bundle 'scrooloose/syntastic'
 Bundle 'vim-ruby/vim-ruby'
+Bundle 'AndrewRadev/vim-eco'
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
 Bundle 'tpope/vim-haml'
@@ -145,23 +155,21 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
 Bundle 'adimit/prolog.vim'
 Bundle 'rodjek/vim-puppet'
-Bundle 'goldfeld/vim-seek'
-
-Bundle 'surround.vim'
 Bundle 'rake.vim'
 Bundle 'PProvost/vim-ps1'
-Bundle 'jrk/vim-ocaml'
-Bundle 'jgdavey/tslime.vim'
-Bundle 'nanotech/jellybeans.vim'
-
-Bundle 'jQuery'
 Bundle 'Markdown'
 Bundle 'Align'
+Bundle 'jrk/vim-ocaml'
+Bundle 'jQuery'
 Bundle 'file-line'
 Bundle 'tComment'
+Bundle 'closetag.vim'
 
 nnoremap // :TComment<CR>
 vnoremap // :TComment<CR>
+
+" colors
+Bundle 'nanotech/jellybeans.vim'
 
 if has('ruby')
     Bundle 'wincent/Command-T'
@@ -173,7 +181,7 @@ filetype plugin indent on
 " Automatic commands
 if has("autocmd")
 " Treat .json files as .js
-        autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+    autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 endif
 
 " Set colorscheme last in case a bundle needs to load
