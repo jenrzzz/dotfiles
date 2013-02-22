@@ -85,6 +85,9 @@ au BufRead,BufNewFile *.s set noexpandtab
 au BufRead,BufNewFile *.s set shiftwidth=8
 au BufRead,BufNewFile *.s set tabstop=8
 
+au BufRead,BufNewFile *.coffee set shiftwidth=2
+au BufRead,BufNewFile *.coffee set softtabstop=2
+
 " Edit the temp crontab in place when we do crontab -e
 au FileType crontab set nobackup nowritebackup
 set backupskip=/tmp/*,/private/tmp/*
@@ -141,6 +144,7 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
 Bundle 'adimit/prolog.vim'
 Bundle 'rodjek/vim-puppet'
+Bundle 'goldfeld/vim-seek'
 
 Bundle 'surround.vim'
 Bundle 'rake.vim'
