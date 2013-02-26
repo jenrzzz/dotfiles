@@ -63,4 +63,4 @@ if [[ -d ~/.dircolors-solarized ]]; then
 fi
 
 # rbenv shim
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+if which rbenv 2>&1 > /dev/null; then eval "$(rbenv init -)"; fi
