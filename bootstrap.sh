@@ -13,28 +13,28 @@ function doIt() {
     for f in ${link_files[@]}; do
         if [[ -e ~/$f ]]; then
             if [[ -L ~/$f ]]; then
-                echo "\t$f is already linked... skipping"
+                echo "    $f is already linked... skipping"
             else
                 read -p "$f already exists in your home directory. Do you want to remove it, save a copy, or leave it alone? (r/s/l) " -n 1
                 echo
                 case $REPLY in
                     r)
-                        echo "\tRemoving $f and linking..."
+                        echo "    Removing $f and linking..."
                         rm -f ~/$f
                         ln -s `pwd`/$f ~/$f
                         ;;
                     s)
-                        echo "\tSaving old $f as $f.old"
+                        echo "    Saving old $f as $f.old"
                         mv ~/$f ~/$f.old
                         ln -s `pwd`/$f ~/$f
                         ;;
                     l)
-                        echo "\tSkipping $f."
+                        echo "    Skipping $f."
                         ;;
                 esac
             fi
         else
-            echo "\t$f"
+            echo "    $f"
             ln -s `pwd`/$f ~/$f
         fi
     done
