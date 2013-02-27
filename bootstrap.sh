@@ -4,7 +4,7 @@ cd $STARTWD
 STARTWD=`pwd`
 
 echo -n "Updating dotfiles... "
-git pull origin master --quiet
+git pull --quiet origin master
 declare -a link_files=(.ackrc .aliases .bash_login .bash_profile .bash_prompt .bashrc .brew .exports .functions .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .screenrc .tmux.conf .vimrc .wgetrc .zlogin .zshrc)
 
 function doIt() {
@@ -15,6 +15,7 @@ function doIt() {
                 echo "$f is already linked... skipping"
             else
                 read -p "$f already exists in your home directory. Do you want to remove it, save a copy, or leave it alone? (r/s/l) " -n 1
+                echo
                 case $REPLY in
                     r)
                         echo "Removing $f and linking..."
@@ -69,11 +70,10 @@ else
         doIt
 
         read -p "Do you want to copy ssh_config? (y/n) " -n 1
+        echo
         if [[ $REPLY =~ [Yy]$ ]]; then
             echo "Copying ssh config..."
             ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
-        else
-            echo
         fi
     fi
 fi
