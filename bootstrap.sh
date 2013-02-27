@@ -5,6 +5,7 @@ STARTWD=`pwd`
 
 echo -n "Updating dotfiles... "
 git pull --quiet origin master
+echo "done"
 declare -a link_files=(.ackrc .aliases .bash_login .bash_profile .bash_prompt .bashrc .brew .exports .functions .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .screenrc .tmux.conf .vimrc .wgetrc .zlogin .zshrc)
 
 function doIt() {
@@ -33,6 +34,7 @@ function doIt() {
                 esac
             fi
         else
+            echo $f
             ln -s `pwd`/$f ~/$f
         fi
     done
@@ -45,10 +47,10 @@ function cp_ssh_cfg() {
 
 function install_vundle() {
     if [[ ! -d ~/.vim/bundle ]]; then
-        echo "It looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
+        echo "\nIt looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
         mkdir -p ~/.vim/bundle
     fi
-    git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle --quiet
+    git clone --quiet https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
@@ -60,20 +62,24 @@ else
         if [[ ! -d ~/.vim/bundle/vundle ]]; then
           echo -n "Installing vundle... "
           install_vundle
+          echo "done"
         else
           echo -n "Updating vundle... "
           cd ~/.vim/bundle/vundle
-          git pull
+          git pull --quiet
+          echo "done"
         fi
         cd $STARTWD
         echo "Copying dotfiles..."
         doIt
+        echo "done."
 
         read -p "Do you want to copy ssh_config? (y/n) " -n 1
         echo
         if [[ $REPLY =~ [Yy]$ ]]; then
-            echo "Copying ssh config..."
+            echo -n "Copying ssh config... "
             ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
+            echo "done."
         fi
     fi
 fi
