@@ -27,9 +27,9 @@ alias dev="tmux_create_or_attach dev"
 #     colorflag="-G"
 # fi
 
-# use GNU ls
-alias ls="gls -F --color=auto"
-alias dircolors="gdircolors"
+# use GNU ls if it exists and we're on OS X
+command -v gls >/dev/null 2>&1 && alias ls="gls -F --color=auto"
+command -v gdircolors >/dev/null 2>&1 && alias dircolors="gdircolors"
 
 # List all files colorized in long format
 alias l="ls -l"
@@ -54,7 +54,7 @@ alias sl="ls"
 alias sudo='sudo '
 
 # Get OS X Software Updates, and update Homebrew, npm, and their installed packages
-alias update='sudo softwareupdate -i -a; brew update; brew upgrade; npm update npm -g; npm update -g'
+command -v softwareupdate >/dev/null 2>&1 && alias update='sudo softwareupdate -i -a; brew update; brew upgrade; npm update npm -g; npm update -g'
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
@@ -65,7 +65,7 @@ alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+
 alias whois="whois -h whois-servers.net"
 
 # Flush Directory Service cache
-alias flush="dscacheutil -flushcache"
+command -v dscacheutil >/dev/null 2>&1 && alias flush="dscacheutil -flushcache"
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
 alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
