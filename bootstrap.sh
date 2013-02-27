@@ -38,7 +38,7 @@ function doIt() {
             ln -s `pwd`/$f ~/$f
         fi
     done
-    rsync -av ".vim" ~/.vim --quiet
+    rsync -av ".vim/" ~/.vim/ --quiet
 }
 
 function cp_ssh_cfg() {
