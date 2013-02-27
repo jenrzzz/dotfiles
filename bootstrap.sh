@@ -2,37 +2,80 @@
 STARTWD="$(dirname "$0")"
 cd $STARTWD
 STARTWD=`pwd`
+
 echo -n "Updating dotfiles... "
-git pull
+git pull origin master --quiet
+declare -a link_files=(.ackrc .aliases .bash_login .bash_profile .bash_prompt .bashrc .brew .exports .functions .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .screenrc .tmux.conf .vimrc .wgetrc .zlogin .zshrc)
+
 function doIt() {
-	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" --exclude "ssh_config" --exclude "init" --quiet -av . ~
+    touch ~/.hushlogin
+    for f in ${link_files[@]}; do
+        if [[ -e ~/$f ]]; then
+            if [[ -L ~/$f ]]; then
+                echo "$f is already linked... skipping"
+            else
+                read -p "$f already exists in your home directory. Do you want to remove it, save a copy, or leave it alone? (r/s/l) " -n 1
+                case $REPLY in
+                    r)
+                        echo "Removing $f and linking..."
+                        rm -f ~/$f
+                        ln -s `pwd`/$f ~/$f
+                        ;;
+                    s)
+                        echo "Saving old $f as $f.old"
+                        mv ~/$f ~/$f.old
+                        ln -s `pwd`/$f ~/$f
+                        ;;
+                    l)
+                        echo "Skipping $f."
+                        ;;
+                esac
+            fi
+        else
+            ln -s `pwd`/$f ~/$f
+        fi
+    done
+    rsync -av ".vim" ~/.vim --quiet
 }
+
 function cp_ssh_cfg() {
-  cp ssh_config ~/.ssh/config && chmod 0600 ~/.ssh/config
+    cp ssh_config ~/.ssh/config && chmod 0600 ~/.ssh/config
 }
+
 function install_vundle() {
-  git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle --quiet
-}
-if [ "$1" == "--force" -o "$1" == "-f" ]; then
-	doIt
-else
-	read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
-	echo
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-    if [[ ! -d ~/.vim/bundle/vundle ]]; then
-      echo -n "Installing vundle... "
-      install_vundle
-    else
-      echo -n "Updating vundle... "
-      cd ~/.vim/bundle/vundle
-      git pull
+    if [[ ! -d ~/.vim/bundle ]]; then
+        echo "It looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
+        mkdir -p ~/.vim/bundle
     fi
-    cd $STARTWD
-		echo "Copying dotfiles..."
+    git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle --quiet
+}
+
+if [ "$1" == "--force" -o "$1" == "-f" ]; then
     doIt
-    echo "Copying ssh config..."
-    ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
-	fi
+else
+    read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [[ ! -d ~/.vim/bundle/vundle ]]; then
+          echo -n "Installing vundle... "
+          install_vundle
+        else
+          echo -n "Updating vundle... "
+          cd ~/.vim/bundle/vundle
+          git pull
+        fi
+        cd $STARTWD
+        echo "Copying dotfiles..."
+        doIt
+
+        read -p "Do you want to copy ssh_config? (y/n) " -n 1
+        if [[ $REPLY =~ [Yy]$ ]]; then
+            echo "Copying ssh config..."
+            ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
+        else
+            echo
+        fi
+    fi
 fi
 unset doIt
 unset cp_ssh_cfg
