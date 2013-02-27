@@ -128,13 +128,15 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 """ BUNDLES
 filetype off
 set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim/
+
 call vundle#rc()
 
 " let Vundle manage Vundle
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'Lokaltog/vim-powerline'
+Bundle 'Lokaltog/powerline'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/nerdtree'
 
