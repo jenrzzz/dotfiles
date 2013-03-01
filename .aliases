@@ -158,6 +158,10 @@ alias ocaml="rlwrap /usr/local/bin/ocaml"
 # Puppet
 alias zpupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
 
+if [[ -d '/etc/puppet' ]] && [[ -f '/etc/centos-release' ]]; then
+    alias bouncepup="sudo service puppet restart; sudo tail -f /var/log/messages"
+fi
+
 # Quick connections
 alias light='ssh -A l_jlafave@light.crbs.ucsd.edu -D 8080'
 alias devilray='ssh -A l_jlafave@devilray.crbs.ucsd.edu'
