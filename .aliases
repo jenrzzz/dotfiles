@@ -156,7 +156,7 @@ alias why="echo because..."
 alias ocaml="rlwrap /usr/local/bin/ocaml"
 
 # Puppet
-alias apupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
+alias zpupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
 
 # Quick connections
 alias light='ssh -A l_jlafave@light.crbs.ucsd.edu -D 8080'
