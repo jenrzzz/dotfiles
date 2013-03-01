@@ -53,6 +53,11 @@ alias sl="ls"
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
 
+# Git shortcuts
+alias gs='git status'
+alias gpom='git push origin master'
+alias gfo='git fetch origin'
+
 # Get OS X Software Updates, and update Homebrew, npm, and their installed packages
 command -v softwareupdate >/dev/null 2>&1 && alias update='sudo softwareupdate -i -a; brew update; brew upgrade; npm update npm -g; npm update -g'
 
