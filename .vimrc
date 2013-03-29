@@ -5,7 +5,7 @@
 " * VARIABLES
 " **************************************
 set nocompatible                " get rid of strict vi compatibility!
-set nu                          " line numbering on
+set number                      " line numbering on
 set autoindent                  " autoindent on
 set noerrorbells                " bye bye bells :)
 set modeline                    " show what I'm doing
