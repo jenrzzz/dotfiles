@@ -145,6 +145,7 @@ Bundle 'scrooloose/nerdtree'
 
 " motion
 Bundle 'goldfeld/vim-seek'
+Bundle 'nelstrom/vim-visual-star-search'
 Bundle 'surround.vim'
 
 " syntax/filetype/tags
