@@ -91,6 +91,8 @@ au BufRead,BufNewFile *.coffee set softtabstop=2
 au BufRead,BufNewFile *.rb set shiftwidth=2
 au BufRead,BufNewFile *.rb set softtabstop=2
 
+au BufRead,BufNewFile *.re2c set ft=c
+
 " Edit the temp crontab in place when we do crontab -e
 au FileType crontab set nobackup nowritebackup
 set backupskip=/tmp/*,/private/tmp/*
@@ -169,6 +171,7 @@ Bundle 'jQuery'
 Bundle 'file-line'
 Bundle 'tComment'
 Bundle 'closetag.vim'
+Bundle 'dccmx/vim-lemon-syntax'
 
 nnoremap // :TComment<CR>
 vnoremap // :TComment<CR>
