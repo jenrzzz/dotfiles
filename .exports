@@ -4,19 +4,20 @@ export SVN_EDITOR="vim"
 
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
+
 # Highlight section titles in manual pages
 export LESS_TERMCAP_md="$ORANGE"
 
-# Add RVM and /usr/local to PATH
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH:/usr/local/share/npm/bin
-
 # Set Node's path (in homebrew's lib)
-export NODE_PATH=/usr/local/lib/node_modules
+if [[ -d /usr/local/lib/node_modules ]]; then
+    export NODE_PATH=/usr/local/lib/node_modules
+fi
 
 # Larger bash history (allow 32³ entries; default is 500)
 export HISTSIZE=32768
 export HISTFILESIZE=$HISTSIZE
 export HISTCONTROL=ignoredups
+
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
@@ -25,3 +26,6 @@ if command -v gdircolors >/dev/null 2>&1; then
 else
     eval `dircolors ~/.dircolors.256dark`
 fi
+
+# rbenv shim
+if command -v rbenv >/dev/null 2>&1; then eval "$(rbenv init -)"; fi

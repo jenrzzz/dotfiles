@@ -1,6 +1,3 @@
-# Add `~/bin` to the `$PATH`
-export PATH="$HOME/bin:$PATH"
-
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
@@ -54,13 +51,7 @@ if command -v fortune &>/dev/null; then
     fi
 fi
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
 # Setup dircolors
 if [[ -d ~/.dircolors-solarized ]]; then
     eval `gdircolors ~/.dircolors-solarized/dircolors.256dark`
 fi
-
-# rbenv shim
-if command -v rbenv >/dev/null 2>&1; then eval "$(rbenv init -)"; fi
