@@ -7,7 +7,7 @@ echo -n "Updating dotfiles... "
 git pull --quiet origin master
 echo "done"
 declare -a link_files=(.ackrc .aliases .bash_login .bash_profile .bash_prompt .bashrc .brew .dircolors.256dark .exports .functions \
-                       .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .screenrc .tmux.conf .vimrc .wgetrc .zlogin .zshrc)
+                       .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .path .screenrc .tmux.conf .vimrc .wgetrc .zlogin .zshrc)
 
 function doIt() {
     touch ~/.hushlogin
