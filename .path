@@ -4,3 +4,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # Add `~/bin`
 export PATH="$HOME/bin:$PATH"
 
+# Add brewed python binaries if they're there
+if [[ -d /usr/local/share/python ]]; then
+    export PATH=$PATH:/usr/local/share/python
+fi
