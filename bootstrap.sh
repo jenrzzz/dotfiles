@@ -35,8 +35,8 @@ function doIt() {
                 esac
             fi
         else
-            echo "    $f"
             ln -s `pwd`/$f ~/$f
+            echo "    Linked $f."
         fi
     done
     rsync -av ".vim/" ~/.vim/ --quiet
