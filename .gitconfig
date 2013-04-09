@@ -22,6 +22,19 @@
 	# Undo a `git push`
 	undopush = push -f origin HEAD^:master
 
+	## Stuff from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+	# Ignore local changes to a tracked file
+	assume   = update-index --assume-unchanged
+	assume = update-index --no-assume-unchanged
+	assumed  = "!git ls-files -v | grep ^h | cut -c 3-"
+
+	# Take a snapshot of the current working tree
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+
+	# Quickly resolve a merge, e.g. git theirs blah.rb
+	ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
+	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
