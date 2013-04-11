@@ -146,13 +146,23 @@ function unquarantine() {
 
 # Print the HTTP response time for the given URI
 function responsetime() {
-        curl -w '\nLookup time:\t%{time_namelookup}\nConnect time:\t%{time_connect}\nPreXfer time:\t%{time_pretransfer}\nStartXfer time:\t%{time_starttransfer}\n\nTotal time:\t%{time_total}\n' -o /dev/null -s $1
+    curl -w '\nLookup time:\t%{time_namelookup}\nConnect time:\t%{time_connect}\nPreXfer time:\t%{time_pretransfer}\nStartXfer time:\t%{time_starttransfer}\n\nTotal time:\t%{time_total}\n' -o /dev/null -s $1
 }
 
 function tmux_create_or_attach() {
-        if tmux list-sessions | grep "$1"; then
-            tmux attach -t "$1"
-        else
-            tmux new -s "$1"
-        fi
+    if tmux list-sessions | grep "$1"; then
+        tmux attach -t "$1"
+    else
+        tmux new -s "$1"
+    fi
+}
+
+function gif-ify() {
+  if [[ -n "$1" && -n "$2" ]]; then
+    ffmpeg -i $1 -pix_fmt rgb24 temp.gif
+    convert -layers Optimize temp.gif $2
+    rm temp.gif
+  else
+    echo "proper usage: gif-ify <input_movie.mov> <output_file.gif>. You DO need to include extensions."
+  fi
 }
