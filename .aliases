@@ -18,6 +18,7 @@ alias o="open"
 alias oo="open ."
 
 # tmux environments
+alias sesh="tmux_create_or_attach"
 alias dev="tmux_create_or_attach dev"
 
 # Detect which `ls` flavor is in use
