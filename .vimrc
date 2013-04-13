@@ -52,6 +52,11 @@ let g:Powerline_stl_path_style = 'relative'
 " not old sh highlighting
 let g:is_bash = 1
 
+" configure when syntastic should run
+let g:syntastic_mode_map = { 'mode': 'active',
+                           \ 'active_filetypes': [],
+                           \ 'passive_filetypes': ['puppet', 'java'] }
+
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups
 set directory=~/.vim/swaps
@@ -100,9 +105,30 @@ au BufRead,BufNewFile *.re2c set ft=c
 au FileType crontab set nobackup nowritebackup
 set backupskip=/tmp/*,/private/tmp/*
 
+"" Keymaps
+"" -------
 " For switching between many opened file by using ctrl+l or ctrl+h
 map <C-J> :next <CR>
 map <C-K> :prev <CR>
+
+" Use ,gb to show blame
+map <Leader>gb :Gblame <CR>
+
+" Use ,on to close all but the active window
+map <Leader>on :only <CR>
+
+" Use ,<Left> and ,<Right> to use the left (target parent) or
+" right (merge parent) in vimdiff
+map <Leader><Left> :diffget //2 <bar> diffupdate <CR>
+map <Leader><Right> :diffget //3 <bar> diffupdate <CR>
+
+" Use ,<Up> and ,<Down> to move between change hunks in vimdiff mode
+map <Leader><Up> [c
+map <Leader><Down> ]c
+
+" Use ,gw to write the current file to the index and working tree
+" (and exit vimdiff mode)
+map <Leader>gw :Gwrite <CR>
 
 " Use F7/F8 or ,n/,m to move through tabs.
 map <F7> :tabp <CR>
@@ -145,6 +171,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
 Bundle 'Lokaltog/powerline'
+Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 
 " motion
