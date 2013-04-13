@@ -49,6 +49,9 @@ let &titleold=getcwd()          " Set the xterm title to the cwd on exit
 let g:Powerline_symbols = 'fancy' " use fancy powerline
 let g:Powerline_stl_path_style = 'relative'
 
+" not old sh highlighting
+let g:is_bash = 1
+
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups
 set directory=~/.vim/swaps
@@ -143,7 +146,6 @@ Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
 Bundle 'Lokaltog/powerline'
 Bundle 'jgdavey/tslime.vim'
-Bundle 'scrooloose/nerdtree'
 
 " motion
 Bundle 'goldfeld/vim-seek'
@@ -158,11 +160,14 @@ Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
 Bundle 'tpope/vim-haml'
 Bundle 'tpope/vim-rvm'
+Bundle 'wavded/vim-stylus'
+Bundle 'othree/html5.vim'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
 Bundle 'adimit/prolog.vim'
 Bundle 'cup.vim'
+Bundle 'sh.vim'
 Bundle 'rodjek/vim-puppet'
 Bundle 'rake.vim'
 Bundle 'PProvost/vim-ps1'

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Simple calculator
 function calc() {
     local result=""
@@ -232,6 +233,22 @@ function tmux_create_or_attach() {
         tmux new -s "$1"
     fi
 }
+
+function sesh() {
+    if [[ $# -gt 0 ]]; then
+        case "$1" in
+            new)
+                tmux new -s "$2"
+                ;;
+            *)
+                tmux attach -t "$1"
+                ;;
+        esac
+    else
+        tmux list-sessions || echo "No active sessions."
+    fi
+}
+
 
 function gif-ify() {
   if [[ -n "$1" && -n "$2" ]]; then
