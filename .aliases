@@ -62,6 +62,8 @@ alias gc='git commit'
 alias gca='git commit -a'
 alias ga='git add'
 
+alias gor='go run'
+alias goc='go build'
 # Get OS X Software Updates, and update Homebrew, npm, and their installed packages
 command -v softwareupdate >/dev/null 2>&1 && alias update='sudo softwareupdate -i -a; brew update; brew upgrade; npm update npm -g; npm update -g'
 
