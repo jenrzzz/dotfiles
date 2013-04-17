@@ -40,6 +40,7 @@ set wildignore+=*.png,*.jpg,*.gif
 
 let mapleader=","               " Change mapleader to comma
 set history=100                 " keep 100 lines of command history
+set autoread                    " update open files if they change
 set showcmd                     " Show the (partial) command as it's being typed
 set noeol                       " Don't add empty newlines at the end of files
 set cursorline                  " Highlight the current line
