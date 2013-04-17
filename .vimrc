@@ -84,14 +84,14 @@ endif
 
 " Do sexy folding if we can
 " (thanks ryanb)
-if has("folding")
-    set foldenable
-    set foldmethod=syntax
-    set foldlevel=1
-    set foldnestmax=2
-    set foldtext=strpart(getline(v:foldstart),0,50).'\ ...\ '.substitute(getline(v:foldend),'^[\ #]*','','g').'\ '
-endif
-
+" if has("folding")
+"     set foldenable
+"     set foldmethod=syntax
+"     set foldlevel=1
+"     set foldnestmax=2
+"     set foldtext=strpart(getline(v:foldstart),0,50).'\ ...\ '.substitute(getline(v:foldend),'^[\ #]*','','g').'\ '
+" endif
+" 
 " Use ack instead of grep if we have it
 if executable("ack")
     set grepprg=ack\ -H\ --nogroup\ --nocolor\ --ignore-dir=tmp\ --ignore-dir=coverage
@@ -177,7 +177,7 @@ function! StripWhitespace()
 endfunction
 
 " Open a URL with `open` (thanks ryanb)
-command -bar -nargs=1 OpenURL :!open <args>
+command! -bar -nargs=1 OpenURL :!open <args>
 function! OpenURL()
     let s:uri = matchstr(getline("."), '[a-z]*:\/\/[^ >,;:]*')
     echo s:uri
@@ -258,13 +258,8 @@ if has("autocmd")
     autocmd BufNewFile,BufRead *.txt setfiletype text
 
     " Enable soft-wrapping for text files (thanks ryanb)
-    autocmd FileType text,markdown,html,xhtml,eruby setlocal wrap linebreak nolist
-    autocmd FileType text,markdown,html,xhtml,eruby set shiftwidth=2
-    autocmd FileType text,markdown,html,xhtml,eruby set softtabstop=2
+    autocmd FileType text,markdown,html,xhtml,eruby setlocal wrap linebreak nolist | set shiftwidth=2 | set softtabstop=2
     autocmd FileType text setlocal textwidth=78
-
-    " Reload vimrc after save
-    autocmd BufWritePost .vimrc source $MYVIMRC
 
     " Jump to last known cursor position when editing a file (thanks ryanb)
     autocmd BufReadPost *
