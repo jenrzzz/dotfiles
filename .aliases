@@ -61,6 +61,7 @@ alias gm='git merge'
 alias gc='git commit'
 alias gca='git commit -a'
 alias ga='git add'
+alias sb='git checkout'
 
 alias gor='go run'
 alias goc='go build'
