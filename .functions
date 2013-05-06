@@ -81,12 +81,23 @@ function gz() {
 }
 
 # send to moon
-function moonsend() {
+function banish() {
     for moonfile in "$@"
     do
-        scp "$moonfile" luna.jfave.com:~/bananas/
+        scp "$moonfile" jenner@luna.jfave.com:~/
     done
 }
+
+# create a scratch directory
+function scratchd() {
+    local dir=~/Source/.scratch/`date`
+    mkdir -p $dir
+    cd $dir
+    if [[ $# -eq 1 ]]; then
+        vim $1
+    fi
+}
+alias scratched="scratchd"
 
 # Test if HTTP compression (RFC 2616 + SDCH) is enabled for a given URL.
 # Send a fake UA string for sites that sniff it instead of using the Accept-Encoding header. (Looking at you, ajax.googleapis.com!)
