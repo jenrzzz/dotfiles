@@ -90,7 +90,8 @@ function banish() {
 
 # create a scratch directory
 function scratchd() {
-    local dir=~/Source/.scratch/`date`
+    local dir="~/Source/.scratch/`date`"
+    export SCRATCH_LAST_DIRECTORY="`pwd`"
     mkdir -p $dir
     cd $dir
     if [[ $# -eq 1 ]]; then
@@ -98,6 +99,16 @@ function scratchd() {
     fi
 }
 alias scratched="scratchd"
+
+# leave a scratch directory
+function unscratch() {
+    local scratch="`pwd`"
+    cd $SCRATCH_LAST_DIRECTORY
+    if [[ "$1" == "-r" ]]; then 
+        rm -rf $scratch
+    fi
+    unset SCRATCH_LAST_DIRECTORY
+}
 
 # Test if HTTP compression (RFC 2616 + SDCH) is enabled for a given URL.
 # Send a fake UA string for sites that sniff it instead of using the Accept-Encoding header. (Looking at you, ajax.googleapis.com!)
