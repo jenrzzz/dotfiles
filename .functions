@@ -92,10 +92,10 @@ function banish() {
 function scratchd() {
     local dir="~/Source/.scratch/`date`"
     export SCRATCH_LAST_DIRECTORY="`pwd`"
-    mkdir -p $dir
-    cd $dir
+    mkdir -p "$dir"
+    cd "$dir"
     if [[ $# -eq 1 ]]; then
-        vim $1
+        vim "$1"
     fi
 }
 alias scratched="scratchd"
@@ -103,9 +103,9 @@ alias scratched="scratchd"
 # leave a scratch directory
 function unscratch() {
     local scratch="`pwd`"
-    cd $SCRATCH_LAST_DIRECTORY
+    cd "$SCRATCH_LAST_DIRECTORY"
     if [[ "$1" == "-r" ]]; then 
-        rm -rf $scratch
+        rm -rf "$scratch"
     fi
     unset SCRATCH_LAST_DIRECTORY
 }
