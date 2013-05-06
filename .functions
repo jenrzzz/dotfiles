@@ -90,7 +90,7 @@ function banish() {
 
 # create a scratch directory
 function scratchd() {
-    local dir="~/Source/.scratch/`date`"
+    local dir="$HOME/Source/.scratch/`date +%s`"
     export SCRATCH_LAST_DIRECTORY="`pwd`"
     mkdir -p "$dir"
     cd "$dir"
