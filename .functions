@@ -88,10 +88,34 @@ function banish() {
     done
 }
 
+function fpture() {
+    local base="/var/www/html/stuff"
+    if [[ "$1" == "-d" ]]; then
+        shift
+        local dest="$1"
+        shift
+
+        if [[ "$1" == "-r" ]]; then
+            shift
+            ssh jenner@luna.jfave.com "mkdir -p $base/$dest && chmod -R 755 $base/$dest"
+        fi
+    else
+        local dest=""
+    fi
+
+    local pth="$base/$dest"
+    scp "$@" "jenner@luna.jfave.com:$pth/" || break
+    rm -f "$@"
+    ssh jenner@luna.jfave.com "chmod 755 $pth/*"
+}
+
 # create a scratch directory
 function scratchd() {
     local dir="$HOME/Source/.scratch/`date +%s`"
-    export SCRATCH_LAST_DIRECTORY="`pwd`"
+    export PS1="$PS1_SCRATCH"
+    export SCRATCH_ORIGINAL_DIR="`pwd`"
+    export SCRATCH_CURRENT_SCRATCH_DIR="$dir"
+
     mkdir -p "$dir"
     cd "$dir"
     if [[ $# -eq 1 ]]; then
@@ -102,12 +126,54 @@ alias scratched="scratchd"
 
 # leave a scratch directory
 function unscratch() {
-    local scratch="`pwd`"
-    cd "$SCRATCH_LAST_DIRECTORY"
+    export PS1="$PS1_DEFAULT"
+
     if [[ "$1" == "-r" ]]; then 
-        rm -rf "$scratch"
+        cd "$SCRATCH_ORIGINAL_DIR"
+        rm -rf "$SCRATCH_CURRENT_SCRATCH_DIR"
+    else
+        export SCRATCH_LAST_SCRATCH_DIR="$(pwd)"
+        cd "$SCRATCH_ORIG_DIRECTORY"
     fi
-    unset SCRATCH_LAST_DIRECTORY
+
+    unset SCRATCH_ORIGINAL_DIR
+    unset SCRATCH_CURRENT_SCRATCH_DIR
+}
+
+# reopens last scratch directory
+function rescratch() {
+    if [[ ! $SCRATCH_CURRENT_SCRATCH_DIR == "" ]]; then
+        cd "$SCRATCH_CURRENT_SCRATCH_DIR"
+        return 0
+    fi
+
+    if [[ $SCRATCH_LAST_SCRATCH_DIR == "" ]]; then
+        echo "No last scratch directory."
+        return 1
+    fi
+
+    if [[ -d $SCRATCH_LAST_SCRATCH_DIR ]]; then
+        export PS1="$PS1_SCRATCH"
+        cd "$SCRATCH_LAST_SCRATCH_DIR"
+        return 0
+    else
+        echo "Last scratch directory was deleted."
+        return 2
+        unset SCRATCH_LAST_SCRATCH_DIR
+    fi
+}
+
+# change to a directory until cdend
+function cddo() {
+    export PS1="$PS1_CDBLK"
+    export CDDO_LAST_DIRECTORY="$(pwd)"
+    cd "$1"
+}
+
+function cdend() {
+    cd "$CDDO_LAST_DIRECTORY"
+    export PS1="$PS1_DEFAULT"
+    unset CDDO_LAST_DIRECTORY
 }
 
 # Test if HTTP compression (RFC 2616 + SDCH) is enabled for a given URL.
