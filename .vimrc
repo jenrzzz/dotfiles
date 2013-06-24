@@ -204,7 +204,7 @@ Bundle 'Lokaltog/powerline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/syntastic'
-Bundle 'mhinz/vim-startify'
+" Bundle 'mhinz/vi-startify'
 
 " motion, format
 Bundle 'goldfeld/vim-seek'
