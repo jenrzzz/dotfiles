@@ -22,6 +22,26 @@ function mkd() {
     mkdir -p "$@" && cd "$@"
 }
 
+# Go to root of git repository
+function gitop() {
+    local gwd=$(pwd)
+    if [[ -d "$gwd/.git" ]]; then
+        return 0
+    fi
+
+    while [ "$gwd" != "/" ]; do
+        gwd=$(dirname $gwd)
+        if [[ -d "$gwd/.git" ]]; then
+            cd $gwd
+            return 0
+        fi
+    done
+
+    echo "Not a git repository."
+    return 1
+}
+
+
 # Determine size of a file or total size of a directory
 function fs() {
     if du -b /dev/null > /dev/null 2>&1; then
