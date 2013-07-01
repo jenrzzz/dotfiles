@@ -47,12 +47,18 @@ export WHITE
 export BOLD
 export RESET
 
+function parse_git_in_rebase {
+  [[ -d .git/rebase-apply ]] && echo " (rebasing)"
+}
+
 function parse_git_dirty() {
-	[[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
+	# [[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
+        git diff --exit-code 2>&1 >/dev/null || echo "*"
+        git diff --cached --exit-code 2>&1 >/dev/null || echo "^"
 }
 
 function parse_git_branch() {
-	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
+	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)$(parse_git_in_rebase)/"
 }
 
 export PS1_DEFAULT="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$ \[$RESET\]"
