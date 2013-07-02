@@ -48,13 +48,13 @@ export BOLD
 export RESET
 
 function parse_git_in_rebase {
-  [[ -d .git/rebase-apply ]] && echo " (rebasing)"
+  [[ -d .git/rebase-apply ]] && echo -n " (rebasing)"
 }
 
 function parse_git_dirty() {
 	# [[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
-        git diff --exit-code 2>&1 >/dev/null || echo "*"
-        git diff --cached --exit-code 2>&1 >/dev/null || echo "^"
+        git diff --exit-code &>/dev/null || echo -n "*"
+        git diff --cached --exit-code &>/dev/null || echo -n "^"
 }
 
 function parse_git_branch() {
