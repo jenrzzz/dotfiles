@@ -8,3 +8,8 @@ export PATH="$HOME/bin:$PATH"
 if [[ -d /usr/local/share/python ]]; then
     export PATH=$PATH:/usr/local/share/python
 fi
+
+# Add npm binaries if they're there
+if [[ -d /usr/local/share/npm/bin ]]; then
+    export PATH=$PATH:/usr/local/share/npm/bin
+fi
