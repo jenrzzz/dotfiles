@@ -214,12 +214,13 @@ Bundle 'Align'
 Bundle 'tComment'
 
 " syntax, filetypes
-Bundle 'vim-ruby/vim-ruby'
+Bundle 'jenrzzz/vim-ruby'
 Bundle 'AndrewRadev/vim-eco'
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
 Bundle 'tpope/vim-haml'
 Bundle 'tpope/vim-rvm'
+Bundle 'yaymukund/vim-rabl'
 Bundle 'fsouza/go.vim'
 Bundle 'wavded/vim-stylus'
 Bundle 'iptables'
@@ -230,6 +231,7 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
 Bundle 'adimit/prolog.vim'
 Bundle 'cup.vim'
+Bundle 'elindsey/applescript.vim'
 Bundle 'sh.vim'
 Bundle 'rodjek/vim-puppet'
 Bundle 'rake.vim'
@@ -241,7 +243,8 @@ Bundle 'file-line'
 Bundle 'dccmx/vim-lemon-syntax'
 
 " colors
-Bundle 'nanotech/jellybeans.vim'
+Bundle 'jenrzzz/jellybeans.vim'
+Bundle 'candy.vim'
 
 if has('ruby')
     Bundle 'wincent/Command-T'
