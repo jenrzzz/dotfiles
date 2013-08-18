@@ -18,18 +18,68 @@ function calc() {
 }
 
 # Directory marks
-export MARKPATH=$HOME/.marks
+export MARKPATH="$HOME/.marks"
+function jmp {
+    if [[ $# -gt 0 ]]; then
+        jump $1
+        shift
+        while [[ $# -gt 0 ]]; do
+            tmux neww -c $MARKPATH/$1*
+            shift
+        done
+    else
+        echo "Jump where?"
+        marks
+    fi
+}
+
 function jump { 
-    cd -P $MARKPATH/$1 2>/dev/null || echo "No such mark: $1"
+    cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
 }
+
 function mark { 
-    mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
+    if [[ $# -eq 1 ]]; then
+        mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
+    elif [[ $# -eq 2 ]]; then
+        mkdir -p "$MARKPATH/$1"; ln -s $(pwd) $MARKPATH/$1/$2
+    else
+        echo "Mark what?"
+    fi
 }
+
 function unmark { 
-    rm -i $MARKPATH/$1 
+    rm -i $MARKPATH/$1 2>/dev/null || rm -r $MARKPATH/$1
 }
+
 function marks {
-    ls -l $MARKPATH | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
+    shopt -s nullglob dotglob
+    if [[ $# -gt 0 ]]; then
+        markfiles=($MARKPATH/$1*)
+    else
+        markfiles=($MARKPATH/*)
+    fi
+
+    if (( ${#markfiles[*]} )); then
+        echo
+        for file in ${markfiles[@]}; do
+            if [[ ! -h $file ]] && [[ -d $file ]]; then
+                echo
+                echo "$(basename $file)/"
+                for fl in $file/*; do
+                    fl=${fl%/}
+                    echo -e "  $(basename $fl)\t->\t$(ls -l $fl | awk '{print $11}')"
+                done
+                echo
+            else
+                fl=${file%/}
+                echo -e "$(basename $file)\t->\t$(ls -l $fl | awk '{print $11}')"
+            fi
+        done
+        echo
+    else
+        echo "No marks set." && return 1
+    fi
+    shopt -u nullglob dotglob
 }
 
 # Create a new directory and enter it
