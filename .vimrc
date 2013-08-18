@@ -215,6 +215,7 @@ Bundle 'tComment'
 
 " syntax, filetypes
 Bundle 'jenrzzz/vim-ruby'
+Bundle 'groenewege/vim-less'
 Bundle 'AndrewRadev/vim-eco'
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
