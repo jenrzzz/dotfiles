@@ -40,7 +40,7 @@ function doIt() {
             echo "    Linked $f."
         fi
     done
-    rsync -av ".vim/" ~/.vim/ --quiet
+#    rsync -av ".vim/" ~/.vim/ --quiet
 }
 
 function cp_ssh_cfg() {
