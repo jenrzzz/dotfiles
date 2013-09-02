@@ -189,9 +189,9 @@ function fpture() {
     fi
 
     local pth="$base/$dest"
-    scp "$@" "jenner@luna.jfave.com:$pth/" || break
+    scp "$@" "jenner@luna.jfave.com:$pth/" || return 1
     rm -f "$@"
-    ssh jenner@luna.jfave.com "chmod 755 $pth/*"
+    ssh jenner@luna.jfave.com 'chmod 755 $pth/*'
 }
 
 # create a scratch directory
@@ -385,6 +385,11 @@ tell application "Reminders"
     end tell
 end tell
 EOF
+}
+
+function bouncepup() {
+    echo "Bouncing puppet on $1"
+    ssh -At "$1" "sudo service puppet restart; sudo tail -f /var/log/messages"
 }
 
 # Manually remove a downloaded app or file from the quarantine
