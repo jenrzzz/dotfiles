@@ -1,3 +1,4 @@
+# vim: set ft=sh sw=4 sts=4 :
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."
@@ -6,7 +7,10 @@ alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
-# Shortcuts
+# Enable aliases to be sudo’ed
+alias sudo='sudo '
+
+## SHORTCUTS
 alias d="cd ~/Dropbox"
 alias g="git"
 alias h="history"
@@ -18,16 +22,25 @@ alias ass="cd ~/Source/apple"
 alias o="open"
 alias oo="open ."
 
+# Git shortcuts
+alias gs='git status'
+alias gpom='git push origin master'
+alias gfo='git fetch origin'
+alias gpo='git push origin'
+alias gm='git merge'
+alias gc='git commit'
+alias gca='git commit -a'
+alias ga='git add'
+alias sb='git checkout'
+
+# Golang shortcuts
+alias gor='go run'
+alias goc='go build'
+
 # tmux environments
 alias dev="tmux_create_or_attach dev"
 
-# Detect which `ls` flavor is in use
-# if ls --color > /dev/null 2>&1; then # GNU `ls`
-#     colorflag="--color"
-# else # OS X `ls`
-#     colorflag="-G"
-# fi
-
+## FANCY ls
 # use GNU ls if it exists and we're on OS X
 command -v gls >/dev/null 2>&1 && alias ls="gls -F --color=auto"
 command -v gdircolors >/dev/null 2>&1 && alias dircolors="gdircolors"
@@ -44,34 +57,17 @@ alias ll="ls -Fl"
 # List only directories
 alias lsd='ls -Fl | grep "^d"'
 
-# Always use color output for `ls`
-# alias ls="command ls -F" 
-# export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
-
 # I don't know why I make this typo so often
 alias sl="ls"
 
-# Enable aliases to be sudo’ed
-alias sudo='sudo '
-
-# Git shortcuts
-alias gs='git status'
-alias gpom='git push origin master'
-alias gfo='git fetch origin'
-alias gpo='git push origin'
-alias gm='git merge'
-alias gc='git commit'
-alias gca='git commit -a'
-alias ga='git add'
-alias sb='git checkout'
-
-alias gor='go run'
-alias goc='go build'
+## OS X administration and hacks
 # Get OS X Software Updates, and update Homebrew, npm, and their installed packages
 command -v softwareupdate >/dev/null 2>&1 && alias update='sudo softwareupdate -i -a; brew update; brew upgrade; npm update npm -g; npm update -g'
 
 # IP addresses
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+if [[ ! -f /etc/redhat-release ]]; then
+    alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+fi
 alias localip="echo -n 'en0: '; ipconfig getifaddr en0; echo -n 'en1: '; ipconfig getifaddr en1; echo ''"
 alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
 
@@ -83,22 +79,6 @@ command -v dscacheutil >/dev/null 2>&1 && alias flush="dscacheutil -flushcache"
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
 alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
-
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-
-# Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hd="hexdump -C"
-
-# OS X has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
-
-# OS X has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
-
-# Trim new lines and copy to clipboard
-alias c="tr -d '\n' | pbcopy"
 
 # Recursively delete `.DS_Store` files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
@@ -133,6 +113,25 @@ alias spoton="sudo mdutil -a -i on"
 # PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
 alias plistbuddy="/usr/libexec/PlistBuddy"
 
+## USEFUL SHENANIGANS
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
+alias nogrep='grep -v grep'
+
+# Trim new lines and copy to clipboard
+alias c="tr -d '\n' | pbcopy"
+
+# Canonical hex dump; some systems have this symlinked
+command -v hd > /dev/null || alias hd="hexdump -C"
+
+# OS X has no `md5sum`, so use `md5` as a fallback
+command -v md5sum > /dev/null || alias md5sum="md5"
+
+# OS X has no `sha1sum`, so use `shasum` as a fallback
+command -v sha1sum > /dev/null || alias sha1sum="shasum"
+
 # Ring the terminal bell, and put a badge on Terminal.app’s Dock icon
 # (useful when executing time-consuming commands)
 alias badge="tput bel"
@@ -141,14 +140,19 @@ alias badge="tput bel"
 alias be="bundle exec"
 alias bs="bundle show"
 
-# Intuitive map function
-# For example, to list all directories that contain a certain file:
-# find . -name .gitattributes | map dirname
-alias map="xargs -n1"
+alias ocaml="rlwrap /usr/local/bin/ocaml"
+alias reload="source $HOME/.bash_profile"
+
+# Rake shortcuts cause I'm a lazy bastard
+alias rakenewdb="be rake db:drop && be rake db:create && be rake db:schema:load"
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # One of @janmoesen’s ProTip™s
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-	alias "$method"="lwp-request -m '$method'"
+    alias "$method"="lwp-request -m '$method'"
 done
 
 # Stuff I never really use but cannot delete either because of http://xkcd.com/530/
@@ -158,23 +162,30 @@ alias hax="growlnotify -a 'Activity Monitor' 'System error' -m 'WTF R U DOIN'"
 alias where="hostname"
 alias why="echo because..."
 
-alias ocaml="rlwrap /usr/local/bin/ocaml"
-
 # Puppet
-alias zpupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
-
 if [[ -d '/etc/puppet' ]] && [[ -f '/etc/centos-release' ]]; then
     alias bouncepup="sudo service puppet restart; sudo tail -f /var/log/messages"
 fi
 
-# Quick connections
-alias light='ssh -A l_jlafave@light.crbs.ucsd.edu -D 8080'
-alias devilray='ssh -A l_jlafave@devilray.crbs.ucsd.edu'
-alias unicorn_='ssh -A l_jlafave@unicorn.crbs.ucsd.edu'
-alias edge='ssh -A jenner2@209.200.242.5'
-alias lobster='ssh -A l_jlafave@lobster.crbs.ucsd.edu'
-alias pt0='ssh -A crbs-operator@prethumper-1-0.crbs.ucsd.edu'
-alias pt1='ssh -A crbs-operator@prethumper-1-1.crbs.ucsd.edu'
+## Quick connections
+# Apple
+if ping -c1 -t1 appleweb.apple.com >/dev/null 2>&1; then
+    alias zpupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
+    alias calamity='ssh -A jenner@calamity.apple.com'
+    alias parasol='ssh -A jenner@parasol.apple.com'
+    alias film='ssh -A jenner@film.apple.com'
+    alias thunderlane='ssh -A spghw@thunderlane.apple.com'
+    alias pyrelight='ssh -A jenner@pyrelight.apple.com'
+    alias zecora='ssh -A jenner@zecora.apple.com'
+fi
+
+# SDFA
+if ping -c1 -t1 dad1.sdfa.lan >/dev/null 2>&1; then
+    alias sas2='ssh -A jenner@sas2.sdfa.lan'
+fi
+
+alias sdfa='ssh -A jenner@mail.sdfa.org'
+
+# Other
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
-alias sas2='ssh -A jenner@mail.sdfa.org'
