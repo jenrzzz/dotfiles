@@ -11,16 +11,17 @@ alias -- -="cd -"
 alias sudo='sudo '
 
 ## SHORTCUTS
+alias ass="cd ~/Source/apple"
+alias b="bundle "
 alias d="cd ~/Dropbox"
 alias g="git"
 alias h="history"
 alias j="jobs"
-alias v="vim"
 alias m="mate ."
-alias s="cd ~/Source"
-alias ass="cd ~/Source/apple"
 alias o="open"
 alias oo="open ."
+alias s="cd ~/Source"
+alias v="vim"
 
 # Git shortcuts
 alias gs='git status'
@@ -123,6 +124,9 @@ alias nogrep='grep -v grep'
 # Trim new lines and copy to clipboard
 alias c="tr -d '\n' | pbcopy"
 
+# Count word frequencies of stdin
+alias freqs="awk '{ for (i = 1; i <= NF; i++) freq[\$i]++ } END { for (word in freq) printf \"%d\t%s\n\", freq[word], word }'"
+
 # Canonical hex dump; some systems have this symlinked
 command -v hd > /dev/null || alias hd="hexdump -C"
 
@@ -136,15 +140,30 @@ command -v sha1sum > /dev/null || alias sha1sum="shasum"
 # (useful when executing time-consuming commands)
 alias badge="tput bel"
 
-# Bundler shortcuts
-alias be="bundle exec"
-alias bs="bundle show"
-
-alias ocaml="rlwrap /usr/local/bin/ocaml"
+# Reload bash profile
 alias reload="source $HOME/.bash_profile"
 
+# Bundler shortcuts
+if command -v bundle > /dev/null; then
+    alias be="bundle exec"
+    alias bs="bundle show"
+
 # Rake shortcuts cause I'm a lazy bastard
-alias rakenewdb="be rake db:drop && be rake db:create && be rake db:schema:load"
+    alias rakenewdb="echo 'Dropping database...' && be rake db:drop && echo 'Creating database...' && be rake db:create && echo 'Loading schema...' && be rake db:schema:load"
+    alias rakemigrate="echo 'Running migrations...' && be rake db:migrate"
+fi
+
+# Rails shortcuts
+if command -v rails > /dev/null; then
+    alias ra="echo \"bundle exec'ing rails..\" && bundle exec rails"
+    alias rg="echo \"bundle exec'ing rails..\" && bundle exec rails generate"
+    alias rst="echo 'Starting server...' && bundle exec rails server thin"
+    alias rc="echo 'Starting console...' && bundle exec rails console"
+    alias railsprod="echo 'RAILS_ENV=production' && export RAILS_ENV=production"
+    alias railsdev="echo 'RAILS_ENV=development' && export RAILS_ENV=development"
+    alias railstest="echo 'RAILS_ENV=test' && export RAILS_ENV=test"
+    alias railsstage="echo 'RAILS_ENV=staging' && export RAILS_ENV=staging"
+fi
 
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
