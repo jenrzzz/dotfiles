@@ -1,3 +1,16 @@
+# Print fortune first so we don't get bored
+if command -v fortune &>/dev/null; then
+    if command -v cowsay &>/dev/null; then
+        if [[ `date "+%u"` =~ [567] ]]; then
+            fortune -a | cowsay -sf bong
+        else
+            fortune | cowsay
+        fi
+    else
+        fortune
+    fi
+fi
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
@@ -34,18 +47,6 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
-
-if command -v fortune &>/dev/null; then
-    if command -v cowsay &>/dev/null; then
-        if [[ `date "+%u"` =~ [567] ]]; then
-            fortune -a | cowsay -sf bong
-        else
-            fortune | cowsay
-        fi
-    else
-        fortune
-    fi
-fi
 
 # Setup dircolors
 if [[ -d ~/.dircolors-solarized ]]; then
