@@ -22,6 +22,8 @@ alias o="open"
 alias oo="open ."
 alias s="cd ~/Source"
 alias v="vim"
+alias vq="vim -u NONE"
+alias vimq="vim -u NONE"
 
 # Git shortcuts
 alias gs='git status'
@@ -71,6 +73,7 @@ if [[ ! -f /etc/redhat-release ]]; then
 fi
 alias localip="echo -n 'en0: '; ipconfig getifaddr en0; echo -n 'en1: '; ipconfig getifaddr en1; echo ''"
 alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
+alias routerip="netstat -rn | grep default | tr -s ' ' | cut -d ' ' -f 2"
 
 # Enhanced WHOIS lookups
 alias whois="whois -h whois-servers.net"

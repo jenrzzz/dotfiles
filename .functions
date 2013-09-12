@@ -37,6 +37,14 @@ function jump {
     cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
 }
 
+function randompass {
+    if [[ $# -eq 1 ]]; then
+        ruby -r 'securerandom' -e "puts SecureRandom.base64($1)"
+    else
+        ruby -r 'securerandom' -e 'puts SecureRandom.base64'
+    fi
+}
+
 function mark { 
     if [[ $# -eq 1 ]]; then
         mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
