@@ -25,6 +25,16 @@ alias v="vim"
 alias vq="vim -u NONE"
 alias vimq="vim -u NONE"
 
+less_macro_path=$(locate "macros/less.vim" | head -1)
+if [[ -f $less_macro_path ]]; then
+    alias vless="vim -u $less_macro_path"
+elif [[ -f /usr/share/vim/vim72/macros/less.vim ]]; then
+    alias vless="vim -u /usr/share/vim/vim72/macros/less.vim"
+else
+    alias vless="less -R"
+fi
+unset less_macro_path
+
 # Git shortcuts
 alias gs='git status'
 alias gpom='git push origin master'
