@@ -202,7 +202,7 @@ fi
 ## Quick connections
 # Apple
 if ping -c1 -t1 appleweb.apple.com >/dev/null 2>&1; then
-    alias zpupup='ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull"'
+    alias zpupup='echo "Updating puppet repo on zecora.apple.com..." && ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull origin master"'
     alias calamity='ssh -A jenner@calamity.apple.com'
     alias parasol='ssh -A jenner@parasol.apple.com'
     alias film='ssh -A jenner@film.apple.com'
