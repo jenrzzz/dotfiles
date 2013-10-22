@@ -242,6 +242,7 @@ Bundle 'jrk/vim-ocaml'
 Bundle 'jQuery'
 Bundle 'file-line'
 Bundle 'dccmx/vim-lemon-syntax'
+Bundle 'nono/vim-handlebars'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
