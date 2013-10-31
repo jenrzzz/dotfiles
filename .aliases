@@ -37,6 +37,7 @@ unset less_macro_path
 
 # Git shortcuts
 alias gs='git status'
+alias gds='git diff --stat'
 alias gpom='git push origin master'
 alias gfo='git fetch origin'
 alias gpo='git push origin'
