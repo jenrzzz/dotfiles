@@ -226,7 +226,7 @@ function unscratch() {
         rm -rf "$SCRATCH_CURRENT_SCRATCH_DIR"
     else
         export SCRATCH_LAST_SCRATCH_DIR="$(pwd)"
-        cd "$SCRATCH_ORIG_DIRECTORY"
+        cd "$SCRATCH_ORIGINAL_DIR"
     fi
 
     unset SCRATCH_ORIGINAL_DIR
@@ -236,6 +236,7 @@ function unscratch() {
 # reopens last scratch directory
 function rescratch() {
     if [[ ! $SCRATCH_CURRENT_SCRATCH_DIR == "" ]]; then
+        export SCRATCH_ORIGINAL_DIR="$(pwd)"
         cd "$SCRATCH_CURRENT_SCRATCH_DIR"
         return 0
     fi
@@ -246,8 +247,10 @@ function rescratch() {
     fi
 
     if [[ -d $SCRATCH_LAST_SCRATCH_DIR ]]; then
+        export SCRATCH_ORIGINAL_DIR="$(pwd)"
         export PS1="$PS1_SCRATCH"
         cd "$SCRATCH_LAST_SCRATCH_DIR"
+        export SCRATCH_CURRENT_SCRATCH_DIR="$SCRATCH_LAST_SCRATCH_DIR"
         return 0
     else
         echo "Last scratch directory was deleted."
