@@ -3,15 +3,17 @@
 " by jenrzzz
 
 set nocompatible                " get rid of strict vi compatibility!
+set hidden                      " allow unsaved background buffers and remember marks/undo for them
 set number                      " line numbering on
 set autoindent                  " autoindent on
 set smartindent                 " smarty
 set smarttab
 set noerrorbells                " bye bye bells :)
-set modeline                    " show what I'm doing
+set modeline                    " allow modelines
+set modelines=3
 set showmode                    " show the mode on the dedicated line (see above)
 set nowrap                      " no wrapping!
-set ignorecase                  " search without regards to case
+set ignorecase smartcase        " search without regards to case but be smart about it
 set esckeys                     " Allow cursor keys in insert mode
 set backspace=indent,eol,start  " backspace over everything
 set encoding=utf-8 nobomb       " Use UTF-8 without byte order marks
@@ -21,13 +23,18 @@ set nojoinspaces                " don't add white space when I don't tell you to
 set ruler                       " always show cursor position
 set showmatch                   " ensure Dyck language
 set incsearch                   " incremental searching
+set hlsearch
 set bs=2                        " fix backspacing in insert mode
-set bg=light
 set clipboard=unnamed           " Use the OS clipboard by default
 set ttyfast                     " Optimize for fast terminal connections
 
+" Prevent Vim from clobbering the scrollback buffer. See
+" http://www.shallowsky.com/linux/noaltscreen.html
+set t_ti= t_te=
+
 set wildchar=<Tab>
 set wildmenu                    " Enhance command-line completion
+set wildmode=longest,list
 set wildignore=*.o,*.obj,*~     " ignore this shit when tab completing
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
@@ -58,6 +65,11 @@ set shortmess=atI               " Skip intro message
 set title                       " Show filename in titlebar
 let &titleold=getcwd()          " Set the xterm title to the cwd on exit
 
+" Normally, Vim messes with iskeyword when you open a shell file. This can
+" leak out, polluting other file types even after a 'set ft=' change. This
+" variable prevents the iskeyword change so it can't hurt anyone.
+let g:sh_noisk=1
+
 " powerline stuff
 let g:Powerline_symbols = 'fancy' " use fancy powerline
 let g:Powerline_stl_path_style = 'relative'
@@ -71,10 +83,11 @@ let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'passive_filetypes': ['puppet', 'java'] }
 
 " Centralize backups, swapfiles, and undo history
-set backupdir=~/.vim/backups
-set directory=~/.vim/swaps
+set backupdir=~/.vim/backups,~/.tmp,/var/tmp/,/tmp
+set directory=~/.vim/swaps,~/.tmp,/var/tmp,/tmp
+
 if exists("&undodir")
-    set undodir=~/.vim/undo
+    set undodir=~/.vim/undo,~/.tmp,/var/tmp,/tmp
 endif
 
 " Enable all mouse functions if possible
@@ -168,6 +181,25 @@ map <F11> <Esc>setlocal nospell<CR>
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
+" Insert a hash rocket with <C-l>
+imap <C-l> <space>=><space>
+
+" Can't be bothered to understand ESC vs <c-c> in insert mode
+imap <c-c> <esc>
+
+" MULTIPURPOSE TAB KEY
+" Indent if we're at the beginning of a line. Else, do completion. (thanks garybernhardt)
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <s-tab> <c-n>
+
 " Strip trailing whitespace (,ss) (thanks mathiasbynens)
 function! StripWhitespace()
         let save_cursor = getpos(".")
@@ -189,6 +221,47 @@ function! OpenURL()
     endif
 endfunction
 
+command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
+command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
+command! GdiffInTab tabedit %|vsplit|Gdiff
+nnoremap <leader>d :GdiffInTab<cr>
+nnoremap <leader>D :tabclose<cr>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>gr :topleft :split config/routes.rb<cr>
+function! ShowRoutes()
+  " Requires 'scratch' plugin
+  :topleft 100 :split __Routes__
+  " Make sure Vim doesn't write __Routes__ as a file
+  :set buftype=nofile
+  " Delete everything
+  :normal 1GdG
+  " Put routes output in buffer
+  :0r! zeus rake -s routes
+  " Size window to number of lines (1 plus rake output length)
+  :exec ":normal " . line("$") . "_ "
+  " Move cursor to bottom
+  :normal 1GG
+  " Delete empty trailing line
+  :normal dd
+endfunction
+map <leader>gR :call ShowRoutes()<cr>
+map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
+map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
+map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
+map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
+map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
+map <leader>gp :CommandTFlush<cr>\|:CommandT public<cr>
+map <leader>gs :CommandTFlush<cr>\|:CommandT public/stylesheets<cr>
+map <leader>gf :CommandTFlush<cr>\|:CommandT features<cr>
+map <leader>gg :topleft 100 :split Gemfile<cr>
+map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
+map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
+map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+
 """ BUNDLES
 filetype off
 set rtp+=~/.vim/bundle/vundle/
@@ -204,7 +277,7 @@ Bundle 'Lokaltog/powerline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/syntastic'
-" Bundle 'mhinz/vi-startify'
+Bundle 'scratch.vim'
 
 " motion, format
 Bundle 'goldfeld/vim-seek'
@@ -301,6 +374,9 @@ if has("autocmd")
 endif
 
 " Set colorscheme last in case a bundle needs to load
+set t_Co=256
+set bg=dark
+
 try
     colorscheme jellybeans
 catch /^Vim\%((\a\+)\)\=:E185/
@@ -309,5 +385,5 @@ endtry
 
 
 " Source extra shortcuts for rails
-source $HOME/.vim/test_runners.vim
-source $HOME/.vim/rails_shortcuts.vim
+" source $HOME/.vim/test_runners.vim
+" source $HOME/.vim/rails_shortcuts.vim
