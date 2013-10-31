@@ -47,16 +47,16 @@ function randompass {
 
 function mark { 
     if [[ $# -eq 1 ]]; then
-        mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
+        mkdir -p "$MARKPATH"; ln -s "$(pwd)" "$MARKPATH/$1"
     elif [[ $# -eq 2 ]]; then
-        mkdir -p "$MARKPATH/$1"; ln -s $(pwd) $MARKPATH/$1/$2
+        mkdir -p "$MARKPATH/$1"; ln -s "$(pwd)" "$MARKPATH/$1/$2"
     else
         echo "Mark what?"
     fi
 }
 
 function unmark { 
-    rm -i $MARKPATH/$1 2>/dev/null || rm -r $MARKPATH/$1
+    rm -iv "$MARKPATH/$1"
 }
 
 function marks {
@@ -72,15 +72,15 @@ function marks {
         for file in ${markfiles[@]}; do
             if [[ ! -h $file ]] && [[ -d $file ]]; then
                 echo
-                echo "$(basename $file)/"
+                echo "$(basename "$file")/"
                 for fl in $file/*; do
                     fl=${fl%/}
-                    echo -e "  $(basename $fl)\t->\t$(ls -l $fl | awk '{print $11}')"
+                    echo -e "  $(basename "$fl")\t->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
                 done
                 echo
             else
                 fl=${file%/}
-                echo -e "$(basename $file)\t->\t$(ls -l $fl | awk '{print $11}')"
+                echo -e "$(basename "$file")\t->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
             fi
         done
         echo

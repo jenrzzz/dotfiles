@@ -248,6 +248,7 @@ function! ShowRoutes()
   " Delete empty trailing line
   :normal dd
 endfunction
+map <leader>t :CommandT<cr>
 map <leader>gR :call ShowRoutes()<cr>
 map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
 map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
