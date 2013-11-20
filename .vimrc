@@ -197,9 +197,9 @@ function! InsertTabWrapper()
         return "\<c-p>"
     endif
 endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-inoremap <s-tab> <c-n>
-
+" inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+" inoremap <s-tab> <c-n>
+" 
 " Strip trailing whitespace (,ss) (thanks mathiasbynens)
 function! StripWhitespace()
         let save_cursor = getpos(".")
