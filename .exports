@@ -25,6 +25,9 @@ export HISTCONTROL=ignoredups
 # Make some commands not show up in history
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
+# sick of this prompt
+export VIZBOARD_CAP_DEPLOY_USER="jenner"
+
 if command -v gdircolors >/dev/null 2>&1; then
     eval `gdircolors ~/.dircolors.256dark`
 else
