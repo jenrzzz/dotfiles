@@ -226,3 +226,9 @@ alias sdfa='ssh -A jenner@mail.sdfa.org'
 # Other
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
+alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
+alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
+alias model_class_fields="tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
+alias model_class_get_fields="fgrep -v 'method: :find' | tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
+alias model_class_find_fields="fgrep -v 'method: :get' | tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
+
