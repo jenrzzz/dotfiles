@@ -452,3 +452,14 @@ function gif-ify() {
     echo "proper usage: gif-ify <input_movie.mov> <output_file.gif>. You DO need to include extensions."
   fi
 }
+
+function dash() {
+    if [[ $# -lt 2 ]]; then
+        echo "Usage: dash <docs> <query>"
+        return 1
+    fi
+
+    local docs=$1
+    shift
+    open "dash://${docs}:$1"
+}
