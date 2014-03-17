@@ -295,6 +295,7 @@ Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-cucumber'
 Bundle 'tpope/vim-haml'
 Bundle 'tpope/vim-rvm'
+Bundle 'tpope/vim-markdown'
 Bundle 'yaymukund/vim-rabl'
 Bundle 'fsouza/go.vim'
 Bundle 'wavded/vim-stylus'
@@ -311,7 +312,6 @@ Bundle 'sh.vim'
 Bundle 'rodjek/vim-puppet'
 Bundle 'rake.vim'
 Bundle 'PProvost/vim-ps1'
-Bundle 'Markdown'
 Bundle 'jrk/vim-ocaml'
 Bundle 'jQuery'
 Bundle 'file-line'
@@ -326,6 +326,8 @@ if has('ruby')
     Bundle 'wincent/Command-T'
     let g:CommandTMatchWindowAtTop=1 " show window at top
 endif
+
+let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
 
 " Automatic commands (if possible)
 if has("autocmd")
