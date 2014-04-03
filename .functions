@@ -37,12 +37,26 @@ function jump {
     cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
 }
 
+function play2048 {
+    perl -e 'my $host = "http://2048.semantics3.com/hi/";my $cmd = "curl --silent -L $host"."start";my $output = `$cmd`;my $session_id = $output;$session_id=~s/.*?ID:\s(\w+).*/$1/si;my %keyMap = ( 'w' => 0, 'd' => 1, 's' => 2, 'a' => 3);print STDERR $output,"\n";while(1) { print STDERR "Input (w - up, a - left, d - right, s - down):\n"; my $userInput =<stdin> ; chomp ($userInput); if(defined($keyMap{$userInput})) { $userInput = $keyMap{$userInput}; } else { print STDERR "Invalid move.. w - up, a - left, d - right, s - down\n"; next; } my $cmd = "curl --silent $host"."state/$session_id/move/$userInput"; my $output = `$cmd`; print STDERR "\n$output\n"; if($output=~/Message:/si) { exit(0); }}'
+}
+
 function randompass {
     if [[ $# -eq 1 ]]; then
         ruby -r 'securerandom' -e "puts SecureRandom.base64($1)"
     else
         ruby -r 'securerandom' -e 'puts SecureRandom.base64'
     fi
+}
+
+function randomword {
+    local num=$(($RANDOM * $RANDOM))
+    local wordline=$(($num % $(wc -w /usr/share/dict/words | awk '{print $1}')))"p"
+    sed -n $wordline /usr/share/dict/words
+}
+
+function randompassphrase {
+    echo $(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)
 }
 
 function mark { 
