@@ -374,6 +374,9 @@ if has("autocmd")
 
     au BufRead,BufNewFile *.re2c set ft=c
     au BufRead,BufNewFile *.haml set ft=haml
+
+    au BufRead,BufNewFile *.scss set shiftwidth=2
+    au BufRead,BufNewFile *.scss set softtabstop=2
 endif
 
 " Set colorscheme last in case a bundle needs to load
