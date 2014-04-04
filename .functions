@@ -33,6 +33,16 @@ function jmp {
     fi
 }
 
+command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
+function whatrunson {
+    if [[ -f $NMAP_SERVICES_PATH ]]; then
+        grep "\s$1/" $NMAP_SERVICES_PATH
+    else
+        echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
+    fi
+}
+alias whatlistenson="whatrunson"
+
 function jump { 
     cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
 }
