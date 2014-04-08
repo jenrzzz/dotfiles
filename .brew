@@ -30,15 +30,32 @@ brew install homebrew/dupes/grep
 brew tap josegonzalez/homebrew-php
 brew install php54
 
-# These two formulae didn’t work well last time I tried them:
-#brew install homebrew/dupes/vim
-#brew install homebrew/dupes/screen
+# gotta have my tmux
+brew install reattach-to-user-namespace
+brew install tmux
 
 # Install everything else
 brew install ack
-#brew install exiv2
-brew install git
+brew install cowsay
+brew install direnv
+brew install fortune
+brew install gnupg2
+brew install gpg-agent
 brew install imagemagick
+brew install irssi
+brew install openssl
+brew install postgresql
+brew install python
+brew install rbenv
+brew install ruby-build
+brew install vim
+brew install pass
+brew install sqlite
+brew install nmap
+brew install mutt
+brew install memcached
+brew install mongodb
+brew install git
 brew install lynx
 brew install node
 brew install rename
