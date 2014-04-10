@@ -1,0 +1,178 @@
+reset all
+unhook *
+
+set realname='Jenner LaFave'
+set date_format="!%a %b %d, %Y at %H:%M:%S %Z" # Wed Apr 09, 2014 at 14:28:00 PDT
+set ssl_starttls=yes
+set locale="en_US"
+set config_charset="utf-8"
+set content_type="text/plain"
+set dsn_notify="failure,delay"
+set dsn_return="hdrs"
+set indent_string="> "
+set index_format="%4C %Z %[%b %d %Y %H:%H:%S] %-17.17F %s"
+
+# much of this shamelessly stolen from Roland Rosenfeld
+# https://www.spinnaker.de/mutt/muttrc
+
+unset allow_8bit                # use QP or Base64 if unset.
+set allow_ansi                  # allow ANSI color codes in messages
+unset askbcc                    # don't ask to fill out Bcc on msg-send
+unset askcc                     # don't ask to fill out Cc on msg-send
+set attach_split                # handle every single attachment instead of concat
+unset autoedit                  # start editor without asking for to, subject,...
+unset auto_tag                  # if something is tagged, run commands on tagged msgs.
+set beep                        # beep on certain user errors and other errors
+set beep_new                    # beep on new mail
+set bounce_delivered            # unset => remove Delivered-To: when bouncing.
+unset braille_friendly          # set => place cursor at beginning of line in menus.
+set check_new                   # search for new messages in maildir/MH folders.
+set collapse_unread             # collapse threads with unread mails
+unset confirmappend             # prompt for confirm when appending message to ex. mbox
+set confirmcreate               # prompt for confirm when saving to non existing mbox
+set delete_untag                # untag messages when marking them for deletion
+set digest_collapse             # show digest parts in 'v' submenu
+set duplicate_threads           # thread messages with same message-id together
+set edit_headers                # put headers in editor when composing messages
+set encode_from                 # use Quoted-Printable, if ^From in a mail.
+unset envelope_from             # don't set envelope from via -f option of sendmail
+set fast_reply                  # do not ask for to, subject,... when replying.
+set fcc_attach                  # store attachments too when doing a Fcc
+set followup_to                 # Add Mail-Followup-To header.
+unset force_name                # outgoing mail to be saved in folder of "login name"
+set forward_decode              # decode messages when forwarding without MIME
+set forward_decrypt             # decrypt PGP message, when mime_forward and !mime_fw_d
+unset forward_quote             # quote forwarded message, if not $mime_forward
+set hdrs                        # nohdrs implies not to write my_hdr into mail.
+unset header                    # quote full header on reply
+set help                        # show help in first line of the display
+unset hidden_host               # when set, skip the host name part of hostname
+unset hide_limited              # don't hide presence of missing messages in thread
+unset hide_missing              # don'thide messages hidden by limit in thread
+unset hide_top_limited          # don't hide hide missing messages at top of thread
+set hide_top_missing            # hide messages hidden by limit at top of thread
+set ignore_list_reply_to        # ignore Reply-To pointing back to mailinglist
+unset implicit_autoview         # use autoview, if a "copiousoutput" is in mailcap.
+unset keep_flagged              # don't move flagged mail to $mbox via mbox-hook
+set mailcap_sanitize            # remove ugly chars from mailcap % expands.
+unset maildir_trash             # if set: use maildir trash flag instead of removing
+set markers                     # put a '+' at the beginning of wrapped lines.  
+unset mark_old                  # mark new articles as old, when leaving mbox
+set menu_move_off               # unset => bottom entry of menu will never scroll up
+unset menu_scroll               # scroll on last line of menu (set) or do a nextpage?
+unset meta_key                  # Don't interpret Alt-x as ESC x
+unset metoo                     # should we keep ourselves in group replies?
+set mh_purge                    # remove messages marked as deleted from MH folders.
+unset mime_forward_decode       # decode messages when forwarding with MIME
+unset narrow_tree               # Don't make tree narrower
+set pager_stop                  # Don't jump to next message at end of message.
+unset pipe_decode               # Weed headers and PGP-decode message before piping
+unset pipe_split                # split tagged messages (or don't) when using "|"
+set print_decode                # decode before sending to $print_command
+unset print_split               # if set, run the print command for every single mail
+set prompt_after                # display prompt after exit from pager
+unset read_only                 # folders not read only
+unset reply_self                # if unset, a reply to yourself implies reply to other
+set resolve                     # go to next undeleted message after modifying actual
+set reverse_alias               # use realname from reverse alias lookup
+unset reverse_name              # Set "From" to address, where replied mail was sent to
+unset reverse_realname          # Do not reuse realname from original message.
+unset rfc2047_parameters        # don't encode RFC2047 parameters
+unset save_address              # Use full mail adress (with domain) as default folder.
+unset save_empty                # remove mailbox when last message is removed.
+unset save_name                 # Fcc, if ~/Mail/<to> exists.
+unset sig_dashes                # Don't prepend "-- \n" to the signature
+unset sig_on_top                # place signature above text (if set).
+set smart_wrap                  # wrap long lines at word boundary.
+set sort_re                     # set: only put a child in a thread, if starts with Re:
+unset status_on_top             # status line at the top or button?
+unset strict_threads            # thread only by In-Reply-To/References or by Subject.
+set suspend                     # Ctrl-Z is able to suspend mutt.
+unset text_flowed               # generate "text/plain; format=flowed"
+set thorough_search             # MIME decode before searching.
+set thread_received             # Use received date instead of Date: for threading
+unset tilde                     # Internal Pager: ~~~~ at and of message?
+unset uncollapse_jump           # don't move pointer, when uncollapsing thread
+unset use_8bitmime              # run sendmail 8.8.x with -B8BITMIME to enable 8bit 
+set use_domain                  # add $domain to all addresses without @host
+set use_from                    # generate a "From:" header (unless my_hdr From:)
+unset use_ipv6                  # Only use IPv4 address resolution.
+set user_agent                  # Create User-Agent: Mutt/<Version> header.
+unset wait_key                  # Only "press a key" if return value non-zero
+set weed                        # weed headers, when forwarding with forward_decode
+set wrap_search                 # Wrap search to top/bottom.
+unset write_bcc                 # send Bcc: line to $sendmail 
+
+set abort_nosubject=no          # Abort, if message has no subject.
+set abort_unmodified=ask-yes    # Abort, if message wasn't edited.
+set copy=ask-no                 # ask to save a copy of outgoing message?
+set delete=yes                  # ask for confirmation when deleting messages?
+set forward_edit=yes            # automatically start editor when forwarding.
+set honor_followup_to=ask-yes   # Ask whether to honor Mail-Followup-To header.
+set include=yes                 # quote message, when replying
+set mime_forward=ask-yes        # use MIME when forwarding mails.
+set mime_forward_rest=ask-yes   # forward attachments w/o autoview from attmenu
+set move=no                     # Move mail-spool to $mbox?
+set postpone=ask-yes            # ask for postponing when doing an Abort.
+set print=ask-yes               # ask whether you really want to print.
+set quit=ask-no                 # ask before quitting.
+set recall=no                   # don't ask for using postponed message.
+set reply_to=ask-yes            # Use or ignore Reply-To.
+
+set connect_timeout=30          # timeout (seconds) before reconnect. -1 => indefinite
+set history=200                 # Size of the history buffer
+set mail_check=3                # time (in seconds) how often buffy checks for new mail
+set pager_context=5             # number of lines, to display twice on PgUp/Down
+set pager_index_lines=5         # add small message index at top of pager (4)
+#set pager_index_lines=`zsh -c 'temp=($(stty size)) ; expr $temp[1] / 5 + 1'`
+#set pager_index_lines=`((stty size 2>/dev/null||echo 24 80);echo s0 5/1+p)|dc`
+set read_inc=10                 # Mutt will notify when reading mailbox messages
+set sleep_time=2                # pause (in seconds) while showing info messages
+set timeout=60                  # time in seconds, till Mutt looks for new mail
+set wrapmargin=0                # margin left at right when doing smart line wrapping
+set write_inc=10                # Mutt will notify when writing mailbox messages
+
+# Sorting:
+# (date-received, date-sent, from, mailbox-order, size, subject, threads, 
+#  to, score) (and everything with a prefixed "reverse-")
+# (sort_aux can be prefixed with "last-" to use last element in thread 
+#  instead of first one)
+set sort=threads                # sorting the mails in threads
+set sort_aux=reverse-last-date-received # sorting the threads
+set sort_browser=alpha          # Sorting in File-Browser: (date, alpha, reverse-date, reverse-alpha)
+set sort_alias=alias            # Sorting of aliases: (alias, address, unsorted)
+
+#
+# Paths:
+# ("unset" implies the compile time defaults)
+#
+
+#reset spoolfile                # Default spool-file (e.g. /var/spool/mail/user)
+reset ispell                    # ispell binary (compile time default)
+reset sendmail                  # Default sendmail
+reset shell                     # Take shell from /etc/passwd 
+reset tmpdir                    # tmp-Dir (use compile time default)
+reset visual                    # use $VISUAL as builtin editor.
+set display_filter=""           # pipe message through this filter before displaying
+set editor="vim -c 'set syntax=mail ft=mail enc=utf-8' +7 %s"
+set folder=~/Mail               # where are the mailboxes (+ and = are shortcuts)
+set mbox=+inbox                 # not used if "set move=no"
+set pager=builtin               # internal pager: "builtin" or e.g. "less -e" 
+set record=""                   # Don't save a copy of outgoing messages (Fcc)
+set spoolfile=+incoming         # Maildir incoming file (~/Mail/incoming)
+set postponed=+Drafts           # folder for postponed messages
+set mbox_type=mbox              # Magic (mailbox type): mbox, MMDF, MH, Maildir
+set header_cache="~/.mutt/cache/headers"
+set message_cachedir="~/.mutt/cache/bodies"
+set certificate_file="~/.mutt/certificates"
+
+# Colors
+source ~/.mutt/mutt-colors-solarized-dark-256.muttrc
+
+# Accounts
+source ~/.mutt/jenner_lafave.apple.com
+
+macro index <f2> '<change-folder>imaps://mail.apple.com<enter>'
+macro index,pager aa 's+Archive<enter>'
+folder-hook 'apple.com' 'source ~/.mutt/jenner_lafave.apple.com'
+
