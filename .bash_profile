@@ -73,6 +73,9 @@ if [[ -d ~/.dircolors-solarized ]]; then
     eval `gdircolors ~/.dircolors-solarized/dircolors.256dark`
 fi
 
+# Use direnv
+hash direnv &>/dev/null && eval "$(direnv hook bash)"
+
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
 stty start undef stop undef
 
