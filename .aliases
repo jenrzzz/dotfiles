@@ -47,16 +47,11 @@ alias gca='git commit -a'
 alias ga='git add'
 alias sb='git checkout'
 
-# Golang shortcuts
-alias gor='go run'
-alias goc='go build'
-
-# Who needs line endings anyways
-alias these_logs_are_fucked="gsed 's/\([MTWFS][a-z][a-z] [01][0-9]\/[0-9][0-9] [0-2][0-9]:[0-9][0-9] [A-Za-z0-9\.]\+\[[0-9]\+\]:\)/\n\1/g'"
-alias these_logs_are_super_fucked="gsed 's/\([MTWFS][a-z][a-z] [01][0-9]\/[0-9][0-9]\/[0-9][0-9] [0-2][0-9]:[0-9][0-9]\.[0-9]{3} [A-Za-z0-9\.]\+\[[0-9]\+\]:\)/\n\1/g'"
-
 # tmux environments
 alias dev="tmux_create_or_attach dev"
+
+# personal pass
+alias jpass="PASSWORD_STORE_DIR=~/Dropbox/.password-store pass"
 
 ## FANCY ls
 # use GNU ls if it exists and we're on OS X
@@ -152,7 +147,7 @@ command -v hd > /dev/null || alias hd="hexdump -C"
 command -v md5sum > /dev/null || alias md5sum="md5"
 
 # OS X has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
+command -v sha1sum > /dev/null || alias sha1sum="shasum" && alias sha256sum="shasum -a 256" && alias sha512sum="shasum -a 512"
 
 # OS X has no `free`, so get it from top
 command -v free > /dev/null || alias free="top -l 1 | head -n 10 | grep PhysMem"
@@ -183,7 +178,6 @@ if command -v rails > /dev/null; then
     alias railsprod="echo 'RAILS_ENV=production' && export RAILS_ENV=production"
     alias railsdev="echo 'RAILS_ENV=development' && export RAILS_ENV=development"
     alias railstest="echo 'RAILS_ENV=test' && export RAILS_ENV=test"
-    alias railsstage="echo 'RAILS_ENV=staging' && export RAILS_ENV=staging"
 fi
 
 # View HTTP traffic
@@ -198,7 +192,6 @@ done
 # Stuff I never really use but cannot delete either because of http://xkcd.com/530/
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
-alias hax="growlnotify -a 'Activity Monitor' 'System error' -m 'WTF R U DOIN'"
 alias where="hostname"
 alias why="echo because..."
 
@@ -211,27 +204,11 @@ fi
 # Apple
 if ping -c1 -t1 appleweb.apple.com >/dev/null 2>&1; then
     alias zpupup='echo "Updating puppet repo on zecora.apple.com..." && ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull origin master"'
-    alias calamity='ssh -A jenner@calamity.apple.com'
-    alias parasol='ssh -A jenner@parasol.apple.com'
-    alias film='ssh -A jenner@film.apple.com'
-    alias thunderlane='ssh -A spghw@thunderlane.apple.com'
-    alias pyrelight='ssh -A jenner@pyrelight.apple.com'
-    alias zecora='ssh -A jenner@zecora.apple.com'
 fi
-
-# SDFA
-if ping -c1 -t1 dad1.sdfa.lan >/dev/null 2>&1; then
-    alias sas2='ssh -A jenner@sas2.sdfa.lan'
-fi
-
-alias sdfa='ssh -A jenner@mail.sdfa.org'
 
 # Other
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
-alias model_class_fields="tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
-alias model_class_get_fields="fgrep -v 'method: :find' | tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
-alias model_class_find_fields="fgrep -v 'method: :get' | tr -s ' ' | cut -d ' ' -f 3 | grep \":\" | gsed -rn 's/^[\:](.+)/\1/p' | ruby -r 'active_support/inflector' -e \"puts STDIN.read.split.collect {|s| s.camelize(:lower).gsub('Id', 'ID').gsub(/Na([A-Z])/, 'NA\1').gsub(',', '') }.join(', ')\""
 
