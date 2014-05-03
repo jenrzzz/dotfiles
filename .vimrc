@@ -144,7 +144,7 @@ vnoremap // :TComment<CR>
 noremap <leader>ss :call StripWhitespace()<CR>
 
 " Go to the URL in a line with ,go
-map <Leader>go :OpenURL
+map <Leader>go :call OpenURL() <CR>
 
 " Use ,gb to show blame
 map <Leader>gb :Gblame <CR>
@@ -210,7 +210,6 @@ function! StripWhitespace()
 endfunction
 
 " Open a URL with `open` (thanks ryanb)
-command! -bar -nargs=1 OpenURL :!open <args>
 function! OpenURL()
     let s:uri = matchstr(getline("."), '[a-z]*:\/\/[^ >,;:]*')
     echo s:uri
@@ -307,7 +306,6 @@ Bundle 'derekwyatt/vim-scala'
 Bundle 'briancollins/vim-jst'
 Bundle 'adimit/prolog.vim'
 Bundle 'cup.vim'
-Bundle 'elindsey/applescript.vim'
 Bundle 'sh.vim'
 Bundle 'rodjek/vim-puppet'
 Bundle 'rake.vim'
@@ -316,7 +314,9 @@ Bundle 'jrk/vim-ocaml'
 Bundle 'jQuery'
 Bundle 'file-line'
 Bundle 'dccmx/vim-lemon-syntax'
+Bundle 'evidens/vim-twig'
 Bundle 'nono/vim-handlebars'
+Bundle 'chase/vim-ansible-yaml'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
