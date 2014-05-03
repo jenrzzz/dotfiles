@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# List all functions
+function functions {
+    grep --before 1 function.*{ /Users/jenner/.functions
+}
+
 # Simple calculator
 function calc() {
     local result=""
@@ -17,8 +23,53 @@ function calc() {
     printf "\n"
 }
 
+# Looks up a given port number in nmap's services db
+command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
+function whatrunson {
+    if [[ -f $NMAP_SERVICES_PATH ]]; then
+        grep "\s$1/" $NMAP_SERVICES_PATH
+    else
+        echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
+    fi
+}
+alias whatlistenson="whatrunson"
+
+function play2048 {
+    perl -e 'my $host = "http://2048.semantics3.com/hi/";my $cmd = "curl --silent -L $host"."start";my $output = `$cmd`;my $session_id = $output;$session_id=~s/.*?ID:\s(\w+).*/$1/si;my %keyMap = ( 'w' => 0, 'd' => 1, 's' => 2, 'a' => 3);print STDERR $output,"\n";while(1) { print STDERR "Input (w - up, a - left, d - right, s - down):\n"; my $userInput =<stdin> ; chomp ($userInput); if(defined($keyMap{$userInput})) { $userInput = $keyMap{$userInput}; } else { print STDERR "Invalid move.. w - up, a - left, d - right, s - down\n"; next; } my $cmd = "curl --silent $host"."state/$session_id/move/$userInput"; my $output = `$cmd`; print STDERR "\n$output\n"; if($output=~/Message:/si) { exit(0); }}'
+}
+
+# Password generators
+# Generates a random password of $1 bytes
+function randompass {
+    if [[ $# -eq 1 ]]; then
+        ruby -r 'securerandom' -e "puts SecureRandom.base64($1)"
+    else
+        ruby -r 'securerandom' -e 'puts SecureRandom.base64'
+    fi
+}
+
+# Picks a random word from the dictionary
+function randomword {
+    local num=$(($RANDOM * $RANDOM))
+    local wordline=$(($num % $(wc -w /usr/share/dict/words | awk '{print $1}')))"p"
+    sed -n $wordline /usr/share/dict/words
+}
+
+# Creates a random alphanumeric passphrase
+function randompassphrase {
+    echo $(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)
+}
+
 # Directory marks
 export MARKPATH="$HOME/.marks"
+
+# Jumps to a directory mark, if it exists
+function jump { 
+    cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
+}
+
+# Jumps to a directory mark.
+# If multiple marks are given, they are opened in new tmux windows.
 function jmp {
     if [[ $# -gt 0 ]]; then
         jump $1
@@ -33,42 +84,7 @@ function jmp {
     fi
 }
 
-command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
-function whatrunson {
-    if [[ -f $NMAP_SERVICES_PATH ]]; then
-        grep "\s$1/" $NMAP_SERVICES_PATH
-    else
-        echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
-    fi
-}
-alias whatlistenson="whatrunson"
-
-function jump { 
-    cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
-}
-
-function play2048 {
-    perl -e 'my $host = "http://2048.semantics3.com/hi/";my $cmd = "curl --silent -L $host"."start";my $output = `$cmd`;my $session_id = $output;$session_id=~s/.*?ID:\s(\w+).*/$1/si;my %keyMap = ( 'w' => 0, 'd' => 1, 's' => 2, 'a' => 3);print STDERR $output,"\n";while(1) { print STDERR "Input (w - up, a - left, d - right, s - down):\n"; my $userInput =<stdin> ; chomp ($userInput); if(defined($keyMap{$userInput})) { $userInput = $keyMap{$userInput}; } else { print STDERR "Invalid move.. w - up, a - left, d - right, s - down\n"; next; } my $cmd = "curl --silent $host"."state/$session_id/move/$userInput"; my $output = `$cmd`; print STDERR "\n$output\n"; if($output=~/Message:/si) { exit(0); }}'
-}
-
-function randompass {
-    if [[ $# -eq 1 ]]; then
-        ruby -r 'securerandom' -e "puts SecureRandom.base64($1)"
-    else
-        ruby -r 'securerandom' -e 'puts SecureRandom.base64'
-    fi
-}
-
-function randomword {
-    local num=$(($RANDOM * $RANDOM))
-    local wordline=$(($num % $(wc -w /usr/share/dict/words | awk '{print $1}')))"p"
-    sed -n $wordline /usr/share/dict/words
-}
-
-function randompassphrase {
-    echo $(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)
-}
-
+# Sets a mark in the current directory
 function mark { 
     if [[ $# -eq 1 ]]; then
         mkdir -p "$MARKPATH"; ln -s "$(pwd)" "$MARKPATH/$1"
@@ -79,10 +95,12 @@ function mark {
     fi
 }
 
+# Deletes the given mark
 function unmark { 
     rm -iv "$MARKPATH/$1"
 }
 
+# Lists all marks
 function marks {
     shopt -s nullglob dotglob
     if [[ $# -gt 0 ]]; then
@@ -137,7 +155,6 @@ function gitop() {
     echo "Not a git repository."
     return 1
 }
-
 
 # Determine size of a file or total size of a directory
 function fs() {
@@ -203,27 +220,6 @@ function banish() {
     do
         scp "$moonfile" jenner@luna.jfave.com:~/
     done
-}
-
-function fpture() {
-    local base="/var/www/html/stuff"
-    if [[ "$1" == "-d" ]]; then
-        shift
-        local dest="$1"
-        shift
-
-        if [[ "$1" == "-r" ]]; then
-            shift
-            ssh jenner@luna.jfave.com "mkdir -p $base/$dest && chmod -R 755 $base/$dest"
-        fi
-    else
-        local dest=""
-    fi
-
-    local pth="$base/$dest"
-    scp "$@" "jenner@luna.jfave.com:$pth/" || return 1
-    rm -f "$@"
-    ssh jenner@luna.jfave.com 'chmod 755 $pth/*'
 }
 
 # create a scratch directory
@@ -294,6 +290,12 @@ function cdend() {
     cd "$CDDO_LAST_DIRECTORY"
     export PS1="$PS1_DEFAULT"
     unset CDDO_LAST_DIRECTORY
+}
+
+# usage: gitplz amend commit
+function gitplz() {
+  q=$(a=("$@");IFS=+;echo "${a[*]}")
+  open "http://google.com/search?q=git+$q"
 }
 
 # Test if HTTP compression (RFC 2616 + SDCH) is enabled for a given URL.
@@ -422,6 +424,7 @@ end tell
 EOF
 }
 
+# Restarts puppet on the given server
 function bouncepup() {
     echo "Bouncing puppet on $1"
     ssh -At "$1" "sudo service puppet restart; sudo tail -f /var/log/messages"
@@ -439,6 +442,7 @@ function responsetime() {
     curl -w '\nLookup time:\t%{time_namelookup}\nConnect time:\t%{time_connect}\nPreXfer time:\t%{time_pretransfer}\nStartXfer time:\t%{time_starttransfer}\n\nTotal time:\t%{time_total}\n' -o /dev/null -s $1
 }
 
+# Attaches the given session if it exists, otherwise creates it
 function tmux_create_or_attach() {
     if tmux list-sessions | grep "$1"; then
         tmux attach -t "$1"
@@ -447,6 +451,7 @@ function tmux_create_or_attach() {
     fi
 }
 
+# Quick tmux session switch
 function sesh() {
     if [[ $# -gt 0 ]]; then
         case "$1" in
@@ -466,7 +471,13 @@ function sesh() {
     fi
 }
 
+# fuck this
+function fuck() {
+    sesh new $1
+}
 
+# Convert video to gif
+# Requires ffmpeg and imagemagick
 function gif-ify() {
   if [[ -n "$1" && -n "$2" ]]; then
     ffmpeg -i $1 -pix_fmt rgb24 temp.gif
@@ -477,6 +488,7 @@ function gif-ify() {
   fi
 }
 
+# Search for something in Dash.app
 function dash() {
     if [[ $# -lt 2 ]]; then
         echo "Usage: dash <docs> <query>"
