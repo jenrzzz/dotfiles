@@ -23,3 +23,11 @@ ignore "DKIM-Signature:"
 hdr_order Date From To Cc
 alternative_order text/plain text/html *
 auto_view text/html
+lists "@group.apple.com"
+unignore List-ID
+
+set pgp_use_gpg_agent=yes
+set pgp_sign_as=B5D68583
+set pgp_timeout=3600
+set crypt_autosign=yes
+set crypt_replyencrypt=yes

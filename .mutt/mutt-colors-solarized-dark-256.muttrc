@@ -1,6 +1,4 @@
 # vim: filetype=muttrc
-
-#
 #
 # make sure that you are using mutt linked against slang, not ncurses, or
 # suffer the consequences of weird color issues. use "mutt -v" to check this.
@@ -99,7 +97,7 @@ color quoted1       color37         color234
 color quoted2       color136        color234        
 color quoted3       color160        color234        
 color quoted4       color166        color234        
-
+#
 color signature     color240        color234        
 color bold          color235        color234        
 color underline     color235        color234        

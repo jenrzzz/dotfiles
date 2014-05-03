@@ -10,7 +10,7 @@ set content_type="text/plain"
 set dsn_notify="failure,delay"
 set dsn_return="hdrs"
 set indent_string="> "
-set index_format="%4C %Z %[%b %d %Y %H:%H:%S] %-17.17F %s"
+set index_format="%4C %Z %[%b %d %Y %H:%H:%S] %-25.25L %s"
 
 # much of this shamelessly stolen from Roland Rosenfeld
 # https://www.spinnaker.de/mutt/muttrc
@@ -167,12 +167,41 @@ set message_cachedir="~/.mutt/cache/bodies"
 set certificate_file="~/.mutt/certificates"
 
 # Colors
-source ~/.mutt/mutt-colors-solarized-dark-256.muttrc
+# source ~/.mutt/mutt-colors-solarized-dark-256.muttrc
+color hdrdefault cyan default
+color attachment yellow default
+ 
+color header brightyellow default "From: "
+color header brightyellow default "Subject: "
+color header brightyellow default "Date: "
+ 
+color quoted green default
+color quoted1 cyan default
+color quoted2 green default
+color quoted3 cyan default
+ 
+color error     red             default         # error messages
+color message   white           default         # message  informational messages
+color indicator white           red             # indicator for the "current message"
+color status    white           blue            # status lines in the folder index sed for the mini-help line
+color tree      red             default         # the "tree" display of threads within the folder index
+color search    white           blue            # search matches found with search within the internal pager
+color markers   red             default         # The markers indicate a wrapped line hen showing messages with looong lines
+ 
+color index     yellow default  '~O'
+color index     yellow default  '~N'
+color index     brightred       default '~F'    # Flagged Messages are important!
+color index     blue default    '~D'            # Deleted Mails - use dark color as these are already "dealt with"
+ 
+# GPG
+source ~/.mutt/gpg.rc
 
 # Accounts
 source ~/.mutt/jenner_lafave.apple.com
 
 macro index <f2> '<change-folder>imaps://mail.apple.com<enter>'
 macro index,pager aa 's+Archive<enter>'
+macro index,pager rr '<refresh>'
+
 folder-hook 'apple.com' 'source ~/.mutt/jenner_lafave.apple.com'
 
