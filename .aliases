@@ -1,4 +1,6 @@
 # vim: set ft=sh sw=4 sts=4 :
+alias aliases='grep "^\s*alias" $HOME/.aliases'
+
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."
