@@ -55,6 +55,10 @@ function randomword {
     sed -n $wordline /usr/share/dict/words
 }
 
+function randomwords {
+    echo $(randomword)-$(randomword)-$(randomword)
+}
+
 # Creates a random alphanumeric passphrase
 function randompassphrase {
     echo $(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)

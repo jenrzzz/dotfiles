@@ -187,6 +187,19 @@ imap <C-l> <space>=><space>
 " Can't be bothered to understand ESC vs <c-c> in insert mode
 imap <c-c> <esc>
 
+" MiniBufExpl mappings
+map <Leader>be :MBEOpen<cr>
+map <Leader>bc :MBEClose<cr>
+map <Leader>bt :MBEToggle<cr>
+
+" Buffer splits and stuff
+let i = 1
+while i <= 9
+    execute 'map <Leader>bs' . i . ' :sb' . i . '<cr>'
+    execute 'map <Leader>bvs' . i . ' :vert sb' . i . '<cr>'
+    let i = i + 1
+endwhile
+
 " MULTIPURPOSE TAB KEY
 " Indent if we're at the beginning of a line. Else, do completion. (thanks garybernhardt)
 function! InsertTabWrapper()
@@ -278,6 +291,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/syntastic'
 Bundle 'scratch.vim'
+Bundle 'fholgado/minibufexpl.vim'
 
 " motion, format
 Bundle 'goldfeld/vim-seek'

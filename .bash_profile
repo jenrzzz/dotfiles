@@ -48,6 +48,7 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 # If possible, add tab completion for many more commands
 [ -f /etc/bash_completion ] && source /etc/bash_completion
 [ -f /usr/local/etc/bash_completion.d/password-store ] && source /usr/local/etc/bash_completion.d/password-store
+[ -f /usr/local/etc/bash_completion.d/jpassword-store ] && source /usr/local/etc/bash_completion.d/jpassword-store
 
 _complete_ssh_hosts ()
 {
