@@ -6,7 +6,7 @@ STARTWD=`pwd`
 echo -n "Updating dotfiles... "
 git pull --quiet origin master
 echo "done"
-declare -a link_files=(.ackrc .aliases .bash_login .bash_profile .bash_prompt .bashrc .brew .dircolors.256dark .exports .functions \
+declare -a link_files=(.ackrc .aliases .bash-completion .bash_login .bash_profile .bash_prompt .bashrc .brew .dircolors.256dark .exports .functions \
                        .gemrc .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .path .tmux-powerlinerc .tmux.conf .screenrc \
                        .vimrc .wgetrc .zlogin .zshrc)
 
@@ -49,7 +49,7 @@ function cp_ssh_cfg() {
 
 function install_vundle() {
     if [[ ! -d ~/.vim/bundle ]]; then
-        echo "\nIt looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
+        echo -e "\nIt looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
         mkdir -p ~/.vim/bundle
     fi
     git clone --quiet https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
