@@ -55,9 +55,8 @@ set cursorline                  " Highlight the current line
 set list                        " Show whitespace
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_ " and use these fancy characters
 
-set scrolloff=3                 " Start scrolling 3 lines before margin
-set sidescrolloff=5             " and 5 cols before edge
-set sidescroll=1
+set scrolloff=3                  " Start scrolling 3 lines before margin
+set sidescrolloff=5 sidescroll=1 " and 5 cols before edge
 
 set nostartofline               " Don't reset cursor to start of line when moving around
 set laststatus=2                " Always show status line
@@ -96,25 +95,13 @@ if has('mouse')
     set ttymouse=xterm2
 endif
 
-" Do sexy folding if we can
-" (thanks ryanb)
-" if has("folding")
-"     set foldenable
-"     set foldmethod=syntax
-"     set foldlevel=1
-"     set foldnestmax=2
-"     set foldtext=strpart(getline(v:foldstart),0,50).'\ ...\ '.substitute(getline(v:foldend),'^[\ #]*','','g').'\ '
-" endif
-" 
 " Use ack instead of grep if we have it
 if executable("ack")
     set grepprg=ack\ -H\ --nogroup\ --nocolor\ --ignore-dir=tmp\ --ignore-dir=coverage
 endif
 
 " Default tabbing
-set expandtab
-set shiftwidth=4
-set softtabstop=4
+set expandtab shiftwidth=2 softtabstop=2
 
 " Show syntax
 syntax on
@@ -133,9 +120,6 @@ nmap <F1> <Esc>
 cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 
 " For switching between many opened file by using ctrl+l or ctrl+h
-map <C-J> :next <CR>
-map <C-K> :prev <CR>
-
 " TComment mappings
 nnoremap // :TComment<CR>
 vnoremap // :TComment<CR>
@@ -148,6 +132,9 @@ map <Leader>go :call OpenURL() <CR>
 
 " Use ,gb to show blame
 map <Leader>gb :Gblame <CR>
+
+" run rspec with current buffer with ,r
+map <Leader>r :w \| :!bundle exec rspec %:p<CR>
 
 " Use ,on to close all but the active window
 map <Leader>on :only <CR>
@@ -168,9 +155,16 @@ map <Leader>h :set invhls <CR>
 " (and exit vimdiff mode)
 map <Leader>gw :Gwrite <CR>
 
-" Use F7/F8 or ,n/,m to move through tabs.
-map <F7> :tabp <CR>
-map <F8> :tabn <CR>
+" Use ,d to open a diff for the current buffer in a tab
+" Use ,D to close it
+nnoremap <leader>d :GdiffInTab<cr>
+nnoremap <leader>D :tabclose<cr>
+
+" Use C-k or F7 and C-j or F8 to move through buffers and ,n/,m to move through tabs.
+map <C-J> :bn <CR>
+map <C-K> :bp <CR>
+map <F7> :bp <CR>
+map <F8> :bn <CR>
 map <Leader>n :tabp <CR>
 map <Leader>m :tabn <CR>
 
@@ -200,19 +194,6 @@ while i <= 9
     let i = i + 1
 endwhile
 
-" MULTIPURPOSE TAB KEY
-" Indent if we're at the beginning of a line. Else, do completion. (thanks garybernhardt)
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-" inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-" inoremap <s-tab> <c-n>
-" 
 " Strip trailing whitespace (,ss) (thanks mathiasbynens)
 function! StripWhitespace()
         let save_cursor = getpos(".")
@@ -236,9 +217,6 @@ endfunction
 command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
 command! GdiffInTab tabedit %|vsplit|Gdiff
-nnoremap <leader>d :GdiffInTab<cr>
-nnoremap <leader>D :tabclose<cr>
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
@@ -252,7 +230,7 @@ function! ShowRoutes()
   " Delete everything
   :normal 1GdG
   " Put routes output in buffer
-  :0r! zeus rake -s routes
+  :0r! rake -s routes
   " Size window to number of lines (1 plus rake output length)
   :exec ":normal " . line("$") . "_ "
   " Move cursor to bottom
@@ -267,9 +245,7 @@ map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
 map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
 map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
 map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>gp :CommandTFlush<cr>\|:CommandT public<cr>
-map <leader>gs :CommandTFlush<cr>\|:CommandT public/stylesheets<cr>
-map <leader>gf :CommandTFlush<cr>\|:CommandT features<cr>
+map <leader>gs :CommandTFlush<cr>\|:CommandT spec<cr>
 map <leader>gg :topleft 100 :split Gemfile<cr>
 map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
@@ -330,6 +306,7 @@ Bundle 'file-line'
 Bundle 'dccmx/vim-lemon-syntax'
 Bundle 'evidens/vim-twig'
 Bundle 'nono/vim-handlebars'
+Bundle 'ingydotnet/yaml-vim'
 Bundle 'chase/vim-ansible-yaml'
 
 " colors
@@ -348,16 +325,6 @@ if has("autocmd")
     " Automatically do language-depending indenting when possible
     filetype plugin indent on
 
-    " Treat .json files as .js
-    autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
-
-    " Set ft=text for .txt
-    autocmd BufNewFile,BufRead *.txt setfiletype text
-
-    " Enable soft-wrapping for text files (thanks ryanb)
-    autocmd FileType text,markdown,html,xhtml,eruby setlocal wrap linebreak nolist | set shiftwidth=2 | set softtabstop=2
-    autocmd FileType text setlocal textwidth=78
-
     " Jump to last known cursor position when editing a file (thanks ryanb)
     autocmd BufReadPost *
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -366,31 +333,23 @@ if has("autocmd")
 
     if exists("&relativenumber")
         set relativenumber
-        au BufReadPost * set relativenumber
+        au BufReadPost * set rnu
 
         " Use relative numbers except in insert mode or when vim loses focus
-        au FocusLost * set number
-        au InsertEnter * set number
-        au FocusGained * set relativenumber
-        au InsertLeave * set relativenumber
+        au FocusLost,InsertEnter * set nu | set nornu
+        au FocusGained,InsertLeave * set rnu
     endif
 
-    " Do some default formatting for certain files
-    au BufRead,BufNewFile *.s set noexpandtab
-    au BufRead,BufNewFile *.s set shiftwidth=8
-    au BufRead,BufNewFile *.s set tabstop=8
+    au BufRead,BufNewFile *.txt setfiletype text
+    au BufRead,BufNewFile *.re2c setfiletype c
+    au BufRead,BufNewFile *.haml setfiletype haml
+    au BufRead,BufNewFile *.json setfiletype json syntax=javascript
 
-    au BufRead,BufNewFile *.coffee set shiftwidth=2
-    au BufRead,BufNewFile *.coffee set softtabstop=2
-
-    au BufRead,BufNewFile *.rb set shiftwidth=2
-    au BufRead,BufNewFile *.rb set softtabstop=2
-
-    au BufRead,BufNewFile *.re2c set ft=c
-    au BufRead,BufNewFile *.haml set ft=haml
-
-    au BufRead,BufNewFile *.scss set shiftwidth=2
-    au BufRead,BufNewFile *.scss set softtabstop=2
+    au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
+    au FileType ruby,coffee,haml,scss,yaml setlocal et sw=2 sts=2
+    au FileType text,markdown,html,xhtml,eruby setlocal wrap linebreak nolist sw=2 sts=2
+    au FileType markdown,text setlocal tw=78
+    au FileType markdown setlocal sw=4 sts=4
 endif
 
 " Set colorscheme last in case a bundle needs to load
@@ -403,7 +362,3 @@ catch /^Vim\%((\a\+)\)\=:E185/
     colorscheme elflord
 endtry
 
-
-" Source extra shortcuts for rails
-" source $HOME/.vim/test_runners.vim
-" source $HOME/.vim/rails_shortcuts.vim
