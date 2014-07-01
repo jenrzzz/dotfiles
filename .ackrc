@@ -5,3 +5,6 @@
 --type-set=puppet=.pp
 --type-set=plaintext=.md,.mdown,.mkdn,.textile,.rst,.txt
 --type-set=erb=.erb,.rhtml
+
+# Ignore log/
+--ignore-dir=log/
