@@ -28,26 +28,24 @@
     branches = branch -a
     remotes = remote -v
 
-    # Credit an author on the latest commit
-    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
-
     # Undo a `git push`
     undopush = push -f origin HEAD^:master
 
     ## Stuff from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     # Ignore local changes to a tracked file
-    assume   = update-index --assume-unchanged
-    assume = update-index --no-assume-unchanged
     assumed  = "!git ls-files -v | grep ^h | cut -c 3-"
+    assume   = update-index --assume-unchanged
+    unassume = update-index --no-assume-unchanged
 
     # Take a snapshot of the current working tree
     snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+    standup = "!git log --since yesterday --author $(git config user.email)"
 
     # Quickly resolve a merge, e.g. git theirs blah.rb
     ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
     theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
 
-    standup = "!git log --since yesterday --author $(git config user.email)"
+
 [apply]
     # Detect whitespace errors when applying a patch
     whitespace = warn
@@ -59,6 +57,9 @@
     # Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
     whitespace = space-before-tab,trailing-space
     autocrlf = input
+
+[diff]
+  algorithm = patience
 
 [color]
     # Use colors in Git commands that are capable of colored output when outputting to the terminal
