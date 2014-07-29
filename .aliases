@@ -49,9 +49,6 @@ alias gca='git commit -a'
 alias ga='git add'
 alias sb='git checkout'
 
-# tmux environments
-alias dev="tmux_create_or_attach dev"
-
 # personal pass
 alias jpass="PASSWORD_STORE_DIR=~/Dropbox/.password-store pass"
 
@@ -60,20 +57,11 @@ alias jpass="PASSWORD_STORE_DIR=~/Dropbox/.password-store pass"
 command -v gls >/dev/null 2>&1 && alias ls="gls -F --color=auto"
 command -v gdircolors >/dev/null 2>&1 && alias dircolors="gdircolors"
 
-# List all files colorized in long format
-alias l="ls -l"
-
-# List all files colorized in long format, including dot files
-alias la="ls -Fla"
-
-# List long, but don't show hidden files
-alias ll="ls -Fl"
-
-# List only directories
-alias lsd='ls -Fl | grep "^d"'
-
-# I don't know why I make this typo so often
-alias sl="ls"
+alias l="ls -l" # List all files colorized in long format
+alias la="ls -Fla" # List all files colorized in long format, including dot files
+alias ll="ls -Fl" # List long, but don't show hidden files
+alias lsd='ls -Fl | grep "^d"' # List only directories
+alias sl="ls" # I don't know why I make this typo so often
 
 ## OS X administration and hacks
 # Get OS X Software Updates, and update Homebrew, npm, and their installed packages
@@ -161,12 +149,26 @@ alias badge="tput bel"
 # Reload bash profile
 alias reload="source $HOME/.bash_profile"
 
+# Media shortcuts
+if command -v ffmpeg > /dev/null; then
+    alias flac2mp3='for a in *.flac; do </dev/null ffmpeg -i "$a" -qscale:a 0 "${a[@]/%flac/mp3}"; done'
+fi
+
+# GPG shortcuts
+if command -v gpg > /dev/null; then
+    alias list_recipients="gpg --batch --decrypt --list-only --status-fd 1 2>/dev/null | awk '/^\[GNUPG:\] ENC_TO / { print \$3 }' | \
+        while read key; do (gpg --list-keys \$key >/dev/null 2>&1 && gpg --list-keys \$key) || echo -e \"-- unknown key ID: \$key\"; done"
+    alias show_recipients="list_recipients"
+fi
+
 # Bundler shortcuts
 if command -v bundle > /dev/null; then
     alias be="bundle exec"
     alias bs="bundle show"
+fi
 
 # Rake shortcuts cause I'm a lazy bastard
+if command -v rake > /dev/null; then
     alias rakenewdb="echo 'Dropping database...' && be rake db:drop && echo 'Creating database...' && be rake db:create && echo 'Loading schema...' && be rake db:schema:load"
     alias rakemigrate="echo 'Running migrations...' && be rake db:migrate"
 fi
@@ -180,6 +182,11 @@ if command -v rails > /dev/null; then
     alias railsprod="echo 'RAILS_ENV=production' && export RAILS_ENV=production"
     alias railsdev="echo 'RAILS_ENV=development' && export RAILS_ENV=development"
     alias railstest="echo 'RAILS_ENV=test' && export RAILS_ENV=test"
+fi
+
+# Tarsnap shortcuts
+if command -v tarsnap > /dev/null; then
+    alias backup-secrets='tarsnap -c -f secrets.$(date "+%Y%m%d") ~/Dropbox/Secrets ~/Dropbox/Personal ~/.ssh ~/.gnupg ~/.password-store ~/Dropbox/.password-store ~/Library/Keychains'
 fi
 
 # View HTTP traffic
@@ -197,20 +204,11 @@ alias pumpitup="osascript -e 'set volume 7'"
 alias where="hostname"
 alias why="echo because..."
 
-# Puppet
-if [[ -d '/etc/puppet' ]] && [[ -f '/etc/centos-release' ]]; then
-    alias bouncepup="sudo service puppet restart; sudo tail -f /var/log/messages"
-fi
-
 ## Quick connections
-# Apple
-if ping -c1 -t1 appleweb.apple.com >/dev/null 2>&1; then
-    alias zpupup='echo "Updating puppet repo on zecora.apple.com..." && ssh -At jenner@zecora.apple.com "cd /etc/puppet; sudo -E git pull origin master"'
-fi
-
-# Other
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
+alias broccoli="ssh jenrzzz@broccoli.whatbox.ca"
+alias getbroccoli="rsync -rzvP --exclude=seeding jenrzzz@broccoli.whatbox.ca:~/files/* ~/Downloads/"
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 
