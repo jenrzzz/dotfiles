@@ -2688,6 +2688,7 @@ _gitk ()
 
 __git_complete git __git_main
 __git_complete gitk __gitk_main
+__git_complete sb _git_checkout
 
 # The following are necessary only for Cygwin, and only are needed
 # when the user has tab-completed the executable name and consequently
