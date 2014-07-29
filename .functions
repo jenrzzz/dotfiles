@@ -5,6 +5,18 @@ function functions {
     grep --before 1 function.*{ /Users/jenner/.functions
 }
 
+# Print return value
+alias returns="?"
+function ? {
+  local val=$?
+  if [ $# -gt 0 ]; then
+    $("$@")
+    val=$?
+  fi
+
+  echo "returned $val"
+}
+
 # Simple calculator
 function calc() {
     local result=""
@@ -25,6 +37,7 @@ function calc() {
 
 # Looks up a given port number in nmap's services db
 command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
+alias whatlistenson="whatrunson"
 function whatrunson {
     if [[ -f $NMAP_SERVICES_PATH ]]; then
         grep "\s$1/" $NMAP_SERVICES_PATH
@@ -32,8 +45,8 @@ function whatrunson {
         echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
     fi
 }
-alias whatlistenson="whatrunson"
 
+# if [ -z $bored ]; then
 function play2048 {
     perl -e 'my $host = "http://2048.semantics3.com/hi/";my $cmd = "curl --silent -L $host"."start";my $output = `$cmd`;my $session_id = $output;$session_id=~s/.*?ID:\s(\w+).*/$1/si;my %keyMap = ( 'w' => 0, 'd' => 1, 's' => 2, 'a' => 3);print STDERR $output,"\n";while(1) { print STDERR "Input (w - up, a - left, d - right, s - down):\n"; my $userInput =<stdin> ; chomp ($userInput); if(defined($keyMap{$userInput})) { $userInput = $keyMap{$userInput}; } else { print STDERR "Invalid move.. w - up, a - left, d - right, s - down\n"; next; } my $cmd = "curl --silent $host"."state/$session_id/move/$userInput"; my $output = `$cmd`; print STDERR "\n$output\n"; if($output=~/Message:/si) { exit(0); }}'
 }
@@ -49,14 +62,30 @@ function randompass {
 }
 
 # Picks a random word from the dictionary
+export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
 function randomword {
-    local num=$(($RANDOM * $RANDOM))
-    local wordline=$(($num % $(wc -w /usr/share/dict/words | awk '{print $1}')))"p"
-    sed -n $wordline /usr/share/dict/words
+  if [ -z $RANDOMWORD_DICT_SIZE ]; then
+    echo "unknown dictionary size"
+    export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
+  fi
+  local num=$(($RANDOM * $RANDOM))
+  local wordline="$(($num % $RANDOMWORD_DICT_SIZE))p"
+  sed -n $wordline /usr/share/dict/words
 }
 
 function randomwords {
-    echo $(randomword)-$(randomword)-$(randomword)
+  local word=$(randomword)
+  local count=$1
+  local sep=$2
+  [ -z "$sep" ] && sep=" "
+  count=$(($count-1))
+  if [ $count -gt 0 ]; then
+    for i in $(seq $count); do
+      word="${word}${sep}$(randomword)"
+    done
+  fi
+
+  echo $word
 }
 
 # Creates a random alphanumeric passphrase
@@ -198,15 +227,6 @@ function server() {
     # Set the default Content-Type to `text/plain` instead of `application/octet-stream`
     # And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
     python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
-}
-
-# Start a PHP server from a directory, optionally specifying the port
-# (Requires PHP 5.4.0+.)
-function phpserver() {
-    local port="${1:-4000}"
-    local ip=$(ipconfig getifaddr en1)
-    sleep 1 && open "http://${ip}:${port}/" &
-    php -S "${ip}:${port}"
 }
 
 # Compare original and gzipped file size
@@ -476,8 +496,19 @@ function sesh() {
 }
 
 # fuck this
-function fuck() {
+function fuck {
     sesh new $1
+}
+
+# Trim a video clip with ffmpeg
+# Usage: trimclip <inputfile> <start_time> <duration> <outputfile>
+function trimclip {
+  if [ ! $# -eq 4 ]; then
+    echo "Usage: trimclip <inputfile> <start_time> <duration> <outputfile>"
+    echo "Example: trimclip input.avi 00:04:20 00:00:05 output.avi"
+  else
+    ffmpeg -i $1 -vcodec copy -acodec copy -ss $2 -t $3 $4
+  fi
 }
 
 # Convert video to gif
@@ -502,4 +533,10 @@ function dash() {
     local docs=$1
     shift
     open "dash://${docs}:$1"
+}
+
+# Create a sticky notification (requires StickyNotifications.app)
+function sticky {
+  msg=$(echo $@ | ruby -r 'uri' -e 'puts URI::encode(STDIN.gets)')
+  open "sticky-notifications://note?message=$msg"
 }
