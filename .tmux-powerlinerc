@@ -86,11 +86,11 @@
 	# Music player to use. Can be any of {audacious, banshee, cmus, itunes, lastfm, mocp, mpd, mpd_simple, pithos, rdio, rhythmbox, spotify, spotify_wine}.
 	export TMUX_POWERLINE_SEG_NOW_PLAYING_MUSIC_PLAYER="itunes"
 	# Maximum output length.
-	export TMUX_POWERLINE_SEG_NOW_PLAYING_MAX_LEN="40"
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_MAX_LEN="32"
 	# How to handle too long strings. Can be {trim, roll}.
 	export TMUX_POWERLINE_SEG_NOW_PLAYING_TRIM_METHOD="trim"
 	# Charcters per second to roll if rolling trim method is used.
-	export TMUX_POWERLINE_SEG_NOW_PLAYING_ROLL_SPEED="2"
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_ROLL_SPEED="1"
 	
 	# Hostname for MPD server in the format "[password@]host"
 	export TMUX_POWERLINE_SEG_NOW_PLAYING_MPD_HOST="localhost"
@@ -131,5 +131,5 @@
 	# 1. Go to Yahoo weather http://weather.yahoo.com/
 	# 2. Find the weather for you location
 	# 3. Copy the last numbers in that URL. e.g. "http://weather.yahoo.com/united-states/california/newport-beach-12796587/" has the numbers "12796587"
-	export TMUX_POWERLINE_SEG_WEATHER_LOCATION=""
+	export TMUX_POWERLINE_SEG_WEATHER_LOCATION="12797535"
 # }
