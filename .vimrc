@@ -46,6 +46,7 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
 let mapleader=","               " Change mapleader to comma
+noremap \ ,
 set history=100                 " keep 100 lines of command history
 set autoread                    " update open files if they change
 set showcmd                     " Show the (partial) command as it's being typed
@@ -308,6 +309,7 @@ Bundle 'evidens/vim-twig'
 Bundle 'nono/vim-handlebars'
 Bundle 'ingydotnet/yaml-vim'
 Bundle 'chase/vim-ansible-yaml'
+Bundle 'mediawiki.vim'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
@@ -344,12 +346,13 @@ if has("autocmd")
     au BufRead,BufNewFile *.re2c setfiletype c
     au BufRead,BufNewFile *.haml setfiletype haml
     au BufRead,BufNewFile *.json setfiletype json syntax=javascript
+    au BufRead,BufNewFile *.wiki setfiletype mediawiki
 
     au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
     au FileType ruby,coffee,haml,scss,yaml setlocal et sw=2 sts=2
-    au FileType text,markdown,html,xhtml,eruby setlocal wrap linebreak nolist sw=2 sts=2
-    au FileType markdown,text setlocal tw=78
-    au FileType markdown setlocal sw=4 sts=4
+    au FileType text,markdown,mediawiki,html,xhtml,eruby setlocal wrap linebreak nolist sw=2 sts=2
+    au FileType markdown,mediawiki,text setlocal tw=78
+    au FileType markdown,mediawiki setlocal sw=4 sts=4
 endif
 
 " Set colorscheme last in case a bundle needs to load
