@@ -1,6 +1,6 @@
 #!/bin/bash
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh rsync
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" ssh
 
 _complete_ssh_hosts ()
 {
@@ -19,6 +19,6 @@ _complete_ssh_hosts ()
         COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
         return 0
 }
-complete -F _complete_ssh_hosts ssh scp sftp rsync
+complete -F _complete_ssh_hosts ssh
 
 
