@@ -10,7 +10,7 @@ alias returns="?"
 function ? {
   local val=$?
   if [ $# -gt 0 ]; then
-    $("$@")
+    "$@"
     val=$?
   fi
 
@@ -26,8 +26,8 @@ function calc() {
     if [[ "$result" == *.* ]]; then
         # improve the output for decimal numbers
         printf "$result" |
-        sed -e 's/^\./0./'        `# add "0" for cases like ".5"` \
-            -e 's/^-\./-0./'      `# add "0" for cases like "-.5"`\
+        sed -e 's/^\./0./'        # add "0" for cases like ".5"` \
+            -e 's/^-\./-0./'      # add "0" for cases like "-.5"`\
             -e 's/0*$//;s/\.$//'   # remove trailing zeros
     else
         printf "$result"
@@ -40,7 +40,7 @@ command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
 alias whatlistenson="whatrunson"
 function whatrunson {
     if [[ -f $NMAP_SERVICES_PATH ]]; then
-        grep "\s$1/" $NMAP_SERVICES_PATH
+        grep "\s$1/" "$NMAP_SERVICES_PATH"
     else
         echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
     fi
@@ -64,12 +64,12 @@ function randompass {
 # Picks a random word from the dictionary
 export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
 function randomword {
-  if [ -z $RANDOMWORD_DICT_SIZE ]; then
+  if [ -z "$RANDOMWORD_DICT_SIZE" ]; then
     echo "unknown dictionary size"
     export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
   fi
-  local num=$(($RANDOM * $RANDOM))
-  local wordline="$(($num % $RANDOMWORD_DICT_SIZE))p"
+  local num=$((RANDOM * RANDOM))
+  local wordline="$((num % RANDOMWORD_DICT_SIZE))p"
   sed -n $wordline /usr/share/dict/words
 }
 
@@ -78,19 +78,47 @@ function randomwords {
   local count=$1
   local sep=$2
   [ -z "$sep" ] && sep=" "
-  count=$(($count-1))
+  count=$((count-1))
   if [ $count -gt 0 ]; then
-    for i in $(seq $count); do
+    for _ in $(seq $count); do
       word="${word}${sep}$(randomword)"
     done
   fi
 
-  echo $word
+  echo "$word"
+}
+
+# Picks a random word from the dictionary
+export RANDOMLYRIC_LINE_COUNT=$(wc -l /usr/share/dict/lyrics | awk '{print $1}')
+function randomlyric {
+  if [ -z "$RANDOMLYRIC_LINE_COUNT" ]; then
+    echo "unknown lyric database size"
+    export RANDOMLYRIC_LINE_COUNT=$(wc -l /usr/share/dict/lyrics | awk '{print $1}')
+  fi
+  local num=$((RANDOM * RANDOM))
+  local wordline=$((num % RANDOMLYRIC_LINE_COUNT))
+  [ $wordline -eq 0 ] && wordline=1
+  sed -n ${wordline}p /usr/share/dict/lyrics
+}
+
+function randomwords {
+  local word=$(randomword)
+  local count=$1
+  local sep=$2
+  [ -z "$sep" ] && sep=" "
+  count=$((count-1))
+  if [ $count -gt 0 ]; then
+    for _ in $(seq $count); do
+      word="${word}${sep}$(randomword)"
+    done
+  fi
+
+  echo "$word"
 }
 
 # Creates a random alphanumeric passphrase
 function randompassphrase {
-    echo $(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)
+    echo "$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)"
 }
 
 # Directory marks
@@ -105,7 +133,7 @@ function jump {
 # If multiple marks are given, they are opened in new tmux windows.
 function jmp {
     if [[ $# -gt 0 ]]; then
-        jump $1
+        jump "$1"
         shift
         while [[ $# -gt 0 ]]; do
             tmux neww -c $MARKPATH/$1*
