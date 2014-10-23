@@ -27,6 +27,7 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
 # Set gopath
 export GOPATH="$HOME/Source/go"
+export GRAILS_HOME="/usr/local/opt/grails/libexec"
 
 if command -v gdircolors >/dev/null 2>&1; then
     eval `gdircolors ~/.dircolors.256dark`
