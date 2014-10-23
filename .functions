@@ -173,17 +173,34 @@ function marks {
     if (( ${#markfiles[*]} )); then
         echo
         for file in ${markfiles[@]}; do
+
             if [[ ! -h $file ]] && [[ -d $file ]]; then
                 echo
                 echo "$(basename "$file")/"
                 for fl in $file/*; do
                     fl=${fl%/}
-                    echo -e "  $(basename "$fl")\t->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
+                    name=$(basename "$fl")
+
+                    if [ ${#name} -gt 6 ]; then
+                      indent='\t'
+                    else
+                      indent='\t\t'
+                    fi
+
+                    echo -e "  $name$indent->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
                 done
                 echo
             else
                 fl=${file%/}
-                echo -e "$(basename "$file")\t->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
+                name=$(basename "$fl")
+
+                if [ ${#name} -gt 7 ]; then
+                  indent='\t'
+                else
+                  indent='\t\t'
+                fi
+
+                echo -e "$name$indent->\t$(ls -l "$fl" | cut -d' ' -f 11-)"
             fi
         done
         echo
