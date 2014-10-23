@@ -1,7 +1,7 @@
 reset all
 unhook *
 
-set realname='Jenner LaFave'
+set realname='Jenner La Fave'
 set date_format="!%a %b %d, %Y at %H:%M:%S %Z" # Wed Apr 09, 2014 at 14:28:00 PDT
 set ssl_starttls=yes
 set locale="en_US"
