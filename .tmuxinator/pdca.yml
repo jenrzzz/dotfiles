@@ -1,7 +1,7 @@
-# ~/.tmuxinator/this.yml
+# ~/.tmuxinator/pdca.yml
 
-name: this
-root: ~/
+name: pdca
+root: ~/Source/apple/hacks/pdca-bbq
 
 # Optional tmux socket
 # socket_name: foo
@@ -19,12 +19,7 @@ root: ~/
 # tmux_command: byobu
 
 windows:
-  - boo:
-    - tmux rename-window -t boo "👻 "
-    - tmux select-layout main-vertical
-    - tmux split-window -d
-    - tmux split-window -h "mutt; bash -i"
-    - irssi; bash -i
+  - boo: tmux link-window -ks "this:👻" -t boo
+  - baz: tmux link-window -ks "this:🔷" -t baz
+  - vim: vim
 
-  - baz:
-    - tmux rename-window -t baz "🔷 "

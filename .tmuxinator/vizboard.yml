@@ -1,0 +1,11 @@
+# ~/.tmuxinator/vizboard.yml
+
+name: vizboard
+root: ~/Source/apple/vizboard/vizboard
+
+windows:
+  - boo: tmux link-window -ks "this:👻" -t boo
+  - baz: tmux link-window -ks "this:🔷" -t baz
+  - srv: bundle exec rails server thin; bash -i
+  - app: cd app
+  - rails: ''

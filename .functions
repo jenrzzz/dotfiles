@@ -540,11 +540,6 @@ function sesh() {
     fi
 }
 
-# fuck this
-function fuck {
-    sesh new $1
-}
-
 # Trim a video clip with ffmpeg
 # Usage: trimclip <inputfile> <start_time> <duration> <outputfile>
 function trimclip {
@@ -582,6 +577,13 @@ function dash() {
 
 # Create a sticky notification (requires StickyNotifications.app)
 function sticky {
-  msg=$(echo $@ | ruby -r 'uri' -e 'puts URI::encode(STDIN.gets)')
+  msg=$(echo "$@" | ruby -r 'uri' -e 'puts URI::encode(STDIN.gets)')
   open "sticky-notifications://note?message=$msg"
 }
+
+# Look up an RFC number
+function rfc {
+  rfc=$(printf '%04d' $1)
+  curl "http://www.ietf.org/rfc/rfc${rfc}.txt" | less
+}
+

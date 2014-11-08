@@ -26,6 +26,7 @@ alias s="cd ~/Source"
 alias v="vim"
 alias vq="vim -u NONE"
 alias vimq="vim -u NONE"
+alias fuck="tmuxinator"
 
 less_macro_path=$(locate "macros/less.vim" | head -1)
 if [[ -f $less_macro_path ]]; then
