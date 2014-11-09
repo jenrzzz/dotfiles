@@ -1,0 +1,46 @@
+{
+    "segments": {
+        "right": [
+            {
+                "function": "powerline.segments.common.players.itunes",
+                "args": {
+                    "format": "{state_symbol} {title} - {artist}"
+                }
+            },
+            {
+                "function": "powerline.segments.common.sys.system_load",
+                "args": {
+                    "threshold_good": 2,
+                    "threshold_bad": 3
+                }
+            },
+            {
+                "function": "powerline.segments.common.bat.battery",
+                "before": "❤ "
+            },
+            {
+                "function": "powerline.segments.common.wthr.weather",
+                "args": {
+                    "unit": "F",
+                    "location_query": "94040",
+                    "temp_coldest": 0,
+                    "temp_hottest": 100
+                }
+            },
+            {
+                "function": "powerline.segments.common.time.date",
+                "args": {
+                    "format": "%b %d"
+                }
+            },
+            {
+                "function": "powerline.segments.common.time.date",
+                "name": "time",
+                "args": {
+                    "format": "%H:%M",
+                    "istime": true
+                }
+            }
+        ]
+    }
+}

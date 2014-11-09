@@ -11,6 +11,12 @@ if command -v fortune &>/dev/null; then
     fi
 fi
 
+# Start powerline
+if hash powerline-daemon &>/dev/null; then
+  powerline-daemon -q
+  export POWERLINE_PATH="/usr/local/lib/python2.7/site-packages/powerline"
+fi
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
@@ -47,11 +53,6 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 for file in $HOME/.bash-completion/*; do
     [ -r "$file" ] && source "$file"
 done
-
-# Setup dircolors
-if [[ -d ~/.dircolors-solarized ]]; then
-    hash gdircolors &>/dev/null && eval $(gdircolors ~/.dircolors-solarized/dircolors.256dark)
-fi
 
 # Use direnv
 hash direnv &>/dev/null && eval "$(direnv hook bash)"

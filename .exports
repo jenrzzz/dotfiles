@@ -1,4 +1,6 @@
+# vim: ft=sh:
 # Prefer US English and use UTF-8
+
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US"
 
@@ -29,6 +31,7 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 export GOPATH="$HOME/Source/go"
 export GRAILS_HOME="/usr/local/opt/grails/libexec"
 
+# Setup dircolors
 if command -v gdircolors >/dev/null 2>&1; then
     eval `gdircolors ~/.dircolors.256dark`
 else
@@ -37,3 +40,4 @@ fi
 
 # rbenv shim
 if command -v rbenv >/dev/null 2>&1; then eval "$(rbenv init -)"; fi
+

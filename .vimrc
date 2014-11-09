@@ -255,15 +255,13 @@ map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
 """ BUNDLES
 filetype off
 set rtp+=~/.vim/bundle/vundle/
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim/
-
 call vundle#rc()
 
 " let Vundle manage Vundle
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'Lokaltog/powerline'
+Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/syntastic'
