@@ -27,4 +27,4 @@ windows:
     - irssi; bash -i
 
   - baz:
-    - tmux rename-window -t baz "🔷 "
+    - tmux rename-window -t baz "😍 "

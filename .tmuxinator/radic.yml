@@ -20,7 +20,7 @@ root: ~/Source/apple/radic
 
 windows:
   - boo: tmux link-window -ks "this:👻" -t boo
-  - baz: tmux link-window -ks "this:🔷" -t baz
+  - baz: tmux link-window -ks "this:😍" -t baz
   - gem: cd radic
   - lib: cd radic/lib
   - rails: cd radic-rails

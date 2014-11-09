@@ -20,6 +20,6 @@ root: ~/Source/apple/hacks/pdca-bbq
 
 windows:
   - boo: tmux link-window -ks "this:👻" -t boo
-  - baz: tmux link-window -ks "this:🔷" -t baz
+  - baz: tmux link-window -ks "this:😍" -t baz
   - vim: vim
 
