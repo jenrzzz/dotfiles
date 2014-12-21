@@ -60,3 +60,6 @@ hash direnv &>/dev/null && eval "$(direnv hook bash)"
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
 stty start undef stop undef
 
+# Don't do weird shit
+set -o pipefail
+
