@@ -5,6 +5,43 @@ function functions {
     grep --before 1 function.*{ /Users/jenner/.functions
 }
 
+function qq {
+  if [ $# -gt 0 ]; then
+    find . -ipath "*$1*" | selecta
+  else
+    find . -type f -and -not -path '*.git*' | selecta
+  fi
+}
+
+function vq {
+  if [ $# -gt 0 ]; then
+    vim $(qq $1)
+  else
+    vim $(qq)
+  fi
+}
+
+function cdq {
+  local base
+  if [ $# -gt 0 ]; then
+    base=$1
+  else
+    base=$(pwd)
+  fi
+
+  find "$base" -type d -and -not -name ".*" -and -not -path "*.git*" -maxdepth 4 | selecta
+}
+
+function jpq {
+  local name
+  name=$(find ~/Dropbox/.password-store -type f -and -not -path '*.git*' -and -not -name '.gpg-id' | sed -e 's/\/Users\/jenner\/Dropbox\/.password-store\///' | selecta)
+  path=$(dirname $name)
+  name=${name##*/}
+  jpass $path/${name%%.*}
+}
+
+
+
 # Print return value
 alias returns="?"
 function ? {
@@ -36,14 +73,9 @@ function calc() {
 }
 
 # Looks up a given port number in nmap's services db
-command -v nmap > /dev/null && export NMAP_SERVICES_PATH=$(locate nmap-services)
 alias whatlistenson="whatrunson"
 function whatrunson {
-    if [[ -f $NMAP_SERVICES_PATH ]]; then
-        grep "\s$1/" "$NMAP_SERVICES_PATH"
-    else
-        echo "Couldn't find nmap-services at $NMAP_SERVICES_PATH"
-    fi
+    grep "\s$1/" /etc/services
 }
 
 # if [ -z $bored ]; then
