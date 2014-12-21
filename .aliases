@@ -24,7 +24,6 @@ alias o="open"
 alias oo="open ."
 alias s="cd ~/Source"
 alias v="vim"
-alias vq="vim -u NONE"
 alias vimq="vim -u NONE"
 alias fuck="tmuxinator"
 
@@ -152,7 +151,7 @@ alias reload="source $HOME/.bash_profile"
 
 # Media shortcuts
 if command -v ffmpeg > /dev/null; then
-    alias flac2mp3='for a in *.flac; do </dev/null ffmpeg -i "$a" -qscale:a 0 "${a[@]/%flac/mp3}"; done'
+    alias flac2mp3='for f in *.flac; do </dev/null ffmpeg -i "$f" -qscale:a 0 "${f/%flac/mp3}"; done'
 fi
 
 # GPG shortcuts
@@ -212,4 +211,5 @@ alias broccoli="ssh jenrzzz@broccoli.whatbox.ca"
 alias getbroccoli="rsync -rzvP --exclude=seeding jenrzzz@broccoli.whatbox.ca:~/files/* ~/Downloads/"
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
+alias editsieve="ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
 
