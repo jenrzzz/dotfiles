@@ -30,7 +30,7 @@
             {
                 "function": "powerline.segments.common.time.date",
                 "args": {
-                    "format": "%b %d"
+                    "format": "%d %b"
                 }
             },
             {
