@@ -251,6 +251,7 @@ map <leader>gg :topleft 100 :split Gemfile<cr>
 map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
 map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+nmap <silent> <leader>d <Plug>DashSearch
 
 """ BUNDLES
 filetype off
@@ -308,6 +309,7 @@ Bundle 'nono/vim-handlebars'
 Bundle 'ingydotnet/yaml-vim'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'mediawiki.vim'
+Bundle 'rizzatti/dash.vim'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
