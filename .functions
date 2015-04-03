@@ -94,7 +94,7 @@ function randompass {
 }
 
 # Picks a random word from the dictionary
-export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
+export RANDOMWORD_DICT_SIZE=$([ -f /usr/share/dict/words ] && wc -w /usr/share/dict/words | awk '{print $1}')
 function randomword {
   if [ -z "$RANDOMWORD_DICT_SIZE" ]; then
     echo "unknown dictionary size"
@@ -121,7 +121,7 @@ function randomwords {
 }
 
 # Picks a random word from the dictionary
-export RANDOMLYRIC_LINE_COUNT=$(wc -l /usr/share/dict/lyrics | awk '{print $1}')
+export RANDOMLYRIC_LINE_COUNT=$([ -f /usr/share/dict/lyrics ] && wc -l /usr/share/dict/lyrics | awk '{print $1}')
 function randomlyric {
   if [ -z "$RANDOMLYRIC_LINE_COUNT" ]; then
     echo "unknown lyric database size"
