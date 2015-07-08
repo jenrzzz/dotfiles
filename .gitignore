@@ -14,6 +14,13 @@ Thumbs.db
 .Trashes
 
 .vim
+.ruby-version
 
 # Database config files
 database.yml
+
+# ctags
+tags
+quickfix*.out
+
+.yardoc
