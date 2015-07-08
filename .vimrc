@@ -27,6 +27,7 @@ set hlsearch
 set bs=2                        " fix backspacing in insert mode
 set clipboard=unnamed           " Use the OS clipboard by default
 set ttyfast                     " Optimize for fast terminal connections
+set lazyredraw
 
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
@@ -35,7 +36,7 @@ set t_ti= t_te=
 set wildchar=<Tab>
 set wildmenu                    " Enhance command-line completion
 set wildmode=longest,list
-set wildignore=*.o,*.obj,*~     " ignore this shit when tab completing
+set wildignore=*.o,*.obj,*~     " ignore this shit when tab completing and in Cmd-T
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
 set wildignore+=vendor/rails/**
@@ -43,7 +44,9 @@ set wildignore+=vendor/cache/**
 set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
-set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=*.png,*.jpg,*.gif,*.ico
+set wildignore+=*.class,*.jar
+set wildignore+=*.gz,*.log
 
 let mapleader=","               " Change mapleader to comma
 noremap \ ,
@@ -70,9 +73,9 @@ let &titleold=getcwd()          " Set the xterm title to the cwd on exit
 " variable prevents the iskeyword change so it can't hurt anyone.
 let g:sh_noisk=1
 
-" powerline stuff
-let g:Powerline_symbols = 'fancy' " use fancy powerline
-let g:Powerline_stl_path_style = 'relative'
+" airline stuff
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 " not old sh highlighting
 let g:is_bash = 1
@@ -80,7 +83,7 @@ let g:is_bash = 1
 " configure when syntastic should run
 let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'active_filetypes': [],
-                           \ 'passive_filetypes': ['puppet', 'java'] }
+                           \ 'passive_filetypes': ['puppet', 'java', 'groovy'] }
 
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups,~/.tmp,/var/tmp/,/tmp
@@ -134,8 +137,6 @@ map <Leader>go :call OpenURL() <CR>
 " Use ,gb to show blame
 map <Leader>gb :Gblame <CR>
 
-" run rspec with current buffer with ,r
-map <Leader>r :w \| :!bundle exec rspec %:p<CR>
 
 " Use ,on to close all but the active window
 map <Leader>on :only <CR>
@@ -182,11 +183,6 @@ imap <C-l> <space>=><space>
 " Can't be bothered to understand ESC vs <c-c> in insert mode
 imap <c-c> <esc>
 
-" MiniBufExpl mappings
-map <Leader>be :MBEOpen<cr>
-map <Leader>bc :MBEClose<cr>
-map <Leader>bt :MBEToggle<cr>
-
 " Buffer splits and stuff
 let i = 1
 while i <= 9
@@ -223,22 +219,6 @@ command! GdiffInTab tabedit %|vsplit|Gdiff
 " MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>gr :topleft :split config/routes.rb<cr>
-function! ShowRoutes()
-  " Requires 'scratch' plugin
-  :topleft 100 :split __Routes__
-  " Make sure Vim doesn't write __Routes__ as a file
-  :set buftype=nofile
-  " Delete everything
-  :normal 1GdG
-  " Put routes output in buffer
-  :0r! rake -s routes
-  " Size window to number of lines (1 plus rake output length)
-  :exec ":normal " . line("$") . "_ "
-  " Move cursor to bottom
-  :normal 1GG
-  " Delete empty trailing line
-  :normal dd
-endfunction
 map <leader>t :CommandT<cr>
 map <leader>gR :call ShowRoutes()<cr>
 map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
@@ -262,12 +242,13 @@ call vundle#rc()
 " required!
 Bundle 'gmarik/vundle'
 " ------- User bundles go here ---------
-Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plugin 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'jgdavey/tslime.vim'
 Bundle 'scrooloose/syntastic'
 Bundle 'scratch.vim'
-Bundle 'fholgado/minibufexpl.vim'
+Bundle 'tpope/vim-dispatch'
+Bundle 'majutsushi/tagbar'
 
 " motion, format
 Bundle 'goldfeld/vim-seek'
@@ -310,6 +291,7 @@ Bundle 'ingydotnet/yaml-vim'
 Bundle 'chase/vim-ansible-yaml'
 Bundle 'mediawiki.vim'
 Bundle 'rizzatti/dash.vim'
+Bundle 'thoughtbot/vim-rspec'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
@@ -321,6 +303,8 @@ if has('ruby')
 endif
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
+let g:rspec_command = 'Dispatch bundle exec rspec --require="~/.rspec-formatters/vim_formatter.rb" --format VimFormatter --out quickfix.out --format progress {spec}'
+let g:dispatch_compilers = { 'bundle exec': '' }
 
 " Automatic commands (if possible)
 if has("autocmd")
@@ -353,6 +337,7 @@ if has("autocmd")
     au FileType text,markdown,mediawiki,html,xhtml,eruby setlocal wrap linebreak nolist sw=2 sts=2
     au FileType markdown,mediawiki,text setlocal tw=78
     au FileType markdown,mediawiki setlocal sw=4 sts=4
+    au FileType groovy setlocal sw=4 sts=4
 endif
 
 " Set colorscheme last in case a bundle needs to load
@@ -364,4 +349,8 @@ try
 catch /^Vim\%((\a\+)\)\=:E185/
     colorscheme elflord
 endtry
+
+" Common typos!
+iabbrev attribuet attribute
+iabbrev attribuets attributes
 
