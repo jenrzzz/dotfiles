@@ -1,4 +1,5 @@
 # @gf3’s Sexy Bash Prompt, inspired by “Extravagant Zsh Prompt”
+# vim:ft=sh:
 # Shamelessly copied from https://github.com/gf3/dotfiles
 # Screenshot: http://i.imgur.com/s0Blh.png
 
@@ -15,12 +16,14 @@ fi
 if tput setaf 1 &> /dev/null; then
 	tput sgr0
 	if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+		RED=$(tput setaf 124)
 		MAGENTA=$(tput setaf 9)
 		ORANGE=$(tput setaf 172)
 		GREEN=$(tput setaf 190)
 		PURPLE=$(tput setaf 141)
 		WHITE=$(tput setaf 246)
   else
+		RED=$(tput setaf 1)
 		MAGENTA=$(tput setaf 5)
 		ORANGE=$(tput setaf 4)
 		GREEN=$(tput setaf 2)
@@ -39,6 +42,7 @@ else
 	RESET="\033[m"
 fi
 
+export RED
 export MAGENTA
 export ORANGE
 export GREEN
@@ -61,10 +65,23 @@ function parse_git_branch() {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)$(parse_git_in_rebase)/"
 }
 
-export PS1_DEFAULT="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$ \[$RESET\]"
-export PS1_CDBLK="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\] [cdblk] \$ \[$RESET\]"
-export PS1_SCRATCH="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\] [scratch] \$ \[$RESET\]"
+function rbenv_ruby_version {
+  local v=$(rbenv version | awk '{ print $1 }' | sed -e 's/\.[^.]$//')
+  [[ $v = 'system' ]] && [[ ! -z "$PS1_RBENV_VERSION" ]] && echo " ($v) "
+}
+
+export PS1_DEFAULT="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$RED\]\$(rbenv_ruby_version)\[$WHITE\]\$ \[$RESET\]"
+export PS1_CDBLK="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [cdblk] \$ \[$RESET\]"
+export PS1_SCRATCH="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [scratch] \$ \[$RESET\]"
 export PS1="$PS1_DEFAULT"
 
 export HISTTIMEFORMAT="%s "
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND }"'echo $$ $USER "$(history 1)" >> ~/.bash_eternal_history'
+[[ ! $PROMPT_COMMAND =~ .bash_eternal_history ]] && PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND }"'echo "$$ $USER \"$(history 1)\"" >> ~/.bash_eternal_history;export PREV_COMMAND=""'
+
+function settitle () {
+    export PREV_COMMAND=${PREV_COMMAND}${@}
+    echo -ne "\033k${PREV_COMMAND/%\ */}\033\\"
+    export PREV_COMMAND=${PREV_COMMAND}' | '
+}
+
+# trap 'settitle "$BASH_COMMAND"' DEBUG
