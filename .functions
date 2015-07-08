@@ -9,16 +9,20 @@ function qq {
   if [ $# -gt 0 ]; then
     find . -ipath "*$1*" | selecta
   else
-    find . -type f -and -not -path '*.git*' | selecta
+    find . -type f -and -not -path '*.git*' -and -not -name '*.class' | selecta
   fi
 }
 
 function vq {
+  local file
   if [ $# -gt 0 ]; then
-    vim $(qq $1)
+    file=$(qq $1)
   else
-    vim $(qq)
+    file=$(qq)
   fi
+
+  history -s "vim $file"
+  vim $file
 }
 
 function cdq {
@@ -29,7 +33,7 @@ function cdq {
     base=$(pwd)
   fi
 
-  find "$base" -type d -and -not -name ".*" -and -not -path "*.git*" -maxdepth 4 | selecta
+  cd $(find "$base" -type d -and -not -name ".*" -and -not -path "*.git*" -maxdepth 4 | selecta)
 }
 
 function jpq {
@@ -37,10 +41,14 @@ function jpq {
   name=$(find ~/Dropbox/.password-store -type f -and -not -path '*.git*' -and -not -name '.gpg-id' | sed -e 's/\/Users\/jenner\/Dropbox\/.password-store\///' | selecta)
   path=$(dirname $name)
   name=${name##*/}
-  jpass $path/${name%%.*}
+  jpass "$path/${name%%.*}"
 }
 
-
+function hq {
+  local cmd=$(history | tail -500 | cut -d ' ' -f 5- | sort | uniq | selecta)
+  history -s "$cmd"
+  "$cmd"
+}
 
 # Print return value
 alias returns="?"
