@@ -156,7 +156,7 @@ fi
 
 # GPG shortcuts
 if command -v gpg > /dev/null; then
-    alias list_recipients="gpg --batch --decrypt --list-only --status-fd 1 2>/dev/null | awk '/^\[GNUPG:\] ENC_TO / { print \$3 }' | \
+    alias list-recipients="gpg --batch --decrypt --list-only --status-fd 1 2>/dev/null | awk '/^\[GNUPG:\] ENC_TO / { print \$3 }' | \
         while read key; do (gpg --list-keys \$key >/dev/null 2>&1 && gpg --list-keys \$key) || echo -e \"-- unknown key ID: \$key\"; done"
     alias show_recipients="list_recipients"
 fi
@@ -167,10 +167,8 @@ if command -v bundle > /dev/null; then
     alias bs="bundle show"
 fi
 
-# Rake shortcuts cause I'm a lazy bastard
-if command -v rake > /dev/null; then
-    alias rakenewdb="echo 'Dropping database...' && be rake db:drop && echo 'Creating database...' && be rake db:create && echo 'Loading schema...' && be rake db:schema:load"
-    alias rakemigrate="echo 'Running migrations...' && be rake db:migrate"
+if command -v rspec > /dev/null; then
+    alias rspecv="rspec --require=~/.rspec-formatters/vim_formatter.rb --format VimFormatter --out quickfix.out --format progress || vim '+cg quickfix.out' '+cw' '+setl foldlevel=0 foldmethod=marker foldmarker=#\\ Backtrace,#\\ /Backtrace' '+res 40'"
 fi
 
 # Rails shortcuts
