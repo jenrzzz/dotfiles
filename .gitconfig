@@ -112,3 +112,5 @@
 
 [pass]
     signcommits = true
+[branch]
+	autosetuprebase = always
