@@ -1,0 +1,11 @@
+# ~/.tmuxinator/reworkboard.yml
+
+name: vizboard
+root: ~/Source/apple/reworkboard
+
+windows:
+  - boo: tmux link-window -ks "this:👻" -t boo
+  - baz: tmux link-window -ks "this:😍" -t baz
+  - srv: rst; bash -i
+  - try: 'true'
+  - explain: 'true'
