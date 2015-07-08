@@ -8,3 +8,6 @@
 
 # Ignore log/
 --ignore-dir=log/
+
+# Ignore ctags
+--ignore-file=is:tags
