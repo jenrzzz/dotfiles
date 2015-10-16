@@ -1,6 +1,6 @@
 # ~/.tmuxinator/reworkboard.yml
 
-name: vizboard
+name: reworkboard
 root: ~/Source/apple/reworkboard
 
 windows:
