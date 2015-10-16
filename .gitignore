@@ -1,6 +1,8 @@
 # Compiled Python files
 *.pyc
 
+.config/direnv
+
 # Folder view configuration files
 .DS_Store
 Desktop.ini
@@ -15,9 +17,6 @@ Thumbs.db
 
 .vim
 .ruby-version
-
-# Database config files
-database.yml
 
 # ctags
 tags
