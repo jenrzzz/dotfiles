@@ -292,6 +292,7 @@ Bundle 'chase/vim-ansible-yaml'
 Bundle 'mediawiki.vim'
 Bundle 'rizzatti/dash.vim'
 Bundle 'thoughtbot/vim-rspec'
+Bundle 'vim-scripts/dbext.vim'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
