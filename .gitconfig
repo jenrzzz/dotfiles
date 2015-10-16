@@ -44,6 +44,7 @@
     # Quickly resolve a merge, e.g. git theirs blah.rb
     ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
     theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+	graphall = -c core.pager='less -SFRX' log --oneline --graph --date-order --decorate --all
 
 
 [apply]
@@ -105,6 +106,8 @@
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
     insteadOf = "gist:"
+[url "git@gitlab.sd.apple.com:"]
+    insteadOf = "https://gitlab.sd.apple.com/"
 [user]
     name = Jenner LaFave
     email = jenner@jfave.com
@@ -114,3 +117,5 @@
     signcommits = true
 [branch]
 	autosetuprebase = always
+[remote "orchard"]
+	email = jenner_lafave@apple.com
