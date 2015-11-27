@@ -332,6 +332,7 @@ if has("autocmd")
     au BufRead,BufNewFile *.haml setfiletype haml
     au BufRead,BufNewFile *.json setfiletype json syntax=javascript
     au BufRead,BufNewFile *.wiki setfiletype mediawiki
+    au BufRead,BufNewFile Procfile* setfiletype yaml
 
     au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
     au FileType ruby,coffee,haml,scss,yaml setlocal et sw=2 sts=2
