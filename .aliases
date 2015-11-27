@@ -127,6 +127,9 @@ alias nogrep='grep -v grep'
 # Trim new lines and copy to clipboard
 alias c="tr -d '\n' | pbcopy"
 
+# Cut on spaces
+alias cuts="cut -f ' '"
+
 # Count word frequencies of stdin
 alias freqs="awk '{ for (i = 1; i <= NF; i++) freq[\$i]++ } END { for (word in freq) printf \"%d\t%s\n\", freq[word], word }'"
 
@@ -175,11 +178,15 @@ fi
 if command -v rails > /dev/null; then
     alias ra="echo \"bundle exec'ing rails..\" && bundle exec rails"
     alias rg="echo \"bundle exec'ing rails..\" && bundle exec rails generate"
-    alias rst="echo 'Starting server...' && bundle exec rails server thin --binding 127.0.0.1"
+    alias rs="echo 'Starting server...' && bundle exec rails server --binding 127.0.0.1"
     alias rc="echo 'Starting console...' && bundle exec rails console"
     alias railsprod="echo 'RAILS_ENV=production' && export RAILS_ENV=production"
     alias railsdev="echo 'RAILS_ENV=development' && export RAILS_ENV=development"
     alias railstest="echo 'RAILS_ENV=test' && export RAILS_ENV=test"
+fi
+
+if command -v foreman > /dev/null; then
+    alias "serve!"="foreman start"
 fi
 
 # Tarsnap shortcuts
