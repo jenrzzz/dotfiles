@@ -165,7 +165,7 @@ function randompassphrase {
 export MARKPATH="$HOME/.marks"
 
 # Jumps to a directory mark, if it exists
-function jump { 
+function jump {
     cd -P $MARKPATH/$1* 2>/dev/null || echo "No such mark: $1"
 }
 
@@ -186,7 +186,7 @@ function jmp {
 }
 
 # Sets a mark in the current directory
-function mark { 
+function mark {
     if [[ $# -eq 1 ]]; then
         mkdir -p "$MARKPATH"; ln -s "$(pwd)" "$MARKPATH/$1"
     elif [[ $# -eq 2 ]]; then
@@ -197,7 +197,7 @@ function mark {
 }
 
 # Deletes the given mark
-function unmark { 
+function unmark {
     rm -iv "$MARKPATH/$1"
 }
 
@@ -350,7 +350,7 @@ alias scratched="scratchd"
 function unscratch() {
     export PS1="$PS1_DEFAULT"
 
-    if [[ "$1" == "-r" ]]; then 
+    if [[ "$1" == "-r" ]]; then
         cd "$SCRATCH_ORIGINAL_DIR"
         rm -rf "$SCRATCH_CURRENT_SCRATCH_DIR"
     else
@@ -615,15 +615,98 @@ function dash() {
     open "dash://${docs}:$1"
 }
 
-# Create a sticky notification (requires StickyNotifications.app)
-function sticky {
-  msg=$(echo "$@" | ruby -r 'uri' -e 'puts URI::encode(STDIN.gets)')
-  open "sticky-notifications://note?message=$msg"
-}
-
 # Look up an RFC number
 function rfc {
   rfc=$(printf '%04d' $1)
   curl "http://www.ietf.org/rfc/rfc${rfc}.txt" | less
+}
+
+function reponame {
+  basename $(git rev-parse --show-toplevel)
+}
+
+function orchardreq {
+  curl -sS -H "X-API-EMAIL: $(orchard_email)" -H "X-API-Token: $(orchard_token)" "$@"
+}
+
+function orchard_email {
+  git config --get remote.orchard.email
+}
+
+function orchard_token {
+  git config --get remote.orchard.token
+}
+
+function orchard_app_availability_zones {
+  local appid=$1
+  orchardreq "https://orchard.apple.com/api/v1/applications/${appid}/application_availability_zones"
+}
+
+function orchard_instance_types {
+  local appid=$1 az=$2
+  orchardreq "https://orchard.apple.com/api/v1/applications/${appid}/application_availability_zones/${az}/instance_types"
+}
+
+function orchard_find_instance {
+  local appid=$1 az=$2 name=$3
+  orchard_instance_types $appid $az | jq ".[] | select (.name == \"$name\")"
+}
+
+function deploy! {
+  local env
+  if [ -z "$1" ]; then
+    env='test'
+  else
+    env="$1"
+  fi
+
+  [ "$env" == 'prod' ] && env='production'
+
+  echo "Deploying $(reponame) to $env..."
+  git push "$env"
+}
+
+function instance! {
+  local env
+  if [ -z "$1" ]; then
+    env='test'
+  else
+    env="$1"
+  fi
+
+  [ "$env" == 'prod' ] && env='production'
+
+  echo "Spinning up and connecting to a new $env instance of $(reponame)..."
+  if [ "$env" == 'production' ]; then
+    ssh -At git@orchard.apple.com pty-request ioswt/$(reponame)
+  else
+    ssh -At git@orchard.apple.com pty-request ioswt/$(reponame)-test
+  fi
+}
+
+function scale! {
+  local env=$1 type=$2 count=$3 appid
+  [ "$env" == 'prod' ] && env='production'
+
+  if [ "$env" == 'production' ]; then
+    appid="$ORCHARD_PROD_APP_ID"
+  else
+    appid="$ORCHARD_TEST_APP_ID"
+  fi
+
+  [ -z "$appid" ] && echo "Couldn't determine app id. Set ORCHARD_PROD_APP_ID and ORCHARD_TEST_APP_ID in your environment."
+
+  if [[ -z "$env" || -z "$type" || -z "$count" ]]; then
+    echo "Usage: $FUNCNAME <env> <instance_type> <count>"
+    return 1
+  fi
+
+  echo "Scaling $env $(reponame) $type to $count instance(s)..."
+
+  local az=$(orchard_app_availability_zones $appid | jq '.[0].id')
+  local instanceid=$(orchard_find_instance $appid "$az" "$type" | jq .id)
+
+  url="https://orchard.apple.com/api/v1/applications/${appid}/application_availability_zones/${az}/instance_types/${instanceid}"
+  orchardreq -X PUT -d "{\"instances\": $count}" -H "Content-Type: application/json" "$url"
 }
 
