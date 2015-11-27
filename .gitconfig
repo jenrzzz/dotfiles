@@ -120,3 +120,5 @@
 [remote "orchard"]
 	email = jenner_lafave@apple.com
 	token = VfWoV7tKAyNecdvXaX1R
+[gitopen "gitlab"]
+	domain = gitlab.sd.apple.com
