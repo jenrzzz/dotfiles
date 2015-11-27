@@ -54,6 +54,9 @@ for file in $HOME/.bash-completion/*; do
     [ -r "$file" ] && source "$file"
 done
 
+zpath="$(brew --prefix)/etc/profile.d/z.sh"
+[ -f "$zpath" ] && source "$zpath"
+
 # Use direnv
 hash direnv &>/dev/null && eval "$(direnv hook bash)"
 
