@@ -6,6 +6,6 @@ root: ~/Source/apple/vizboard/vizboard
 windows:
   - boo: tmux link-window -ks "this:👻" -t boo
   - baz: tmux link-window -ks "this:😍" -t baz
-  - srv: rst; bash -i
+  - srv: serve!; bash -i
   - lol: 'true'
   - wtf: 'true'
