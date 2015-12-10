@@ -7,7 +7,7 @@ echo -n "Updating dotfiles... "
 git pull --quiet origin master
 echo "done"
 declare -a link_files=(.ackrc .aliases .bash-completion .bash_login .bash_profile .bash_prompt .bashrc .brew .dircolors.256dark .exports .functions \
-                       .gemrc .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .irbrc .path .tmux-powerlinerc .mutt .tmux.conf .screenrc \
+                       .gemrc .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .irbrc .local .path .mutt .tmux.conf .screenrc \
                        .vimrc .wgetrc .zlogin .zshrc)
 
 function doIt() {
