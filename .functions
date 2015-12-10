@@ -62,6 +62,147 @@ function ? {
   echo "returned $val"
 }
 
+# DESCRIPTION:
+#   * h highlights with color specified keywords when you invoke it via pipe
+#   * h is just a tiny wrapper around the powerful 'ack' (or 'ack-grep'). you need 'ack' installed to use h. ack website: http://beyondgrep.com/
+# INSTALL:
+#   * put something like this in your .bashrc:
+#     . /path/to/h.sh
+#   * or just copy and paste the function in your .bashrc
+# TEST ME:
+#   * try to invoke:
+#     echo "abcdefghijklmnopqrstuvxywz" | h   a b c d e f g h i j k l
+# CONFIGURATION:
+#   * you can alter the color and style of the highlighted tokens setting values to these 2 environment values following "Perl's Term::ANSIColor" supported syntax
+#   * ex.
+#     export H_COLORS_FG="bold black on_rgb520","bold red on_rgb025"
+#     export H_COLORS_BG="underline bold rgb520","underline bold rgb025"
+#     echo abcdefghi | h   a b c d
+# GITHUB
+#   * https://github.com/paoloantinori/hhighlighter
+h() {
+
+    _usage() {
+        echo "usage: YOUR_COMMAND | h [-idn] args...
+    -i : ignore case
+    -d : disable regexp
+    -n : invert colors"
+    }
+
+    local _OPTS
+
+    # detect pipe or tty
+    if test -t 0; then
+        _usage
+        return
+    fi
+
+    # manage flags
+    while getopts ":idnQ" opt; do
+        case $opt in
+            i) _OPTS+=" -i " ;;
+            d)  _OPTS+=" -Q " ;;
+            n) n_flag=true ;;
+            Q)  _OPTS+=" -Q " ;;
+                # let's keep hidden compatibility with -Q for original ack users
+            \?) _usage
+                return ;;
+        esac
+    done
+
+    shift $(($OPTIND - 1))
+
+    # set zsh compatibility
+    [[ -n $ZSH_VERSION ]] && setopt localoptions && setopt ksharrays && setopt ignorebraces
+
+    local _i=0
+
+    if [[ -n $H_COLORS_FG ]]; then
+        local _CSV="$H_COLORS_FG"
+        local OLD_IFS="$IFS"
+        IFS=','
+        local _COLORS_FG=()
+        for entry in $_CSV; do
+          _COLORS_FG=("${_COLORS_FG[@]}" "$entry")
+        done
+        IFS="$OLD_IFS"
+    else
+        _COLORS_FG=(
+                "underline bold red" \
+                "underline bold green" \
+                "underline bold yellow" \
+                "underline bold blue" \
+                "underline bold magenta" \
+                "underline bold cyan"
+                )
+    fi
+
+    if [[ -n $H_COLORS_BG ]]; then
+        local _CSV="$H_COLORS_BG"
+        local OLD_IFS="$IFS"
+        IFS=','
+        local _COLORS_BG=()
+        for entry in $_CSV; do
+          _COLORS_BG=("${_COLORS_BG[@]}" "$entry")
+        done
+        IFS="$OLD_IFS"
+    else
+        _COLORS_BG=(
+                "bold on_red" \
+                "bold on_green" \
+                "bold black on_yellow" \
+                "bold on_blue" \
+                "bold on_magenta" \
+                "bold on_cyan" \
+                "bold black on_white"
+                )
+    fi
+
+    if [ -z $n_flag ]; then
+        #inverted-colors-last scheme
+        _COLORS=("${_COLORS_FG[@]}" "${_COLORS_BG[@]}")
+    else
+        #inverted-colors-first scheme
+        _COLORS=("${_COLORS_BG[@]}" "${_COLORS_FG[@]}")
+    fi
+
+    if [ "$#" -gt ${#_COLORS[@]} ]; then
+        echo "You have passed to hhighlighter more keyords to search than the number of configured colors.
+Check the content of your H_COLORS_FG and H_COLORS_BG environment variables or unset them to use default 12 defined colors."
+        return -1
+    fi
+
+
+    local ACK=ack
+    if ! which $ACK >/dev/null 2>&1; then
+        ACK=ack-grep
+        if ! which $ACK >/dev/null 2>&1; then
+            echo "Could not find ack or ack-grep"
+            return -1
+        fi
+    fi
+
+    # build the filtering command
+    for keyword in "$@"
+    do
+        local _COMMAND=$_COMMAND"$ACK $_OPTS --noenv --flush --passthru --color --color-match=\"${_COLORS[$_i]}\" '$keyword' |"
+        _i=$_i+1
+    done
+    #trim ending pipe
+    _COMMAND=${_COMMAND%?}
+    #echo "$_COMMAND"
+    cat - | eval $_COMMAND
+
+}
+
+j() {
+    if [ $# -eq 0 ]; then
+      jobs
+    else
+      jmp $@
+    fi
+  }
+
 # Simple calculator
 function calc() {
     local result=""
@@ -198,6 +339,7 @@ function mark {
 
 # Deletes the given mark
 function unmark {
+    [ ! $# -eq 1 ] && echo "Usage: unmark <mark>" && return 1
     rm -iv "$MARKPATH/$1"
 }
 
@@ -324,7 +466,7 @@ function gz() {
 }
 
 # send to moon
-function banish() {
+function banish {
     for moonfile in "$@"
     do
         scp "$moonfile" jenner@luna.jfave.com:~/
@@ -332,7 +474,7 @@ function banish() {
 }
 
 # create a scratch directory
-function scratchd() {
+function scratchd {
     local dir="$HOME/Source/.scratch/`date +%s`"
     export PS1="$PS1_SCRATCH"
     export SCRATCH_ORIGINAL_DIR="`pwd`"
@@ -347,23 +489,27 @@ function scratchd() {
 alias scratched="scratchd"
 
 # leave a scratch directory
-function unscratch() {
+function unscratch {
+  if [ $# -lt 2 ]; then
     export PS1="$PS1_DEFAULT"
-
     if [[ "$1" == "-r" ]]; then
-        cd "$SCRATCH_ORIGINAL_DIR"
-        rm -rf "$SCRATCH_CURRENT_SCRATCH_DIR"
+      cd "$SCRATCH_ORIGINAL_DIR"
+      rm -rf "$SCRATCH_CURRENT_SCRATCH_DIR"
     else
-        export SCRATCH_LAST_SCRATCH_DIR="$(pwd)"
-        cd "$SCRATCH_ORIGINAL_DIR"
+      export SCRATCH_LAST_SCRATCH_DIR="$(pwd)"
+      cd "$SCRATCH_ORIGINAL_DIR"
     fi
 
     unset SCRATCH_ORIGINAL_DIR
     unset SCRATCH_CURRENT_SCRATCH_DIR
+  elif [ $# -eq 2 ]; then
+    echo "removing $2..."
+    rm -rv "$HOME/Source/.scratch/$2"
+  fi
 }
 
 # reopens last scratch directory
-function rescratch() {
+function rescratch {
     if [[ ! $SCRATCH_CURRENT_SCRATCH_DIR == "" ]]; then
         export SCRATCH_ORIGINAL_DIR="$(pwd)"
         cd "$SCRATCH_CURRENT_SCRATCH_DIR"
@@ -386,19 +532,6 @@ function rescratch() {
         return 2
         unset SCRATCH_LAST_SCRATCH_DIR
     fi
-}
-
-# change to a directory until cdend
-function cddo() {
-    export PS1="$PS1_CDBLK"
-    export CDDO_LAST_DIRECTORY="$(pwd)"
-    cd "$1"
-}
-
-function cdend() {
-    cd "$CDDO_LAST_DIRECTORY"
-    export PS1="$PS1_DEFAULT"
-    unset CDDO_LAST_DIRECTORY
 }
 
 # usage: gitplz amend commit
@@ -533,12 +666,6 @@ end tell
 EOF
 }
 
-# Restarts puppet on the given server
-function bouncepup() {
-    echo "Bouncing puppet on $1"
-    ssh -At "$1" "sudo service puppet restart; sudo tail -f /var/log/messages"
-}
-
 # Manually remove a downloaded app or file from the quarantine
 function unquarantine() {
     for attribute in com.apple.metadata:kMDItemDownloadedDate com.apple.metadata:kMDItemWhereFroms com.apple.quarantine; do
@@ -562,22 +689,22 @@ function tmux_create_or_attach() {
 
 # Quick tmux session switch
 function sesh() {
-    if [[ $# -gt 0 ]]; then
-        case "$1" in
-            new)
-                tmux new -s "$2"
-                ;;
-            *)
-                if tmux list-sessions | grep "attached"; then
-                    tmux switch -t "$1"
-                else
-                    tmux attach -t "$1"
-                fi
-                ;;
-        esac
-    else
-        (tmux list-sessions &>/dev/null && tmux list-sessions) || echo "No active sessions."
-    fi
+  if [[ $# -gt 0 ]]; then
+    case "$1" in
+    new)
+        tmux new -s "$2"
+      ;;
+    *)
+        if tmux list-sessions | grep "attached"; then
+          tmux switch -t "$1"
+        else
+          tmux attach -t "$1"
+        fi
+      ;;
+    esac
+  else
+    (tmux list-sessions &>/dev/null && tmux list-sessions) || echo "No active sessions."
+  fi
 }
 
 # Trim a video clip with ffmpeg
@@ -621,10 +748,12 @@ function rfc {
   curl "http://www.ietf.org/rfc/rfc${rfc}.txt" | less
 }
 
+# Return the name of the current git repo
 function reponame {
   basename $(git rev-parse --show-toplevel)
 }
 
+# Send a request to the Orchard API with auth headers
 function orchardreq {
   curl -sS -H "X-API-EMAIL: $(orchard_email)" -H "X-API-Token: $(orchard_token)" "$@"
 }
@@ -694,7 +823,7 @@ function scale! {
     appid="$ORCHARD_TEST_APP_ID"
   fi
 
-  [ -z "$appid" ] && echo "Couldn't determine app id. Set ORCHARD_PROD_APP_ID and ORCHARD_TEST_APP_ID in your environment."
+  [ -z "$appid" ] && echo "Couldn't determine app id. Set ORCHARD_PROD_APP_ID and ORCHARD_TEST_APP_ID in your environment." && exit 1
 
   if [[ -z "$env" || -z "$type" || -z "$count" ]]; then
     echo "Usage: $FUNCNAME <env> <instance_type> <count>"
