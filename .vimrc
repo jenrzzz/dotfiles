@@ -211,6 +211,14 @@ function! OpenURL()
     endif
 endfunction
 
+function! SmartOpenAlternate()
+  if exists("*A")
+    exec "A"
+  else
+    exec "OpenAlternate"
+  endif
+endfunction
+
 command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
 command! GdiffInTab tabedit %|vsplit|Gdiff
@@ -231,6 +239,8 @@ map <leader>gg :topleft 100 :split Gemfile<cr>
 map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
 map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+map <leader>a :call SmartOpenAlternate()<cr>
+
 nmap <silent> <leader>d <Plug>DashSearch
 
 """ BUNDLES
@@ -293,6 +303,7 @@ Bundle 'mediawiki.vim'
 Bundle 'rizzatti/dash.vim'
 Bundle 'thoughtbot/vim-rspec'
 Bundle 'vim-scripts/dbext.vim'
+Bundle 'cyphactor/vim-open-alternate'
 
 " colors
 Bundle 'jenrzzz/jellybeans.vim'
