@@ -54,8 +54,12 @@ for file in $HOME/.bash-completion/*; do
     [ -r "$file" ] && source "$file"
 done
 
+# https://github.com/rupa/z
 zpath="$(brew --prefix)/etc/profile.d/z.sh"
 [ -f "$zpath" ] && source "$zpath"
+
+# https://github.com/erichs/composure
+[ -f "$HOME/bin/composure" ] && source "$HOME/bin/composure"
 
 # Use direnv
 hash direnv &>/dev/null && eval "$(direnv hook bash)"
