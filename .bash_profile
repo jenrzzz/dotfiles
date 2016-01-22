@@ -64,6 +64,9 @@ zpath="$(brew --prefix)/etc/profile.d/z.sh"
 # Use direnv
 hash direnv &>/dev/null && eval "$(direnv hook bash)"
 
+# Use phpenv
+hash phpenv &>/dev/null && eval "$(phpenv init -)"
+
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
 stty start undef stop undef
 
