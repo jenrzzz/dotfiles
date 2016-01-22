@@ -1,0 +1,19 @@
+# ~/.tmuxinator/nimbus.yml
+
+name: nimbus
+root: ~/Source/apple/nimbus-provisioning/Nimbus
+
+startup_window: srv
+windows:
+  - boo: tmux link-window -dks "this:👻" -t boo
+  - baz: tmux link-window -dks "this:😍" -t baz
+  - srv:
+      layout: main-horizontal
+      panes:
+        - vm:
+            - vagrant up
+            - vagrant ssh
+        - logs:
+            - tail -f apacheLogs/{access,error}.log logs/nimbus.log
+  - lol: 'true'
+  - wtf: 'true'
