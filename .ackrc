@@ -8,6 +8,8 @@
 
 # Ignore log/
 --ignore-dir=log/
+--ignore-dir=app/cache
 
 # Ignore ctags
 --ignore-file=is:tags
+--ignore-file=is:build.js
