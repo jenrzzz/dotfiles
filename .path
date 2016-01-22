@@ -2,10 +2,16 @@
 # Start fresh
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-# Add `~/bin`
+# Append npm binaries if they're there
+if [[ -d /usr/local/share/npm/bin ]]; then
+    export PATH="$PATH:/usr/local/share/npm/bin"
+fi
+
+# Append phpenv binaries if they're there
+if [[ -d "$HOME/.phpenv/bin" ]]; then
+    export PATH="$PATH:$HOME/.phpenv/bin"
+fi
+
+# Prepend `~/bin`
 export PATH="$HOME/bin:$PATH"
 
-# Add npm binaries if they're there
-if [[ -d /usr/local/share/npm/bin ]]; then
-    export PATH=$PATH:/usr/local/share/npm/bin
-fi
