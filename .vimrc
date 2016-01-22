@@ -53,7 +53,6 @@ noremap \ ,
 set history=100                 " keep 100 lines of command history
 set autoread                    " update open files if they change
 set showcmd                     " Show the (partial) command as it's being typed
-set noeol                       " Don't add empty newlines at the end of files
 set cursorline                  " Highlight the current line
 
 set list                        " Show whitespace
@@ -180,6 +179,9 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 " Insert a hash rocket with <C-l>
 imap <C-l> <space>=><space>
 
+" Insert arrow with <C-k>
+imap <C-k> ->
+
 " Can't be bothered to understand ESC vs <c-c> in insert mode
 imap <c-c> <esc>
 
@@ -192,7 +194,7 @@ while i <= 9
 endwhile
 
 " Strip trailing whitespace (,ss) (thanks mathiasbynens)
-function! StripWhitespace()
+function StripWhitespace()
         let save_cursor = getpos(".")
         let old_query = getreg('/')
         :%s/\s\+$//e
@@ -201,7 +203,7 @@ function! StripWhitespace()
 endfunction
 
 " Open a URL with `open` (thanks ryanb)
-function! OpenURL()
+function OpenURL()
     let s:uri = matchstr(getline("."), '[a-z]*:\/\/[^ >,;:]*')
     echo s:uri
     if s:uri != ""
@@ -211,7 +213,7 @@ function! OpenURL()
     endif
 endfunction
 
-function! SmartOpenAlternate()
+function SmartOpenAlternate()
   if exists("*A")
     exec "A"
   else
@@ -338,6 +340,9 @@ if has("autocmd")
         au FocusGained,InsertLeave * set rnu
     endif
 
+    au VimEnter,BufEnter * call system("tmux rename-window " . strpart(expand("%:t"), 0, 15))
+    au VimLeave * call system("tmux setw automatic-rename")
+
     au BufRead,BufNewFile *.txt setfiletype text
     au BufRead,BufNewFile *.re2c setfiletype c
     au BufRead,BufNewFile *.haml setfiletype haml
@@ -351,6 +356,7 @@ if has("autocmd")
     au FileType markdown,mediawiki,text setlocal tw=78
     au FileType markdown,mediawiki setlocal sw=4 sts=4
     au FileType groovy setlocal sw=4 sts=4
+    au FileType php setlocal sw=4 sts=4 ts=4
 endif
 
 " Set colorscheme last in case a bundle needs to load
