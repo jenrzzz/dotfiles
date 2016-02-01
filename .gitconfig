@@ -29,7 +29,8 @@
     remotes = remote -v
 
     # Undo a `git push`
-    undopush = push -f origin HEAD^:master
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+    undopush = "!git push -f origin HEAD^:$(git branch-name)"
 
     ## Stuff from http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
     # Ignore local changes to a tracked file
