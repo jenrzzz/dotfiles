@@ -47,6 +47,7 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif,*.ico
 set wildignore+=*.class,*.jar
 set wildignore+=*.gz,*.log
+set wildignore+=*node_modules/**
 
 let mapleader=","               " Change mapleader to comma
 noremap \ ,
@@ -213,13 +214,6 @@ function OpenURL()
     endif
 endfunction
 
-function SmartOpenAlternate()
-  if exists("*A")
-    exec "A"
-  else
-    exec "OpenAlternate"
-  endif
-endfunction
 
 command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
@@ -241,7 +235,6 @@ map <leader>gg :topleft 100 :split Gemfile<cr>
 map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
 map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
-map <leader>a :call SmartOpenAlternate()<cr>
 
 nmap <silent> <leader>d <Plug>DashSearch
 
@@ -249,67 +242,71 @@ nmap <silent> <leader>d <Plug>DashSearch
 filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
+Plugin 'gmarik/vundle'
 
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/vundle'
-" ------- User bundles go here ---------
-Plugin 'bling/vim-airline'
-Bundle 'tpope/vim-fugitive'
-Bundle 'jgdavey/tslime.vim'
-Bundle 'scrooloose/syntastic'
-Bundle 'scratch.vim'
-Bundle 'tpope/vim-dispatch'
-Bundle 'majutsushi/tagbar'
+" interface
+Plugin 'bling/vim-airline'                " Fancy statusline and buffer list
+Plugin 'majutsushi/tagbar'                " Show ctags stack with TagbarToggle
 
 " motion, format
-Bundle 'goldfeld/vim-seek'
-Bundle 'nelstrom/vim-visual-star-search'
-Bundle 'surround.vim'
-Bundle 'Align'
-Bundle 'tComment'
+Plugin 'goldfeld/vim-seek'                " Seek motion (s); like f but takes two characters to jump to
+Plugin 'nelstrom/vim-visual-star-search'  " Search for text selected in visual mode with '*' or '#'
+Plugin 'surround.vim'                     " Surrounding text object (e.g. change {} to [] with cs{[ ...)
+Plugin 'Align'                            " :AlignCtrl and :Align for quickly aligning blocks (e.g. aligning assignments on equal signs)
+Plugin 'tComment'                         " // to comment/uncomment line in normal mode
 
-" syntax, filetypes
-Bundle 'jenrzzz/vim-ruby'
-Bundle 'groenewege/vim-less'
-Bundle 'AndrewRadev/vim-eco'
-Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-cucumber'
-Bundle 'tpope/vim-haml'
-Bundle 'tpope/vim-rvm'
-Bundle 'tpope/vim-markdown'
-Bundle 'yaymukund/vim-rabl'
-Bundle 'fsouza/go.vim'
-Bundle 'wavded/vim-stylus'
-Bundle 'iptables'
-Bundle 'othree/html5.vim'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'closetag.vim'
-Bundle 'derekwyatt/vim-scala'
-Bundle 'briancollins/vim-jst'
-Bundle 'adimit/prolog.vim'
-Bundle 'cup.vim'
-Bundle 'sh.vim'
-Bundle 'rodjek/vim-puppet'
-Bundle 'rake.vim'
-Bundle 'PProvost/vim-ps1'
-Bundle 'jrk/vim-ocaml'
-Bundle 'jQuery'
-Bundle 'file-line'
-Bundle 'dccmx/vim-lemon-syntax'
-Bundle 'evidens/vim-twig'
-Bundle 'nono/vim-handlebars'
-Bundle 'ingydotnet/yaml-vim'
-Bundle 'chase/vim-ansible-yaml'
-Bundle 'mediawiki.vim'
-Bundle 'rizzatti/dash.vim'
-Bundle 'thoughtbot/vim-rspec'
-Bundle 'vim-scripts/dbext.vim'
-Bundle 'cyphactor/vim-open-alternate'
+" extensions
+Plugin 'scrooloose/syntastic'             " Fancy syntax checking
+Plugin 'jgdavey/tslime.vim'               " Send commands from vim to a running tmux session
+Plugin 'tpope/vim-dispatch'               " Asynchronous build and test dispatcher
+Plugin 'tpope/vim-fugitive'               " Fancy git integration
+Plugin 'gerw/vim-HiLinkTrace'             " Highlighting/syntax debugging with <Leader>hlt
+Plugin 'file-line'                        " Enable opening file:line filenames, like `vim index.html:20`
+Plugin 'scratch.vim'                      " Create a scratch buffer with :Scratch
+Plugin 'compactcode/alternate.vim'        " Find alternate files with alternate#FindAlternate()
+Plugin 'rizzatti/dash.vim'                " Search Dash.app for term with <Plug>DashSearch
+
+" -- language plugins --
+" system
+Plugin 'iptables'
+
+" shell
+Plugin 'sh.vim'
+Plugin 'PProvost/vim-ps1'
+
+" text
+Plugin 'tpope/vim-markdown'
+Plugin 'mediawiki.vim'
+
+" ruby
+Plugin 'jenrzzz/vim-ruby'
+Plugin 'rake.vim'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'ingydotnet/yaml-vim'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-cucumber'
+
+" javascript
+Plugin 'pangloss/vim-javascript'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'mxw/vim-jsx'
+Plugin 'othree/yajs.vim'
+Plugin 'nono/vim-handlebars'
+Plugin 'jQuery'
+Plugin 'kchmck/vim-coffee-script'
+
+" css/html
+Plugin 'othree/html5.vim'
+Plugin 'tpope/vim-haml'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'groenewege/vim-less'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'closetag.vim'         " Close the most recent SGML tag with <C-_>
 
 " colors
-Bundle 'jenrzzz/jellybeans.vim'
-Bundle 'candy.vim'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'jenrzzz/jellybeans.vim'
+Plugin 'candy.vim'
 
 if has('ruby')
     Bundle 'wincent/Command-T'
@@ -340,7 +337,7 @@ if has("autocmd")
         au FocusGained,InsertLeave * set rnu
     endif
 
-    au VimEnter,BufEnter * call system("tmux rename-window " . strpart(expand("%:t"), 0, 15))
+    au VimEnter,BufEnter * call system("tmux rename-window " . strpart(expand("%:t"), 0, 25))
     au VimLeave * call system("tmux setw automatic-rename")
 
     au BufRead,BufNewFile *.txt setfiletype text
@@ -348,6 +345,7 @@ if has("autocmd")
     au BufRead,BufNewFile *.haml setfiletype haml
     au BufRead,BufNewFile *.json setfiletype json syntax=javascript
     au BufRead,BufNewFile *.wiki setfiletype mediawiki
+    au BufRead,BufNewFile *.es6 setfiletype javascript
     au BufRead,BufNewFile Procfile* setfiletype yaml
 
     au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
@@ -365,6 +363,7 @@ set bg=dark
 
 try
     colorscheme jellybeans
+    let g:airline_theme = 'jellybeans'
 catch /^Vim\%((\a\+)\)\=:E185/
     colorscheme elflord
 endtry
@@ -373,3 +372,4 @@ endtry
 iabbrev attribuet attribute
 iabbrev attribuets attributes
 
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
