@@ -6,9 +6,10 @@
 --type-set=plaintext=.md,.mdown,.mkdn,.textile,.rst,.txt
 --type-set=erb=.erb,.rhtml
 
-# Ignore log/
---ignore-dir=log/
---ignore-dir=app/cache
+--ignore-dir=is:log
+--ignore-dir=is:app/cache
+--ignore-dir=is:node_modules
+--ignore-dir=is:tmp
 
 # Ignore ctags
 --ignore-file=is:tags
