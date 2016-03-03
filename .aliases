@@ -46,6 +46,7 @@ alias gc='git commit'
 alias gca='git commit -a'
 alias ga='git add'
 alias sb='git checkout'
+alias fixup='git rebase -i HEAD~2'
 
 # personal pass
 alias jpass="PASSWORD_STORE_DIR=~/Dropbox/.password-store pass"
