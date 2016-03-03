@@ -1,11 +1,12 @@
-# ~/.tmuxinator/vizboard.yml
+# ~/.tmuxinator/mfbmt.yml
 
-name: vizboard
-root: ~/Source/apple/vizboard/vizboard
+name: mfbmt
+root: ~/Source/apple/mfbmt
 
 windows:
   - boo: tmux link-window -ks "this:0" -t boo
   - baz: tmux link-window -ks "this:1" -t baz
-  - srv: serve!; bash -i
+  - srv: 'true'
   - lol: 'true'
   - wtf: 'true'
+

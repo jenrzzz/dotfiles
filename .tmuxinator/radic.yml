@@ -19,8 +19,8 @@ root: ~/Source/apple/radic
 # tmux_command: byobu
 
 windows:
-  - boo: tmux link-window -ks "this:👻" -t boo
-  - baz: tmux link-window -ks "this:😍" -t baz
+  - boo: tmux link-window -ks "this:0" -t boo
+  - baz: tmux link-window -ks "this:1" -t baz
   - gem: cd radic
   - lib: cd radic/lib
   - rails: cd radic-rails

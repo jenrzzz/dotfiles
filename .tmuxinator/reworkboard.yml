@@ -4,8 +4,8 @@ name: reworkboard
 root: ~/Source/apple/reworkboard
 
 windows:
-  - boo: tmux link-window -ks "this:👻" -t boo
-  - baz: tmux link-window -ks "this:😍" -t baz
+  - boo: tmux link-window -ks "this:0" -t boo
+  - baz: tmux link-window -ks "this:1" -t baz
   - srv: rst; bash -i
   - try: 'true'
   - explain: 'true'
