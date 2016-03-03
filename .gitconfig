@@ -1,6 +1,8 @@
+# vim: et sw=4 sts=4:
 [alias]
-    # View the SHA, description, and history graph of the latest 20 commits
-    l = log --pretty=oneline -n 20 --graph --abbrev-commit
+    l  = log --pretty=onelinereltime --graph -n 20
+    ll = log --pretty=onelinereltime --graph
+    graphall = -c core.pager='less -SFRX' log --pretty=onelineall --graph --date-order
 
     # View the current working tree status using the short format
     s = status -s
@@ -45,8 +47,10 @@
     # Quickly resolve a merge, e.g. git theirs blah.rb
     ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
     theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
-	graphall = -c core.pager='less -SFRX' log --oneline --graph --date-order --decorate --all
 
+[pretty]
+    onelineall     = format:"%C(auto)%h %C(auto)%d %s %Cblue[%cn] %Cgreen[%cD]%Creset"
+    onelinereltime = format:"%C(auto)%h%Creset %s %Cblue%cr%Creset"
 
 [apply]
     # Detect whitespace errors when applying a patch
@@ -113,13 +117,16 @@
     name = Jenner LaFave
     email = jenner@jfave.com
     signingkey = A1C90A9FB5D68583
+[sendemail]
+    smtpServer = relay.apple.com
+    smtpEncryption = tls
 
 [pass]
     signcommits = true
 [branch]
-	autosetuprebase = always
+    autosetuprebase = always
 [remote "orchard"]
-	email = jenner_lafave@apple.com
-	token = VfWoV7tKAyNecdvXaX1R
+    email = jenner_lafave@apple.com
+    token = VfWoV7tKAyNecdvXaX1R
 [gitopen "gitlab"]
-	domain = gitlab.sd.apple.com
+    domain = gitlab.sd.apple.com
