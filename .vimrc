@@ -319,7 +319,7 @@ let g:dispatch_compilers = { 'bundle exec': '' }
 
 function SaveTmuxWindowTitle()
   if !exists("g:tmux_last_title")
-    let g:tmux_last_title = system("tmux display-message -p '#W'")
+    let g:tmux_last_title = substitute(system("tmux display-message -p '#W'"), '\n\+$', '', '')
   endif
 endfunction
 
@@ -329,8 +329,12 @@ function SetTmuxWindowTitle()
 endfunction
 
 function RestoreTmuxWindowTitle()
-  call system("tmux setw automatic-rename")
-  call system("tmux rename-window " . g:tmux_last_title)
+  echom g:tmux_last_title
+  if g:tmux_last_title == "bash"
+    call system("tmux setw automatic-rename")
+  else
+    call system("tmux rename-window " . g:tmux_last_title)
+  endif
 endfunction
 
 
