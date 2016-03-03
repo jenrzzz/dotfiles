@@ -317,6 +317,23 @@ let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', '
 let g:rspec_command = 'Dispatch bundle exec rspec --require="~/.rspec-formatters/vim_formatter.rb" --format VimFormatter --out quickfix.out --format progress {spec}'
 let g:dispatch_compilers = { 'bundle exec': '' }
 
+function SaveTmuxWindowTitle()
+  if !exists("g:tmux_last_title")
+    let g:tmux_last_title = system("tmux display-message -p '#W'")
+  endif
+endfunction
+
+function SetTmuxWindowTitle()
+  call SaveTmuxWindowTitle()
+  call system("tmux rename-window " . strpart(expand("%:t"), 0, 25))
+endfunction
+
+function RestoreTmuxWindowTitle()
+  call system("tmux setw automatic-rename")
+  call system("tmux rename-window " . g:tmux_last_title)
+endfunction
+
+
 " Automatic commands (if possible)
 if has("autocmd")
     " Automatically do language-depending indenting when possible
@@ -337,8 +354,8 @@ if has("autocmd")
         au FocusGained,InsertLeave * set rnu
     endif
 
-    au VimEnter,BufEnter * call system("tmux rename-window " . strpart(expand("%:t"), 0, 25))
-    au VimLeave * call system("tmux setw automatic-rename")
+    au VimEnter,BufEnter * call SetTmuxWindowTitle()
+    au VimLeave * call RestoreTmuxWindowTitle()
 
     au BufRead,BufNewFile *.txt setfiletype text
     au BufRead,BufNewFile *.re2c setfiletype c
