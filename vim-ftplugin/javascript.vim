@@ -1,3 +1,3 @@
-" Make `this` show red instead of green with jellybeans and
-" pangloss/vim-javascript
-hi! link jsThis Constant
+hi link javascriptImport Statement
+hi link javascriptExport StorageClass
+hi link javascriptFuncArg Normal

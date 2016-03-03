@@ -260,6 +260,7 @@ Plugin 'scrooloose/syntastic'             " Fancy syntax checking
 Plugin 'jgdavey/tslime.vim'               " Send commands from vim to a running tmux session
 Plugin 'tpope/vim-dispatch'               " Asynchronous build and test dispatcher
 Plugin 'tpope/vim-fugitive'               " Fancy git integration
+Plugin 'tommcdo/vim-fugitive-blame-ext'   " Add support for showing commit message on statusline in fugitiveblame buffers
 Plugin 'gerw/vim-HiLinkTrace'             " Highlighting/syntax debugging with <Leader>hlt
 Plugin 'file-line'                        " Enable opening file:line filenames, like `vim index.html:20`
 Plugin 'scratch.vim'                      " Create a scratch buffer with :Scratch
@@ -287,12 +288,11 @@ Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-cucumber'
 
 " javascript
-Plugin 'pangloss/vim-javascript'
-Plugin 'othree/javascript-libraries-syntax.vim'
-Plugin 'mxw/vim-jsx'
 Plugin 'othree/yajs.vim'
+Plugin 'mxw/vim-jsx'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'rschmukler/pangloss-vim-indent'
 Plugin 'nono/vim-handlebars'
-Plugin 'jQuery'
 Plugin 'kchmck/vim-coffee-script'
 
 " css/html
