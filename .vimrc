@@ -49,8 +49,6 @@ set wildignore+=*.class,*.jar
 set wildignore+=*.gz,*.log
 set wildignore+=*node_modules/**
 
-let mapleader=","               " Change mapleader to comma
-noremap \ ,
 set history=100                 " keep 100 lines of command history
 set autoread                    " update open files if they change
 set showcmd                     " Show the (partial) command as it's being typed
@@ -114,78 +112,6 @@ syntax on
 au FileType crontab set nobackup nowritebackup
 set backupskip=/tmp/*,/private/tmp/*
 
-"" Keymaps
-"" -------
-" Don't need a key for help
-nmap <F1> <Esc>
-
-" Use Ctrl+P in command mode to insert the path of the currently edited file
-" (thanks ryanb)
-cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
-
-" For switching between many opened file by using ctrl+l or ctrl+h
-" TComment mappings
-nnoremap // :TComment<CR>
-vnoremap // :TComment<CR>
-
-" Strip trailing whitespace with ,ss
-noremap <leader>ss :call StripWhitespace()<CR>
-
-" Go to the URL in a line with ,go
-map <Leader>go :call OpenURL() <CR>
-
-" Use ,gb to show blame
-map <Leader>gb :Gblame <CR>
-
-
-" Use ,on to close all but the active window
-map <Leader>on :only <CR>
-
-" Use ,<Left> and ,<Right> to use the left (target parent) or
-" right (merge parent) in vimdiff
-map <Leader><Left> :diffget //2 <bar> diffupdate <CR>
-map <Leader><Right> :diffget //3 <bar> diffupdate <CR>
-
-" Use ,<Up> and ,<Down> to move between change hunks in vimdiff mode
-map <Leader><Up> [c
-map <Leader><Down> ]c
-
-" Hide search highlighting with ,h
-map <Leader>h :set invhls <CR>
-
-" Use ,gw to write the current file to the index and working tree
-" (and exit vimdiff mode)
-map <Leader>gw :Gwrite <CR>
-
-" Use ,d to open a diff for the current buffer in a tab
-" Use ,D to close it
-nnoremap <leader>d :GdiffInTab<cr>
-nnoremap <leader>D :tabclose<cr>
-
-" Use C-k or F7 and C-j or F8 to move through buffers and ,n/,m to move through tabs.
-map <C-J> :bn <CR>
-map <C-K> :bp <CR>
-map <F7> :bp <CR>
-map <F8> :bn <CR>
-map <Leader>n :tabp <CR>
-map <Leader>m :tabn <CR>
-
-" Spelling toggle via F10 and F11
-map <F10> <Esc>setlocal spell spelllang=en_us<CR>
-map <F11> <Esc>setlocal nospell<CR>
-
-" Save a file as root (,W)
-noremap <leader>W :w !sudo tee % > /dev/null<CR>
-
-" Insert a hash rocket with <C-l>
-imap <C-l> <space>=><space>
-
-" Insert arrow with <C-k>
-imap <C-k> ->
-
-" Can't be bothered to understand ESC vs <c-c> in insert mode
-imap <c-c> <esc>
-
 " Buffer splits and stuff
 let i = 1
 while i <= 9
@@ -219,25 +145,6 @@ command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
 command! GdiffInTab tabedit %|vsplit|Gdiff
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>gr :topleft :split config/routes.rb<cr>
-map <leader>t :CommandT<cr>
-map <leader>gR :call ShowRoutes()<cr>
-map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
-map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
-map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
-map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
-map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>gs :CommandTFlush<cr>\|:CommandT spec<cr>
-map <leader>gg :topleft 100 :split Gemfile<cr>
-map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
-
-nmap <silent> <leader>d <Plug>DashSearch
-
 """ BUNDLES
 filetype off
 set rtp+=~/.vim/bundle/vundle/
@@ -252,8 +159,8 @@ Plugin 'majutsushi/tagbar'                " Show ctags stack with TagbarToggle
 Plugin 'goldfeld/vim-seek'                " Seek motion (s); like f but takes two characters to jump to
 Plugin 'nelstrom/vim-visual-star-search'  " Search for text selected in visual mode with '*' or '#'
 Plugin 'surround.vim'                     " Surrounding text object (e.g. change {} to [] with cs{[ ...)
-Plugin 'Align'                            " :AlignCtrl and :Align for quickly aligning blocks (e.g. aligning assignments on equal signs)
 Plugin 'tComment'                         " // to comment/uncomment line in normal mode
+Plugin 'Align'                            " :AlignCtrl and :Align for quickly aligning blocks (e.g. aligning assignments on equal signs)
 
 " extensions
 Plugin 'scrooloose/syntastic'             " Fancy syntax checking
@@ -286,11 +193,12 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'ingydotnet/yaml-vim'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-cucumber'
+Plugin 'rodjek/vim-puppet'
 
 " javascript
 Plugin 'othree/yajs.vim'
 Plugin 'mxw/vim-jsx'
-Plugin 'othree/javascript-libraries-syntax.vim'
+" Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'rschmukler/pangloss-vim-indent'
 Plugin 'nono/vim-handlebars'
 Plugin 'kchmck/vim-coffee-script'
@@ -309,7 +217,7 @@ Plugin 'jenrzzz/jellybeans.vim'
 Plugin 'candy.vim'
 
 if has('ruby')
-    Bundle 'wincent/Command-T'
+    Plugin 'wincent/Command-T'
     let g:CommandTMatchWindowAtTop=1 " show window at top
 endif
 
@@ -367,6 +275,8 @@ if has("autocmd")
     au BufRead,BufNewFile *.json setfiletype json syntax=javascript
     au BufRead,BufNewFile *.wiki setfiletype mediawiki
     au BufRead,BufNewFile *.es6 setfiletype javascript
+    au BufRead,BufNewFile *.mscss setfiletype scss
+    au BufRead,BufNewFile *.mcss setfiletype css
     au BufRead,BufNewFile Procfile* setfiletype yaml
 
     au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
@@ -393,4 +303,100 @@ endtry
 iabbrev attribuet attribute
 iabbrev attribuets attributes
 
-map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+let mapleader=","               " Change mapleader to comma
+noremap \ ,
+
+"" Keymaps
+"" -------
+" Don't need a key for help
+nmap <F1> <Esc>
+
+" Use Ctrl+P in command mode to insert the path of the currently edited file
+" (thanks ryanb)
+cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
+
+" For switching between many opened file by using ctrl+l or ctrl+h
+" TComment mappings
+nnoremap // :TComment<CR>
+vnoremap // :TComment<CR>
+
+" Strip trailing whitespace with ,ss
+noremap <leader>ss :call StripWhitespace()<CR>
+
+" Go to the URL in a line with ,go
+map <Leader>go :call OpenURL() <CR>
+
+" Use ,gb to show blame
+map <Leader>gb :Gblame <CR>
+
+" Use ,on to close all but the active window
+map <Leader>on :only <CR>
+
+" Use ,<Left> and ,<Right> to use the left (target parent) or
+" right (merge parent) in vimdiff
+map <Leader><Left> :diffget //2 <bar> diffupdate <CR>
+map <Leader><Right> :diffget //3 <bar> diffupdate <CR>
+
+" Use ,<Up> and ,<Down> to move between change hunks in vimdiff mode
+map <Leader><Up> [c
+map <Leader><Down> ]c
+
+" Hide search highlighting with ,h
+map <Leader>h :set invhls <CR>
+
+" Use ,gw to write the current file to the index and working tree
+" (and exit vimdiff mode)
+map <Leader>gw :Gwrite <CR>
+
+" Use ,d to open a diff for the current buffer in a tab
+" Use ,D to close it
+nnoremap <leader>d :GdiffInTab<cr>
+nnoremap <leader>D :tabclose<cr>
+
+" Use C-k or F7 and C-j or F8 to move through buffers and ,n/,m to move through tabs.
+map <C-J> :bn <CR>
+map <C-K> :bp <CR>
+map <F7> :bp <CR>
+map <F8> :bn <CR>
+map <Leader>n :tabp <CR>
+map <Leader>m :tabn <CR>
+
+" Spelling toggle via F10 and F11
+map <F10> <Esc>setlocal spell spelllang=en_us<CR>
+map <F11> <Esc>setlocal nospell<CR>
+
+" Save a file as root (,W)
+noremap <leader>W :w !sudo tee % > /dev/null<CR>
+
+" Insert a hash rocket with <C-l>
+imap <C-l> <space>=><space>
+
+" Insert arrow with <C-k>
+imap <C-k> ->
+
+" Can't be bothered to understand ESC vs <c-c> in insert mode
+imap <c-c> <esc>
+
+" Search for term in Dash with ,ds
+nmap <silent> <leader>ds <Plug>DashSearch
+
+" Show tagbar with ,tt
+nmap <silent> <leader>tt :TagbarToggle<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>gr :topleft :split config/routes.rb<cr>
+map <leader>t :CommandT<cr>
+map <leader>gR :call ShowRoutes()<cr>
+map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
+map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
+map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
+map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
+map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
+map <leader>gs :CommandTFlush<cr>\|:CommandT spec<cr>
+map <leader>gg :topleft 100 :split Gemfile<cr>
+map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
+map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
+map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+

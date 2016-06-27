@@ -6,6 +6,6 @@ root: ~/Source/apple/configchecker
 windows:
   - boo: tmux link-window -ks "this:0" -t boo
   - baz: tmux link-window -ks "this:1" -t baz
-  - srv: serve!; bash -i
+  - srv: foreman start -f Procfile.dev; bash -i
   - lol: 'true'
   - wtf: 'true'

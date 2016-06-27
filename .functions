@@ -9,7 +9,7 @@ function qq {
   if [ $# -gt 0 ]; then
     find . -ipath "*$1*" | selecta
   else
-    find . -type f -and -not -path '*.git*' -and -not -name '*.class' -and -not -path '*tmp*' -and -not -path '*cache*' -and -not -path '*node_modules*' | selecta
+    find . -type f -and -not -path '*.git*' -and -not -name '*.class' -and -not -path '*tmp*' -and -not -path '*cache*' -and -not -path '*node_modules*' -prune | selecta
   fi
 }
 
@@ -807,9 +807,9 @@ function instance! {
 
   echo "Spinning up and connecting to a new $env instance of $(reponame)..."
   if [ "$env" == 'production' ]; then
-    ssh -At git@orchard.apple.com pty-request ioswt/$(reponame)
+    ssh -Att git@orchard.apple.com pty-request ioswt/$(reponame)
   else
-    ssh -At git@orchard.apple.com pty-request ioswt/$(reponame)-test
+    ssh -Att git@orchard.apple.com pty-request ioswt/$(reponame)-test
   fi
 }
 

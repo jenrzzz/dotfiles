@@ -8,6 +8,7 @@
 
 --ignore-dir=is:log
 --ignore-dir=is:app/cache
+--ignore-dir=is:var/cache
 --ignore-dir=is:node_modules
 --ignore-dir=is:tmp
 

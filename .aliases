@@ -185,7 +185,7 @@ if command -v rails > /dev/null; then
 fi
 
 if command -v foreman > /dev/null; then
-    alias "serve!"="foreman start"
+    alias "serve!"="foreman start -f Procfile.dev"
 fi
 
 # Tarsnap shortcuts
@@ -207,12 +207,11 @@ alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
 alias where="hostname"
 alias why="echo because..."
+alias obscuro='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'  # lock screen
 
 ## Quick connections
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
-alias broccoli="ssh jenrzzz@broccoli.whatbox.ca"
-alias getbroccoli="rsync -rzvP --exclude=seeding jenrzzz@broccoli.whatbox.ca:~/files/* ~/Downloads/"
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias editsieve="ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
