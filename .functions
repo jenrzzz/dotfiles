@@ -9,7 +9,7 @@ function qq {
   if [ $# -gt 0 ]; then
     find . -ipath "*$1*" | selecta
   else
-    find . -type f -and -not -path '*.git*' -and -not -name '*.class' -and -not -path '*tmp*' -and -not -path '*cache*' -and -not -path '*node_modules*' -prune | selecta
+    find . -type f -and -not -path '*.git*' -and -not -name '*.class' -and -not -name '*.pyc' -and -not -path '*tmp*' -and -not -path '*cache*' -and -not -path '*node_modules*' -prune | selecta
   fi
 }
 
