@@ -36,7 +36,7 @@ set t_ti= t_te=
 set wildchar=<Tab>
 set wildmenu                    " Enhance command-line completion
 set wildmode=longest,list
-set wildignore=*.o,*.obj,*~     " ignore this shit when tab completing and in Cmd-T
+set wildignore=*.o,*.obj,*~,*.pyc     " ignore this shit when tab completing and in Cmd-T
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
 set wildignore+=vendor/rails/**
@@ -194,6 +194,9 @@ Plugin 'ingydotnet/yaml-vim'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-cucumber'
 Plugin 'rodjek/vim-puppet'
+
+" python
+Plugin 'klen/python-mode'
 
 " javascript
 Plugin 'othree/yajs.vim'
