@@ -12,6 +12,11 @@ if [[ -d "$HOME/.phpenv/bin" ]]; then
     export PATH="$PATH:$HOME/.phpenv/bin"
 fi
 
+# Append MacGPG binaries if they're there
+if [[ -d /usr/local/MacGPG2/bin ]]; then
+    export PATH="$PATH:/usr/local/MacGPG2/bin"
+fi
+
 # Prepend `~/bin`
 export PATH="$HOME/bin:$PATH"
 
