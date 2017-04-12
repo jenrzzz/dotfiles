@@ -48,6 +48,7 @@ set wildignore+=*.png,*.jpg,*.gif,*.ico
 set wildignore+=*.class,*.jar
 set wildignore+=*.gz,*.log
 set wildignore+=*node_modules/**
+set wildignore+=*.ropeproject/**
 
 set history=100                 " keep 100 lines of command history
 set autoread                    " update open files if they change
@@ -197,6 +198,7 @@ Plugin 'rodjek/vim-puppet'
 
 " python
 Plugin 'klen/python-mode'
+Plugin '5long/pytest-vim-compiler'
 
 " javascript
 Plugin 'othree/yajs.vim'
@@ -226,7 +228,7 @@ endif
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
 let g:rspec_command = 'Dispatch bundle exec rspec --require="~/.rspec-formatters/vim_formatter.rb" --format VimFormatter --out quickfix.out --format progress {spec}'
-let g:dispatch_compilers = { 'bundle exec': '' }
+let g:dispatch_compilers = { 'bundle exec': '', 'vagrant ssh -c "cd /vagrant && py.test --tb=short -q"': 'pytest' }
 
 function SaveTmuxWindowTitle()
   if !exists("g:tmux_last_title")
@@ -246,6 +248,11 @@ function RestoreTmuxWindowTitle()
   else
     call system("tmux rename-window " . g:tmux_last_title)
   endif
+endfunction
+
+function HighlightColumn()
+  let cursor_pos = getpos('.')
+  let &colorcolumn=cursor_pos[2]
 endfunction
 
 
@@ -385,6 +392,9 @@ nmap <silent> <leader>ds <Plug>DashSearch
 
 " Show tagbar with ,tt
 nmap <silent> <leader>tt :TagbarToggle<CR>
+
+" Highlight current column with ,cc
+nnoremap <leader>cc :call HighlightColumn()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
