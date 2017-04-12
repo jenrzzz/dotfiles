@@ -4,6 +4,8 @@
 --exclude=tmp
 --exclude=node_modules
 
+--python-kinds=-i
+
 --languages=-javascript,sql
 
 --langdef=clojure
