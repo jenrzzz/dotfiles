@@ -11,6 +11,7 @@
 --ignore-dir=is:var/cache
 --ignore-dir=is:node_modules
 --ignore-dir=is:tmp
+--ignore-dir=is:.ropeproject
 
 # Ignore ctags
 --ignore-file=is:tags
