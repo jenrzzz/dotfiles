@@ -178,7 +178,6 @@ fi
 if command -v rails > /dev/null; then
     alias ra="echo \"bundle exec'ing rails..\" && bundle exec rails"
     alias rg="echo \"bundle exec'ing rails..\" && bundle exec rails generate"
-    alias rs="echo 'Starting server...' && bundle exec rails server --binding 127.0.0.1"
     alias rc="echo 'Starting console...' && bundle exec rails console"
     alias railsprod="echo 'RAILS_ENV=production' && export RAILS_ENV=production"
     alias railsdev="echo 'RAILS_ENV=development' && export RAILS_ENV=development"
@@ -209,6 +208,9 @@ alias pumpitup="osascript -e 'set volume 7'"
 alias where="hostname"
 alias why="echo because..."
 alias obscuro='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'  # lock screen
+alias fixpowerline="/usr/local/bin/reattach-to-user-namespace /bin/sh -c '/usr/local/bin/powerline-daemon -k >/dev/null 2>&1 ; /usr/local/bin/powerline-daemon'"
+alias fixpaste="printf '\e[?2004l'"
+alias disable-bracketed-paste="printf '\e[?2004l'"
 
 ## Quick connections
 alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
