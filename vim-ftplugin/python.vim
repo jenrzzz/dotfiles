@@ -9,4 +9,4 @@ let g:pymode_lint_ignore = "E221,E701,E711"
 let g:pymode_lint_options_pep8 =
       \ {'max_line_length': g:pymode_options_max_line_length}
 
-nnoremap <Leader>rs :Dispatch vagrant ssh -c "cd /vagrant && py.test --tb=short -q"<cr>
+nnoremap <Leader>rs :Dispatch vagrant ssh -c "cd /vagrant && py.test --tb=short -q %"<cr>
