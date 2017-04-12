@@ -9,7 +9,15 @@ function qq {
   if [ $# -gt 0 ]; then
     find . -ipath "*$1*" | selecta
   else
-    find . -type f -and -not -path '*.git*' -and -not -name '*.class' -and -not -name '*.pyc' -and -not -path '*tmp*' -and -not -path '*cache*' -and -not -path '*node_modules*' -prune | selecta
+    find . -type f \
+      -and -not -path '*.git*' \
+      -and -not -name '*.class' \
+      -and -not -name '*.pyc' \
+      -and -not -path '*tmp*' \
+      -and -not -path '*cache*' \
+      -and -not -path '*node_modules*' \
+      -and -not -path '*.ropeproject*' \
+      -prune | selecta
   fi
 }
 
@@ -807,9 +815,9 @@ function instance! {
 
   echo "Spinning up and connecting to a new $env instance of $(reponame)..."
   if [ "$env" == 'production' ]; then
-    ssh -Att git@orchard.apple.com pty-request ioswt/$(reponame)
+    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)
   else
-    ssh -Att git@orchard.apple.com pty-request ioswt/$(reponame)-test
+    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)-test
   fi
 }
 
@@ -839,3 +847,8 @@ function scale! {
   orchardreq -X PUT -d "{\"instances\": $count}" -H "Content-Type: application/json" "$url"
 }
 
+
+function applehostinfo() {
+  local q="$1"
+  curl http://hostsweb.corp.apple.com/hosts 2>/dev/null | grep -i "$q"
+}
