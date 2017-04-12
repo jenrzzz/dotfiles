@@ -69,9 +69,9 @@ hash phpenv &>/dev/null && eval "$(phpenv init -)"
 
 # Init gpg-agent if it's there
 if hash gpg-agent &>/dev/null; then
-  gpg-agent --daemon --enable-ssh-support --write-env-file "$HOME/.gpg-agent-info" &>/dev/null
+  gpg-agent --daemon --write-env-file "$HOME/.gpg-agent-info" &>/dev/null
   source "$HOME/.gpg-agent-info"
-  export GPG_TTY=$(tty) GPG_AGENT_INFO SSH_AUTH_SOCK SSH_AGENT_PID
+  export GPG_TTY=$(tty) GPG_AGENT_INFO
 fi
 
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
