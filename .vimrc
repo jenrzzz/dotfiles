@@ -201,9 +201,9 @@ Plugin 'klen/python-mode'
 Plugin '5long/pytest-vim-compiler'
 
 " javascript
-Plugin 'othree/yajs.vim'
 Plugin 'mxw/vim-jsx'
-" Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'rschmukler/pangloss-vim-indent'
 Plugin 'nono/vim-handlebars'
 Plugin 'kchmck/vim-coffee-script'
