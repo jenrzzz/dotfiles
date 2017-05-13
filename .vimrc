@@ -146,6 +146,12 @@ command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
 command! GdiffInTab tabedit %|vsplit|Gdiff
 
+" alternate.vim bindings
+command! A Open(alternate#FindAlternate())
+command! AS OpenHorizontal(alternate#FindAlternate())
+command! AV OpenVertical(alternate#FindAlternate())
+
+
 """ BUNDLES
 filetype off
 set rtp+=~/.vim/bundle/vundle/
@@ -173,6 +179,7 @@ Plugin 'gerw/vim-HiLinkTrace'             " Highlighting/syntax debugging with <
 Plugin 'file-line'                        " Enable opening file:line filenames, like `vim index.html:20`
 Plugin 'scratch.vim'                      " Create a scratch buffer with :Scratch
 Plugin 'compactcode/alternate.vim'        " Find alternate files with alternate#FindAlternate()
+Plugin 'compactcode/open.vim'             " Open files that were found by an external command.
 Plugin 'rizzatti/dash.vim'                " Search Dash.app for term with <Plug>DashSearch
 
 " -- language plugins --
