@@ -848,7 +848,11 @@ function scale! {
 }
 
 
-function applehostinfo() {
+function applehostinfo {
   local q="$1"
   curl http://hostsweb.corp.apple.com/hosts 2>/dev/null | grep -i "$q"
+}
+
+function timecardify {
+  cat ${1:--} | cut -d ',' -f 2-3 | tail +2 | tr "\n" ',' | tr -d '"' | sed 's/,$//'
 }
