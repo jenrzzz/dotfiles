@@ -115,7 +115,7 @@
     insteadOf = https://gitlab.sd.apple.com/
 [user]
     name = Jenner LaFave
-    email = jenner@jfave.com
+    email = jenner_lafave@apple.com
     signingkey = A1C90A9FB5D68583
 [sendemail]
     smtpServer = relay.apple.com
@@ -133,6 +133,7 @@
 [rerere]
     enabled = true
 [filter "lfs"]
-    clean = git-lfs clean %f
-    smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
     required = true
+	process = git-lfs filter-process

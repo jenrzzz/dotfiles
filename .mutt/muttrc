@@ -4,7 +4,7 @@ unhook *
 set realname='Jenner La Fave'
 set date_format="!%a %b %d, %Y at %H:%M:%S %Z" # Wed Apr 09, 2014 at 14:28:00 PDT
 set ssl_starttls=yes
-set locale="en_US"
+# set locale="en_US"
 set config_charset="utf-8"
 set content_type="text/plain"
 set dsn_notify="failure,delay"

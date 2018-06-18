@@ -28,6 +28,7 @@ set bs=2                        " fix backspacing in insert mode
 set clipboard=unnamed           " Use the OS clipboard by default
 set ttyfast                     " Optimize for fast terminal connections
 set lazyredraw
+set regexpengine=1              " engine 0 is slow with syntax highlighting
 
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
@@ -39,16 +40,17 @@ set wildmode=longest,list
 set wildignore=*.o,*.obj,*~,*.pyc     " ignore this shit when tab completing and in Cmd-T
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
-set wildignore+=vendor/rails/**
-set wildignore+=vendor/cache/**
+set wildignore+=vendor/rails/*
+set wildignore+=vendor/cache/*
 set wildignore+=*.gem
-set wildignore+=log/**
-set wildignore+=tmp/**
+set wildignore+=*/log/*
+set wildignore+=*/tmp/*
+set wildignore+=*/node_modules/*
+set wildignore+=*/dist/*,*/public/*
+set wildignore+=*/.ropeproject/*
 set wildignore+=*.png,*.jpg,*.gif,*.ico
 set wildignore+=*.class,*.jar
 set wildignore+=*.gz,*.log
-set wildignore+=*node_modules/**
-set wildignore+=*.ropeproject/**
 
 set history=100                 " keep 100 lines of command history
 set autoread                    " update open files if they change
@@ -141,6 +143,13 @@ function OpenURL()
     endif
 endfunction
 
+" https://github.com/stoeffel/.dotfiles/blob/8b44cedde16037d21aa8fcea7bea3e1a173ccfe8/vim/visual-at.vim
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
+
 
 command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
@@ -172,6 +181,7 @@ Plugin 'Align'                            " :AlignCtrl and :Align for quickly al
 " extensions
 Plugin 'scrooloose/syntastic'             " Fancy syntax checking
 Plugin 'jgdavey/tslime.vim'               " Send commands from vim to a running tmux session
+Plugin 'Olical/vim-enmasse'               " Edit every line in a quickfix list at the same time
 Plugin 'tpope/vim-dispatch'               " Asynchronous build and test dispatcher
 Plugin 'tpope/vim-fugitive'               " Fancy git integration
 Plugin 'tommcdo/vim-fugitive-blame-ext'   " Add support for showing commit message on statusline in fugitiveblame buffers
@@ -181,6 +191,7 @@ Plugin 'scratch.vim'                      " Create a scratch buffer with :Scratc
 Plugin 'compactcode/alternate.vim'        " Find alternate files with alternate#FindAlternate()
 Plugin 'compactcode/open.vim'             " Open files that were found by an external command.
 Plugin 'rizzatti/dash.vim'                " Search Dash.app for term with <Plug>DashSearch
+Plugin 'triglav/vim-visual-increment'     " use CTRL+A/X to create increasing sequence of numbers or letters via visual mode
 
 " -- language plugins --
 " system
@@ -204,7 +215,7 @@ Plugin 'tpope/vim-cucumber'
 Plugin 'rodjek/vim-puppet'
 
 " python
-Plugin 'klen/python-mode'
+Plugin 'python-mode/python-mode'
 Plugin '5long/pytest-vim-compiler'
 
 " javascript
@@ -214,6 +225,8 @@ Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'rschmukler/pangloss-vim-indent'
 Plugin 'nono/vim-handlebars'
 Plugin 'kchmck/vim-coffee-script'
+Plugin 'ternjs/tern_for_vim'
+Plugin 'leafgarland/typescript-vim'
 
 " css/html
 Plugin 'othree/html5.vim'
@@ -226,7 +239,8 @@ Plugin 'closetag.vim'         " Close the most recent SGML tag with <C-_>
 " colors
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'jenrzzz/jellybeans.vim'
-Plugin 'candy.vim'
+Plugin 'morhetz/gruvbox'
+Plugin 'tomasr/molokai'
 
 if has('ruby')
     Plugin 'wincent/Command-T'
@@ -234,8 +248,9 @@ if has('ruby')
 endif
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
-let g:rspec_command = 'Dispatch bundle exec rspec --require="~/.rspec-formatters/vim_formatter.rb" --format VimFormatter --out quickfix.out --format progress {spec}'
-let g:dispatch_compilers = { 'bundle exec': '', 'vagrant ssh -c "cd /vagrant && py.test --tb=short -q"': 'pytest' }
+let g:rspec_command = 'Dispatch bundle exec rspec {spec}'
+let g:dispatch_compilers = { 'bundle exec': '', 'bin/test': 'pytest' }
+let g:pymode_rope = 1
 
 function SaveTmuxWindowTitle()
   if !exists("g:tmux_last_title")
@@ -371,16 +386,15 @@ nnoremap <leader>d :GdiffInTab<cr>
 nnoremap <leader>D :tabclose<cr>
 
 " Use C-k or F7 and C-j or F8 to move through buffers and ,n/,m to move through tabs.
+" and F8/F9 to move through quickfix
 map <C-J> :bn <CR>
 map <C-K> :bp <CR>
 map <F7> :bp <CR>
 map <F8> :bn <CR>
+map <F9> :cp <CR>
+map <F10> :cn <CR>
 map <Leader>n :tabp <CR>
 map <Leader>m :tabn <CR>
-
-" Spelling toggle via F10 and F11
-map <F10> <Esc>setlocal spell spelllang=en_us<CR>
-map <F11> <Esc>setlocal nospell<CR>
 
 " Save a file as root (,W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>

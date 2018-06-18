@@ -10,16 +10,13 @@ windows:
       layout: main-horizontal
       panes:
         - shell:
-          - sleep 5
-          - vagrant ssh
-          - cd /vagrant
+          - bin/ssh
         - sherlock:
           - cd ~/Source/apple/sherlock
           - npm run dev
         - mfbmt:
-          - vagrant ssh
-          - cd /vagrant
-          - python3 run.py
+          - sleep 5
+          - bin/dev
   - sherlock:
       root: ~/Source/apple/sherlock
       panes:

@@ -761,6 +761,25 @@ function reponame {
   basename $(git rev-parse --show-toplevel)
 }
 
+# schneems/explain_shell
+function explain {
+  # base url with first command already injected
+  # $ explain tar
+  #   => http://explainshel.com/explain/tar?args=
+  url="http://explainshell.com/explain/$1?args="
+
+  # removes $1 (tar) from arguments ($@)
+  shift;
+
+  # iterates over remaining args and adds builds the rest of the url
+  for i in "$@"; do
+    url=$url"$i""+"
+  done
+
+  # opens url in browser
+  open $url
+}
+
 # Send a request to the Orchard API with auth headers
 function orchardreq {
   curl -sS -H "X-API-EMAIL: $(orchard_email)" -H "X-API-Token: $(orchard_token)" "$@"
@@ -800,6 +819,7 @@ function deploy! {
   [ "$env" == 'prod' ] && env='production'
 
   echo "Deploying $(reponame) to $env..."
+  date
   git push "$env"
 }
 
@@ -855,4 +875,22 @@ function applehostinfo {
 
 function timecardify {
   cat ${1:--} | cut -d ',' -f 2-3 | tail +2 | tr "\n" ',' | tr -d '"' | sed 's/,$//'
+}
+
+function generate-apple-csr {
+  local hostname="$1"
+  if [[ -z "$hostname" ]]; then
+    echo "Usage: ${FUNCNAME[0]} <hostname>"
+    return 1
+  fi
+
+  [[ "$hostname" =~ \. ]] || hostname="${hostname}.apple.com"
+  local keypath="${hostname}.key.pem"
+
+  if [[ -f "$keypath" ]]; then
+    echo "Using existing key ${keypath}"
+    openssl req -key "$keypath" -subj "/CN=${hostname}"
+  else
+    openssl req -newkey rsa:2048 -nodes -sha256 -keyout "$keypath" -subj "/CN=${hostname}"
+  fi
 }

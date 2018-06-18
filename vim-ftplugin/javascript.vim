@@ -1,9 +1,15 @@
+let g:syntastic_javascript_checkers = ['eslint']
+
+noremap <C-]> :TernDef<CR>
+noremap <C-t> :TernType<CR>
+
 " pangloss/vim-javascript
 syn keyword jsFunction constructor
 hi link jsThis          Structure
 hi link jsSuper         Statement
 hi link jsExportDefault Include
 hi link jsObjectKey     Identifier
+hi link jsGenerator     Function
 
 " mxw/vim-jsx
 hi link xmlAttrib   Identifier

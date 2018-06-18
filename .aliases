@@ -17,6 +17,7 @@ alias ass="cd ~/Source/apple"
 alias b="bundle "
 alias d="cd ~/Dropbox"
 alias g="git"
+alias t="task"
 alias m="mate ."
 alias o="open"
 alias oo="open ."
@@ -24,7 +25,9 @@ alias s="cd ~/Source"
 alias v="vagrant"
 alias vssh="vagrant ssh"
 alias vimq="vim -u NONE"
+alias mux="tmuxinator"
 alias fuck="tmuxinator"
+alias timestamp='date +"%Y%m%d%H%M%S"'
 
 less_macro_path=$(locate "macros/less.vim" | head -1)
 if [[ -f $less_macro_path ]]; then
@@ -201,6 +204,9 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
     alias "$method"="lwp-request -m '$method'"
 done
+
+# Sum a list of integers
+alias sum="awk '{s+=\$1} END {print s}'"
 
 # Stuff I never really use but cannot delete either because of http://xkcd.com/530/
 alias stfu="osascript -e 'set volume output muted true'"

@@ -1,0 +1,2 @@
+#!/bin/bash
+kal today --colors=0 | grep '>' | awk -F "|" '{ print $2 }' | sed -e 's/^ //'

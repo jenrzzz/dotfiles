@@ -3,8 +3,12 @@
         "right": [
             {
                 "function": "powerline.segments.common.players.itunes",
+                "name": "player",
                 "args": {
-                    "format": "{state_symbol} {title} - {artist}"
+                    "format": "{title:.18} - {artist:.18}",
+                    "state_symbols": {
+                      "play": "♫"
+                    }
                 }
             },
             {
@@ -16,7 +20,9 @@
             },
             {
                 "function": "powerline.segments.common.bat.battery",
-                "before": "❤ "
+                "args": {
+                    "format": "❤{ac_state}{capacity:3.0%}"
+                }
             },
             {
                 "function": "powerline.segments.common.wthr.weather",
@@ -24,7 +30,21 @@
                     "unit": "F",
                     "location_query": "94040",
                     "temp_coldest": 0,
-                    "temp_hottest": 100
+                    "temp_hottest": 100,
+                    "icons": {
+                      "day": "☀",
+                      "blustery": "🍃",
+                      "rainy": "🌧 ",
+                      "cloudy": "☁",
+                      "snowy": "❄",
+                      "foggy": "🌫",
+                      "sunny": "☀",
+                      "night": "🌙 ",
+                      "windy": "🌬",
+                      "stormy": "🌩 ",
+                      "not_available": "?",
+                      "unknown": "?"
+                    }
                 }
             },
             {
