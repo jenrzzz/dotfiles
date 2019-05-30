@@ -21,6 +21,35 @@ function qq {
   fi
 }
 
+
+function whereami {
+  curl --silent https://freegeoip.app/csv/ | awk -F, 'BEGIN { OFS="," }; { print $9, $10 }'
+}
+
+function sunrise-sunset {
+  local day=$(date "+%Y-%m-%d")
+  local cache_path="${HOME}/.solar-schedule/${day}"
+
+  if [[ -e "$cache_path" ]]; then
+    cat "$cache_path"
+  else
+    IFS=, read lat long < <(whereami)
+    curl --silent "https://api.sunrise-sunset.org/json?lat=$lat&lng=$long&date=$day&formatted=0" | jq -r '.results | "\(.sunrise),\(.sunset)"' | tee "$cache_path"
+  fi
+}
+
+function is-daytime {
+  sunrise-sunset | ruby -r date -e 'daytime = Range.new(*STDIN.read.split(",").map {|d| DateTime.parse(d).to_time }); exit 1 unless daytime.include?(Time.now)'
+}
+
+function vim {
+  if is-daytime; then
+    viml "$@"
+  else
+    vimd "$@"
+  fi
+}
+
 function vq {
   local file
   if [ $# -gt 0 ]; then
@@ -837,7 +866,7 @@ function instance! {
   if [ "$env" == 'production' ]; then
     ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)
   else
-    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)-test
+    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)-${env}
   fi
 }
 
