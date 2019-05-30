@@ -16,9 +16,14 @@ if tput setaf 1 &> /dev/null; then
 		RED=$(tput setaf 124)
 		MAGENTA=$(tput setaf 9)
 		ORANGE=$(tput setaf 172)
-		GREEN=$(tput setaf 190)
+		GREEN=$(tput setaf 34)
 		PURPLE=$(tput setaf 141)
 		WHITE=$(tput setaf 246)
+                CYAN=$(tput setaf 45)
+                MINT=$(tput setaf 73)
+                TEAL=$(tput setaf 30)
+                SCHOOLBUS=$(tput setaf 208)
+                LIME=$(tput setaf 40)
   else
 		RED=$(tput setaf 1)
 		MAGENTA=$(tput setaf 5)
@@ -26,6 +31,11 @@ if tput setaf 1 &> /dev/null; then
 		GREEN=$(tput setaf 2)
 		PURPLE=$(tput setaf 1)
 		WHITE=$(tput setaf 7)
+                CYAN=$(tput setaf 45)
+                MINT=$(tput setaf 73)
+                TEAL=$(tput setaf 30)
+                LIME=$(tput setaf 40)
+                SCHOOLBUS="$ORANGE"
 	fi
 	BOLD=$(tput bold)
 	RESET=$(tput sgr0)
@@ -67,9 +77,9 @@ function rbenv_ruby_version {
   [[ $v = 'system' ]] && [[ ! -z "$PS1_RBENV_VERSION" ]] && echo " ($v) "
 }
 
-export PS1_DEFAULT="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$RED\]\$(rbenv_ruby_version)\[$WHITE\]\$ \[$RESET\]"
-export PS1_CDBLK="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [cdblk] \$ \[$RESET\]"
-export PS1_SCRATCH="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [scratch] \$ \[$RESET\]"
+export PS1_DEFAULT="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$LIME\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$RED\]\$(rbenv_ruby_version)\[$WHITE\]\$ \[$RESET\]"
+export PS1_CDBLK="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$LIME\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [cdblk] \$ \[$RESET\]"
+export PS1_SCRATCH="\[${BOLD}${MAGENTA}\]\u\[$WHITE\]@\[$ORANGE\]\h\[$WHITE\]:\[$LIME\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\$(rbenv_ruby_version) [scratch] \$ \[$RESET\]"
 export PS1="$PS1_DEFAULT"
 
 export HISTTIMEFORMAT="%s "

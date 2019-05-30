@@ -241,6 +241,7 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'jenrzzz/jellybeans.vim'
 Plugin 'morhetz/gruvbox'
 Plugin 'tomasr/molokai'
+Plugin 'hzchirs/vim-material'
 
 if has('ruby')
     Plugin 'wincent/Command-T'
@@ -251,6 +252,10 @@ let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', '
 let g:rspec_command = 'Dispatch bundle exec rspec {spec}'
 let g:dispatch_compilers = { 'bundle exec': '', 'bin/test': 'pytest' }
 let g:pymode_rope = 1
+let g:pymode_python = 'python3'
+let g:pymode_rope_lookup_project = 0
+let g:pymode_rope_autoimport = 0
+let g:pymode_rope_regenerate_on_write = 0
 
 function SaveTmuxWindowTitle()
   if !exists("g:tmux_last_title")
@@ -322,13 +327,20 @@ endif
 
 " Set colorscheme last in case a bundle needs to load
 set t_Co=256
-set bg=dark
 
 try
-    colorscheme jellybeans
-    let g:airline_theme = 'jellybeans'
+    if !empty($LIGHT_MODE)
+      set background=light
+      colorscheme vim-material
+      let g:airline_theme='material'
+    else
+      set background=dark
+      colorscheme jellybeans
+      let g:airline_theme = 'jellybeans'
+    endif
 catch /^Vim\%((\a\+)\)\=:E185/
-    colorscheme elflord
+  set background=dark
+  colorscheme elflord
 endtry
 
 " Common typos!
@@ -412,7 +424,7 @@ imap <c-c> <esc>
 nmap <silent> <leader>ds <Plug>DashSearch
 
 " Show tagbar with ,tt
-nmap <silent> <leader>tt :TagbarToggle<CR>
+" nmap <silent> <leader>tt :TagbarToggle<CR>
 
 " Highlight current column with ,cc
 nnoremap <leader>cc :call HighlightColumn()<CR>
