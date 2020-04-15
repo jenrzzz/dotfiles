@@ -85,6 +85,7 @@ let g:is_bash = 1
 let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'active_filetypes': [],
                            \ 'passive_filetypes': ['puppet', 'java', 'groovy'] }
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups,~/.tmp,/var/tmp/,/tmp
@@ -219,7 +220,7 @@ Plugin 'python-mode/python-mode'
 Plugin '5long/pytest-vim-compiler'
 
 " javascript
-Plugin 'mxw/vim-jsx'
+Plugin 'neoclide/vim-jsx-improve'
 Plugin 'pangloss/vim-javascript'
 Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'rschmukler/pangloss-vim-indent'
@@ -242,6 +243,7 @@ Plugin 'jenrzzz/jellybeans.vim'
 Plugin 'morhetz/gruvbox'
 Plugin 'tomasr/molokai'
 Plugin 'hzchirs/vim-material'
+Plugin 'NLKNguyen/papercolor-theme'
 
 if has('ruby')
     Plugin 'wincent/Command-T'
@@ -256,6 +258,17 @@ let g:pymode_python = 'python3'
 let g:pymode_rope_lookup_project = 0
 let g:pymode_rope_autoimport = 0
 let g:pymode_rope_regenerate_on_write = 0
+let g:pymode_folding = 0
+let g:pymode_options_max_line_length = 119
+let g:pymode_doc = 0
+let g:pymode_breakpoint = 0
+
+let g:pymode_lint = 1
+let g:pymode_lint_ignore = ["E221","E701","E711","E712"]
+let g:pymode_lint_options_pep8 =
+      \ {'max_line_length': g:pymode_options_max_line_length}
+
+let g:pymode_rope_goto_definition_bind = '<C-]>'
 
 function SaveTmuxWindowTitle()
   if !exists("g:tmux_last_title")
@@ -315,6 +328,7 @@ if has("autocmd")
     au BufRead,BufNewFile *.mscss setfiletype scss
     au BufRead,BufNewFile *.mcss setfiletype css
     au BufRead,BufNewFile Procfile* setfiletype yaml
+    au BufRead,BufNewFile *.axlsx setfiletype ruby
 
     au BufRead,BufNewFile *.s setlocal noet sw=8 ts=8
     au FileType ruby,coffee,haml,scss,yaml setlocal et sw=2 sts=2
@@ -329,10 +343,10 @@ endif
 set t_Co=256
 
 try
-    if !empty($LIGHT_MODE)
-      set background=light
-      colorscheme vim-material
-      let g:airline_theme='material'
+    if !empty($ITERM_PROFILE) && ($ITERM_PROFILE == 'Light')
+        set background=light
+        colorscheme PaperColor
+        let g:airline_theme='papercolor'
     else
       set background=dark
       colorscheme jellybeans

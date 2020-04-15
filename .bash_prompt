@@ -84,6 +84,24 @@ export PS1="$PS1_DEFAULT"
 
 export HISTTIMEFORMAT="%s "
 [[ ! $PROMPT_COMMAND =~ .bash_eternal_history ]] && PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND }"'echo "$$ $USER \"$(history 1)\"" >> ~/.bash_eternal_history;export PREV_COMMAND=""'
+[[ ! $PROMPT_COMMAND =~ check_colors ]] && PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND }"';check_colors'
+
+function set_profile() {
+  if [ -n "$TMUX" ]; then
+    echo -ne "\ePtmux;\e\e]1337;SetProfile=$1\a\e\\"
+  else
+    echo -ne "\e]1337;SetProfile=$1\a"
+  fi
+  export ITERM_PROFILE=$1
+}
+
+function check_colors() {
+    if [[ $(defaults read -g AppleInterfaceStyle 2> /dev/null) == "Dark" ]]; then
+        [[ $ITERM_PROFILE == "Light" ]] && set_profile Night
+    else
+        [[ $ITERM_PROFILE == "Night" ]] && set_profile Light
+    fi
+}
 
 function settitle () {
     export PREV_COMMAND=${PREV_COMMAND}${@}
