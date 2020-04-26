@@ -80,3 +80,5 @@ stty start undef stop undef
 # Don't do weird shit
 set -o pipefail
 
+# something weird is happening with tmuxinator
+unset GEM_HOME
