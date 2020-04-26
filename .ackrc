@@ -9,10 +9,12 @@
 --ignore-dir=is:log
 --ignore-dir=is:app/cache
 --ignore-dir=is:var/cache
+--ignore-dir=is:public
 --ignore-dir=is:node_modules
 --ignore-dir=is:dist
 --ignore-dir=is:tmp
 --ignore-dir=is:.ropeproject
+--ignore-dir=is:.virtualenv
 
 # Ignore ctags
 --ignore-file=is:tags

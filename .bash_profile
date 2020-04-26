@@ -67,12 +67,12 @@ hash direnv &>/dev/null && eval "$(direnv hook bash)"
 # Use phpenv
 hash phpenv &>/dev/null && eval "$(phpenv init -)"
 
-# Init gpg-agent if it's there
-if hash gpg-agent &>/dev/null; then
-  gpg-agent --daemon --write-env-file "$HOME/.gpg-agent-info" &>/dev/null
-  source "$HOME/.gpg-agent-info"
-  export GPG_TTY=$(tty) GPG_AGENT_INFO
-fi
+# # Init gpg-agent if it's there
+# if hash gpg-agent &>/dev/null; then
+#   gpg-agent --daemon --write-env-file "$HOME/.gpg-agent-info" &>/dev/null
+#   source "$HOME/.gpg-agent-info"
+#   export GPG_TTY=$(tty) GPG_AGENT_INFO
+# fi
 
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
 stty start undef stop undef

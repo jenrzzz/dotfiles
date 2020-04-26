@@ -17,6 +17,11 @@ if [[ -d /usr/local/MacGPG2/bin ]]; then
     export PATH="$PATH:/usr/local/MacGPG2/bin"
 fi
 
+# Append system python binaries if they're there
+if [[ -d /Users/jenner/Library/Python/2.7/bin ]]; then
+  export PATH="$PATH:/Users/jenner/Library/Python/2.7/bin"
+fi
+
 # Prepend `~/bin`
 export PATH="$HOME/bin:$PATH"
 

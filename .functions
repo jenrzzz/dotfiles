@@ -17,7 +17,41 @@ function qq {
       -and -not -path '*cache*' \
       -and -not -path '*node_modules*' \
       -and -not -path '*.ropeproject*' \
+      -and -not -path '*.virtualenv*' \
       -prune | selecta
+  fi
+}
+
+
+function whereami {
+  curl --silent https://freegeoip.app/csv/ | awk -F, 'BEGIN { OFS="," }; { print $9, $10 }'
+}
+
+function sunrise-sunset {
+  local day=$(date "+%Y-%m-%d")
+  local cache_path="${HOME}/.solar-schedule/${day}"
+
+  if [[ -s "$cache_path" ]]; then
+    cat "$cache_path"
+  else
+    IFS=, read lat long < <(whereami)
+    curl --silent "https://api.sunrise-sunset.org/json?lat=$lat&lng=$long&date=$day&formatted=0" | jq -r '.results | "\(.sunrise),\(.sunset)"' | tee "$cache_path"
+  fi
+}
+
+function is-daytime {
+  sunrise-sunset | ruby -r date -e 'daytime = Range.new(*STDIN.read.split(",").map {|d| DateTime.parse(d).to_time }); exit 1 unless daytime.include?(Time.now)'
+}
+
+function is-dark-mode {
+  [[ $(defaults read -g AppleInterfaceStyle 2>/dev/null || echo 'Light') == "Dark" ]]
+}
+
+function vim {
+  if is-daytime && ! is-dark-mode; then
+    viml "$@"
+  else
+    vimd "$@"
   fi
 }
 
@@ -68,6 +102,25 @@ function ? {
   fi
 
   echo "returned $val"
+}
+
+# Usage: mv oldfilename
+# If you call mv without the second parameter it will prompt you to edit the filename on command line.
+# Original mv is called when it's called with more than one argument.
+# It's useful when you want to change just a few letters in a long name.
+# https://gist.github.com/premek/6e70446cfc913d3c929d7cdbfe896fef
+function mv() {
+  if [ "$#" -ne 1 ]; then
+    command mv "$@"
+    return
+  fi
+  if [ ! -f "$1" ]; then
+    command file "$@"
+    return
+  fi
+
+  read -ei "$1" newfilename
+  mv -v "$1" "$newfilename"
 }
 
 # DESCRIPTION:
@@ -837,7 +890,7 @@ function instance! {
   if [ "$env" == 'production' ]; then
     ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)
   else
-    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)-test
+    ssh -Attt git@orchard.apple.com pty-request ioswt/$(reponame)-${env}
   fi
 }
 
@@ -893,4 +946,56 @@ function generate-apple-csr {
   else
     openssl req -newkey rsa:2048 -nodes -sha256 -keyout "$keypath" -subj "/CN=${hostname}"
   fi
+}
+
+function rainblow {
+  local brightness="${1:-0.5}"
+  local delay="${2:-0.001}"
+
+  req=$(cat <<END
+{"program": "rainblow.py", "args": ["$brightness", "$delay"]}
+END
+)
+  curl -H 'Content-Type: application/json' -d "$req" 10.0.0.73/leds
+
+}
+
+function rainglow {
+  local brightness="${1:-0.5}"
+  local delay="${2:-0.001}"
+
+  req=$(cat <<END
+{"program": "rainglow.py", "args": ["$brightness", "$delay"]}
+END
+)
+  curl -H 'Content-Type: application/json' -d "$req" 10.0.0.73/leds
+
+}
+
+function rainbow {
+  local brightness="${1:-0.5}"
+  local delay="${2:-0.001}"
+
+  req=$(cat <<END
+{"program": "rainbowWave.py", "args": ["$brightness", "$delay"]}
+END
+)
+  curl -H 'Content-Type: application/json' -d "$req" 10.0.0.73/leds
+
+}
+
+function leds {
+  local color="${1:-cyan}"
+  local brightness="${2:-0.5}"
+
+  req=$(cat <<END
+{"program": "stress-leds.py", "args": ["$color", "$brightness"]}
+END
+)
+
+  curl -H 'Content-Type: application/json' -d "$req" 10.0.0.73/leds
+}
+
+function ledsoff {
+  leds red 0
 }

@@ -1,17 +1,4 @@
 set completeopt=menu
-let g:pymode_python = 'python3'
-let g:pymode_folding = 0
-let g:pymode_options_max_line_length = 119
-let g:pymode_doc = 0
-let g:pymode_breakpoint = 0
-
-let g:pymode_lint = 1
-let g:pymode_lint_ignore = ["E221","E701","E711","E712"]
-let g:pymode_lint_options_pep8 =
-      \ {'max_line_length': g:pymode_options_max_line_length}
-
-let g:pymode_rope_goto_definition_bind = '<C-]>'
-
 nnoremap <Leader>rs :Dispatch bin/test --tb=auto %<cr>
 
 syn match pythonConstant "\<[[:upper:]][_[:alnum:]]*" display

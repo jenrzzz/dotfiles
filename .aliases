@@ -24,7 +24,9 @@ alias oo="open ."
 alias s="cd ~/Source"
 alias v="vagrant"
 alias vssh="vagrant ssh"
-alias vimq="vim -u NONE"
+alias vimq="/usr/local/bin/vim -u NONE"
+alias vimd="/usr/local/bin/vim"
+alias viml="ITERM_PROFILE=Light /usr/local/bin/vim"
 alias mux="tmuxinator"
 alias fuck="tmuxinator"
 alias timestamp='date +"%Y%m%d%H%M%S"'
@@ -224,4 +226,7 @@ alias luna='ssh -A jenner@luna.jfave.com'
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias editsieve="ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
+
+alias biggestfiles="du -a . | sort -n -r | head -n 20"
+alias ducks="du -cks * | sort -rn | head"
 

@@ -116,7 +116,7 @@
 [user]
     name = Jenner LaFave
     email = jenner_lafave@apple.com
-    signingkey = A1C90A9FB5D68583
+	signingkey = B5989E662182C4FA74E6A5ABF423CA2385368436
 [sendemail]
     smtpServer = relay.apple.com
     smtpEncryption = tls
@@ -137,3 +137,5 @@
 	smudge = git-lfs smudge -- %f
     required = true
 	process = git-lfs filter-process
+[gpg]
+	program = gpg

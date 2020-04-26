@@ -31,13 +31,21 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 export GOPATH="$HOME/Source/go"
 export GRAILS_HOME="/usr/local/opt/grails/libexec"
 
+if [ -z "$DARK_MODE" ]; then
+  export DIRCOLORS_FILE="$HOME/.dircolors.ansi-light"
+else
+  export DIRCOLORS_FILE="$HOME/.dircolors.256dark"
+fi
+
 # Setup dircolors
 if command -v gdircolors >/dev/null 2>&1; then
-    eval `gdircolors ~/.dircolors.256dark`
+    eval $(gdircolors "$DIRCOLORS_FILE")
 else
-    eval `dircolors ~/.dircolors.256dark`
+    eval $(dircolors "$DIRCOLORS_FILE")
 fi
 
 # rbenv shim
 if command -v rbenv >/dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
+# nodenv shim
+if command -v nodenv >/dev/null 2>&1; then eval "$(nodenv init -)"; fi
