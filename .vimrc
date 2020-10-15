@@ -173,6 +173,7 @@ Plugin 'bling/vim-airline'                " Fancy statusline and buffer list
 Plugin 'majutsushi/tagbar'                " Show ctags stack with TagbarToggle
 
 " motion, format
+Plugin 'easymotion/vim-easymotion'
 Plugin 'goldfeld/vim-seek'                " Seek motion (s); like f but takes two characters to jump to
 Plugin 'nelstrom/vim-visual-star-search'  " Search for text selected in visual mode with '*' or '#'
 Plugin 'surround.vim'                     " Surrounding text object (e.g. change {} to [] with cs{[ ...)
@@ -249,6 +250,23 @@ if has('ruby')
     Plugin 'wincent/Command-T'
     let g:CommandTMatchWindowAtTop=1 " show window at top
 endif
+
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" " Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" " `s{char}{label}`
+" nmap s <Plug>(easymotion-overwin-f)
+" " or
+" " `s{char}{char}{label}`
+" Need one more keystroke, but on average, it may be more comfortable.
+nmap <Space> <Plug>(easymotion-overwin-f2)
+
+" Turn on case-insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>e <Plug>(easymotion-j)
+map <Leader>i <Plug>(easymotion-k)
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
 let g:rspec_command = 'Dispatch bundle exec rspec {spec}'

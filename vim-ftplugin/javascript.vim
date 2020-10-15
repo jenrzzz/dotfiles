@@ -26,3 +26,4 @@ hi link javascriptRPropProps    Type
 hi link javascript_functions    Statement
 hi link javascript_chaining     NONE
 let g:used_javascript_libs = 'underscore,react,chai,d3'
+set maxmempattern=9999
