@@ -67,6 +67,9 @@ hash direnv &>/dev/null && eval "$(direnv hook bash)"
 # Use phpenv
 hash phpenv &>/dev/null && eval "$(phpenv init -)"
 
+# Use pyenv
+hash pyenv &>/dev/null && eval "$(pyenv init -)"
+
 # # Init gpg-agent if it's there
 # if hash gpg-agent &>/dev/null; then
 #   gpg-agent --daemon --write-env-file "$HOME/.gpg-agent-info" &>/dev/null

@@ -24,7 +24,7 @@ function qq {
 
 
 function whereami {
-  curl --silent https://freegeoip.app/csv/ | awk -F, 'BEGIN { OFS="," }; { print $9, $10 }'
+  curl --silent http://api.ipstack.com/71.198.4.87?access_key=8e868cd6afdd87607087fbbaea1c6256 | jq -r '"\(.latitude),\(.longitude)"'
 }
 
 function sunrise-sunset {
@@ -932,6 +932,7 @@ function timecardify {
 
 function generate-apple-csr {
   local hostname="$1"
+  shift
   if [[ -z "$hostname" ]]; then
     echo "Usage: ${FUNCNAME[0]} <hostname>"
     return 1
@@ -942,9 +943,9 @@ function generate-apple-csr {
 
   if [[ -f "$keypath" ]]; then
     echo "Using existing key ${keypath}"
-    openssl req -key "$keypath" -subj "/CN=${hostname}"
+    /usr/local/opt/openssl@1.1/bin/openssl req -key "$keypath" -subj "/CN=${hostname}" "$@"
   else
-    openssl req -newkey rsa:2048 -nodes -sha256 -keyout "$keypath" -subj "/CN=${hostname}"
+    /usr/local/opt/openssl@1.1/bin/openssl req -newkey rsa:2048 -nodes -sha256 -keyout "$keypath" -subj "/CN=${hostname}" "$@"
   fi
 }
 
