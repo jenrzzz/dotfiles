@@ -300,12 +300,15 @@ function SetTmuxWindowTitle()
 endfunction
 
 function RestoreTmuxWindowTitle()
-  echom g:tmux_last_title
-  if g:tmux_last_title == "bash"
-    call system("tmux setw automatic-rename")
-  else
-    call system("tmux rename-window " . g:tmux_last_title)
-  endif
+  try
+    echom g:tmux_last_title
+    if g:tmux_last_title == "bash"
+      call system("tmux setw automatic-rename")
+    else
+      call system("tmux rename-window " . g:tmux_last_title)
+    endif
+  catch /.*/
+  endtry
 endfunction
 
 function HighlightColumn()
