@@ -1,6 +1,7 @@
 # Compiled Python files
 *.pyc
 
+.virtualenv
 .config/direnv
 
 # Folder view configuration files
@@ -16,7 +17,6 @@ Thumbs.db
 .Trashes
 
 .vim
-.ruby-version
 
 # ctags
 tags

@@ -37,6 +37,9 @@ else
   export DIRCOLORS_FILE="$HOME/.dircolors.256dark"
 fi
 
+# Don't use cowsay with ansible
+export ANSIBLE_NOCOWS=y
+
 # Setup dircolors
 if command -v gdircolors >/dev/null 2>&1; then
     eval $(gdircolors "$DIRCOLORS_FILE")

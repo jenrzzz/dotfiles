@@ -304,19 +304,31 @@ function randompass {
 }
 
 # Picks a random word from the dictionary
-export RANDOMWORD_DICT_SIZE=$([ -f /usr/share/dict/words ] && wc -w /usr/share/dict/words | awk '{print $1}')
+export DEFAULT_WORDLIST="/usr/share/dict/words"
 function randomword {
-  if [ -z "$RANDOMWORD_DICT_SIZE" ]; then
-    echo "unknown dictionary size"
-    export RANDOMWORD_DICT_SIZE=$(wc -w /usr/share/dict/words | awk '{print $1}')
-  fi
+  RANDOMWORD_DICT_SIZE=$(wc -w "${WORDLIST:-$DEFAULT_WORDLIST}" | awk '{print $1}')
   local num=$((RANDOM * RANDOM))
   local wordline="$((num % RANDOMWORD_DICT_SIZE))p"
-  sed -n $wordline /usr/share/dict/words
+  sed -n $wordline "$WORDLIST"
 }
 
 function randomwords {
-  local word=$(randomword)
+  local word=$(WORDLIST=~/Dropbox/txtfiles/server-name-wordlist-mnemonic.txt randomword)
+  local count=$1
+  local sep=$2
+  [ -z "$sep" ] && sep=" "
+  count=$((count-1))
+  if [ $count -gt 0 ]; then
+    for _ in $(seq $count); do
+      word="${word}${sep}$(WORDLIST=~/Dropbox/txtfiles/server-name-wordlist-mnemonic.txt randomword)"
+    done
+  fi
+
+  echo "$word"
+}
+
+function randomdictwords {
+  local word=$(WORDLIST=/usr/share/dict/words randomword)
   local count=$1
   local sep=$2
   [ -z "$sep" ] && sep=" "
@@ -331,7 +343,6 @@ function randomwords {
 }
 
 # Picks a random word from the dictionary
-export RANDOMLYRIC_LINE_COUNT=$([ -f /usr/share/dict/lyrics ] && wc -l /usr/share/dict/lyrics | awk '{print $1}')
 function randomlyric {
   if [ -z "$RANDOMLYRIC_LINE_COUNT" ]; then
     echo "unknown lyric database size"
@@ -343,24 +354,13 @@ function randomlyric {
   sed -n ${wordline}p /usr/share/dict/lyrics
 }
 
-function randomwords {
-  local word=$(randomword)
-  local count=$1
-  local sep=$2
-  [ -z "$sep" ] && sep=" "
-  count=$((count-1))
-  if [ $count -gt 0 ]; then
-    for _ in $(seq $count); do
-      word="${word}${sep}$(randomword)"
-    done
-  fi
-
-  echo "$word"
-}
-
 # Creates a random alphanumeric passphrase
 function randompassphrase {
     echo "$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)-$RANDOM-$(randomword)"
+}
+
+function randomhex {
+  dd if=/dev/urandom bs=1024 count=1 2>/dev/null | sha256sum | awk '{ print $1 }'
 }
 
 # Directory marks

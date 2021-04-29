@@ -28,7 +28,7 @@ set bs=2                        " fix backspacing in insert mode
 set clipboard=unnamed           " Use the OS clipboard by default
 set ttyfast                     " Optimize for fast terminal connections
 set lazyredraw
-set regexpengine=1              " engine 0 is slow with syntax highlighting
+set regexpengine=0              " engine 0 is slow with syntax highlighting
 
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
@@ -353,7 +353,7 @@ if has("autocmd")
     au FileType text,markdown,mediawiki,html,xhtml,eruby setlocal wrap linebreak nolist sw=2 sts=2
     au FileType markdown,mediawiki,text setlocal tw=78
     au FileType markdown,mediawiki setlocal sw=4 sts=4
-    au FileType groovy setlocal sw=4 sts=4
+    au FileType groovy setlocal sw=4 sts=4 re=0
     au FileType php setlocal sw=4 sts=4 ts=4
 endif
 
