@@ -24,22 +24,13 @@ alias oo="open ."
 alias s="cd ~/Source"
 alias v="vagrant"
 alias vssh="vagrant ssh"
-alias vimq="/usr/local/bin/vim -u NONE"
-alias vimd="/usr/local/bin/vim"
-alias viml="ITERM_PROFILE=Light /usr/local/bin/vim"
+alias vim="nvim"
+alias vimq="nvim -u NONE"
+alias vimd="nvim"
+alias viml="ITERM_PROFILE=Light nvim"
 alias mux="tmuxinator"
 alias fuck="tmuxinator"
 alias timestamp='date +"%Y%m%d%H%M%S"'
-
-less_macro_path=$(locate "macros/less.vim" | head -1)
-if [[ -f $less_macro_path ]]; then
-    alias vless="vim -u $less_macro_path"
-elif [[ -f /usr/share/vim/vim72/macros/less.vim ]]; then
-    alias vless="vim -u /usr/share/vim/vim72/macros/less.vim"
-else
-    alias vless="less -R"
-fi
-unset less_macro_path
 
 # Git shortcuts
 alias gs='git s'
@@ -229,4 +220,4 @@ alias editsieve="ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.c
 
 alias biggestfiles="du -a . | sort -n -r | head -n 20"
 alias ducks="du -cks * | sort -rn | head"
-
+alias weather="curl -s \"https://forecast.weather.gov/product.php?site=MTR&issuedby=MTR&product=AFD&format=txt&version=1&glossary=0\" | nokogiri -e 'puts \$_.css(\"pre\").text' | less"

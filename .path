@@ -22,6 +22,11 @@ if [[ -d /Users/jenner/Library/Python/2.7/bin ]]; then
   export PATH="$PATH:/Users/jenner/Library/Python/2.7/bin"
 fi
 
+if [[ -d /Users/jenner/Source/contrib/emsdk ]]; then
+  export PATH="/Users/jenner/Source/contrib/emsdk:/Users/jenner/Source/contrib/emsdk/node/14.18.2_64bit/bin:/Users/jenner/Source/contrib/emsdk/upstream/emscripten:$PATH"
+fi
+
 # Prepend `~/bin`
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
+
 

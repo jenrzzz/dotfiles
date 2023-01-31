@@ -81,12 +81,6 @@ let g:airline#extensions#tabline#enabled = 1
 " not old sh highlighting
 let g:is_bash = 1
 
-" configure when syntastic should run
-let g:syntastic_mode_map = { 'mode': 'active',
-                           \ 'active_filetypes': [],
-                           \ 'passive_filetypes': ['puppet', 'java', 'groovy'] }
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-
 " Centralize backups, swapfiles, and undo history
 set backupdir=~/.vim/backups,~/.tmp,/var/tmp/,/tmp
 set directory=~/.vim/swaps,~/.tmp,/var/tmp,/tmp
@@ -181,7 +175,6 @@ Plugin 'tComment'                         " // to comment/uncomment line in norm
 Plugin 'Align'                            " :AlignCtrl and :Align for quickly aligning blocks (e.g. aligning assignments on equal signs)
 
 " extensions
-Plugin 'scrooloose/syntastic'             " Fancy syntax checking
 Plugin 'jgdavey/tslime.vim'               " Send commands from vim to a running tmux session
 Plugin 'Olical/vim-enmasse'               " Edit every line in a quickfix list at the same time
 Plugin 'tpope/vim-dispatch'               " Asynchronous build and test dispatcher

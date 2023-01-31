@@ -16,8 +16,11 @@ function qq {
       -and -not -path '*tmp*' \
       -and -not -path '*cache*' \
       -and -not -path '*node_modules*' \
+      -and -not -path '*/lib/src/*' \
       -and -not -path '*.ropeproject*' \
       -and -not -path '*.virtualenv*' \
+      -and -not -path '*.fingerprint*' \
+      -and -not -path '*target/debug*' \
       -prune | selecta
   fi
 }
@@ -47,14 +50,14 @@ function is-dark-mode {
   [[ $(defaults read -g AppleInterfaceStyle 2>/dev/null || echo 'Light') == "Dark" ]]
 }
 
-function vim {
-  if is-daytime && ! is-dark-mode; then
-    viml "$@"
-  else
-    vimd "$@"
-  fi
-}
-
+# function vim {
+#   if is-daytime && ! is-dark-mode; then
+#     viml "$@"
+#   else
+#     vimd "$@"
+#   fi
+# }
+#
 function vq {
   local file
   if [ $# -gt 0 ]; then
@@ -78,19 +81,22 @@ function cdq {
   cd $(find "$base" -type d -and -not -name ".*" -and -not -path "*.git*" -maxdepth 4 | selecta)
 }
 
-function jpq {
-  local name
-  name=$(find ~/Dropbox/.password-store -type f -and -not -path '*.git*' -and -not -name '.gpg-id' | sed -e 's/\/Users\/jenner\/Dropbox\/.password-store\///' | selecta)
-  path=$(dirname $name)
-  name=${name##*/}
-  jpass "$path/${name%%.*}"
+function eternal-history {
+  clean-eternal-history < ~/.bash_eternal_history
+}
+
+
+function clean-eternal-history {
+  ruby -ne '/" \d+  \d+ (.+)"/ =~ $_; puts $1'
 }
 
 function hq {
-  local cmd=$(history | tail -500 | cut -d ' ' -f 5- | sort | uniq | selecta)
+  local cmd=$(tail -500 ~/.bash_eternal_history | clean-eternal-history | sort | uniq | selecta)
   history -s "$cmd"
   "$cmd"
 }
+
+bind -x '"^R":"hq\n"'
 
 # Print return value
 alias returns="?"
@@ -999,4 +1005,8 @@ END
 
 function ledsoff {
   leds red 0
+}
+
+function ackts {
+  ack "$@" **/*.ts{,x}
 }

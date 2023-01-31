@@ -31,7 +31,7 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 export GOPATH="$HOME/Source/go"
 export GRAILS_HOME="/usr/local/opt/grails/libexec"
 
-if [ -z "$DARK_MODE" ]; then
+if [ -z "$DARK_MODE" ] && [ -f "$HOME/.dircolors.ansi-light" ]; then
   export DIRCOLORS_FILE="$HOME/.dircolors.ansi-light"
 else
   export DIRCOLORS_FILE="$HOME/.dircolors.256dark"

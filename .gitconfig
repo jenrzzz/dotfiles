@@ -111,25 +111,16 @@
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
     insteadOf = "gist:"
-[url "git@gitlab.sd.apple.com:"]
-    insteadOf = https://gitlab.sd.apple.com/
 [user]
-    name = Jenner LaFave
-    email = jenner_lafave@apple.com
-	signingkey = B5989E662182C4FA74E6A5ABF423CA2385368436
-[sendemail]
-    smtpServer = relay.apple.com
-    smtpEncryption = tls
-
+    name = Jenner La Fave
+    # email = jenner@jfave.com
+    email = jenner@flux.ai
+    signingkey = 7E3BC2485101508C9BB45A1F345C047656B08155
+    # signingkey = B5989E662182C4FA74E6A5ABF423CA2385368436
 [pass]
     signcommits = true
 [branch]
     autosetuprebase = always
-[remote "orchard"]
-    email = jenner_lafave@apple.com
-    token = VfWoV7tKAyNecdvXaX1R
-[gitopen "gitlab"]
-    domain = gitlab.sd.apple.com
 [rerere]
     enabled = true
 [filter "lfs"]
@@ -139,3 +130,7 @@
 	process = git-lfs filter-process
 [gpg]
 	program = gpg
+[init]
+	defaultBranch = main
+[commit]
+	gpgsign = true

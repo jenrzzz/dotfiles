@@ -15,6 +15,7 @@
 --ignore-dir=is:tmp
 --ignore-dir=is:.ropeproject
 --ignore-dir=is:.virtualenv
+--ignore-dir=is:frontend/lib
 
 # Ignore ctags
 --ignore-file=is:tags

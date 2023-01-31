@@ -85,3 +85,4 @@ set -o pipefail
 
 # something weird is happening with tmuxinator
 unset GEM_HOME
+. "$HOME/.cargo/env"
