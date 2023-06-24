@@ -269,7 +269,7 @@ Plugin 'delphinus/vim-firestore'
 Plugin 'prisma/vim-prisma'
 
 call vundle#end()
-lua require'navigator'.setup({transparency = 0, lsp = { format_on_save = false, diagnostic = { underline = false }}})
+lua require'navigator'.setup({transparency = 0, icons = { icons = false }, lsp = { format_on_save = false }})
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
 let g:rspec_command = 'Dispatch bundle exec rspec {spec}'
