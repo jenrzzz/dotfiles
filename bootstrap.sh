@@ -40,7 +40,6 @@ function doIt() {
             echo "    Linked $f."
         fi
     done
-#    rsync -av ".vim/" ~/.vim/ --quiet
 }
 
 function cp_ssh_cfg() {
@@ -61,16 +60,16 @@ else
     read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        if [[ ! -d ~/.vim/bundle/vundle ]]; then
-          echo -n "Installing vundle... "
-          install_vundle
-          echo "done"
-        else
-          echo -n "Updating vundle... "
-          cd ~/.vim/bundle/vundle
-          git pull --quiet
-          echo "done"
-        fi
+#        if [[ ! -d ~/.vim/bundle/vundle ]]; then
+#          echo -n "Installing vundle... "
+#          install_vundle
+#          echo "done"
+#        else
+#          echo -n "Updating vundle... "
+#          cd ~/.vim/bundle/vundle
+#          git pull --quiet
+#          echo "done"
+#        fi
         cd $STARTWD
         echo "Copying dotfiles..."
         doIt

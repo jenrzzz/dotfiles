@@ -1,4 +1,4 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
 [ -n "$PS1" ] && source ~/.bash_profile
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-. "$HOME/.cargo/env"

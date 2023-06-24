@@ -1,3 +1,4 @@
+eval $(/opt/homebrew/bin/brew shellenv)
 # Print fortune first so we don't get bored
 if command -v fortune &>/dev/null; then
     if command -v cowsay &>/dev/null; then
@@ -85,4 +86,3 @@ set -o pipefail
 
 # something weird is happening with tmuxinator
 unset GEM_HOME
-. "$HOME/.cargo/env"

@@ -23,3 +23,7 @@ tags
 quickfix*.out
 
 .yardoc
+
+backend/functions/.envrc
+backend/functions/firebase-admin-key.json
+.node-version

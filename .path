@@ -1,6 +1,6 @@
 # vim:set ft=sh:
 # Start fresh
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # Append npm binaries if they're there
 if [[ -d /usr/local/share/npm/bin ]]; then

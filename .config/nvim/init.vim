@@ -2,7 +2,6 @@
 " a mutated mash-up of countless other dotfiles
 " by jenrzzz
 
-set nocompatible                " get rid of strict vi compatibility!
 set hidden                      " allow unsaved background buffers and remember marks/undo for them
 set number                      " line numbering on
 set autoindent                  " autoindent on
@@ -25,9 +24,8 @@ set incsearch                   " incremental searching
 set hlsearch
 set bs=2                        " fix backspacing in insert mode
 set clipboard=unnamed           " Use the OS clipboard by default
-set ttyfast                     " Optimize for fast terminal connections
-set lazyredraw
-set regexpengine=1              " engine 0 is slow with syntax highlighting
+" set lazyredraw
+" set regexpengine=1              " engine 0 is slow with syntax highlighting
 
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
@@ -42,7 +40,6 @@ set wildignore+=vendor/cache/*
 set wildignore+=*.gem
 set wildignore+=*/log/*
 set wildignore+=*/tmp/*
-set wildignore+=lib/src/
 set wildignore+=*/node_modules/*
 set wildignore+=*/dist/*,*/public/*
 set wildignore+=*/.ropeproject/*
@@ -68,11 +65,6 @@ set laststatus=2                " Always show status line
 set shortmess=atI               " Skip intro message
 set title                       " Show filename in titlebar
 let &titleold=getcwd()          " Set the xterm title to the cwd on exit
-
-" Normally, Vim messes with iskeyword when you open a shell file. This can
-" leak out, polluting other file types even after a 'set ft=' change. This
-" variable prevents the iskeyword change so it can't hurt anyone.
-let g:sh_noisk=1
 
 " airline stuff
 let g:airline_powerline_fonts = 1
@@ -100,9 +92,10 @@ if has('mouse')
     set mouse=a
 endif
 
-" Use ack instead of grep if we have it
-if executable("ack")
-    set grepprg=ack\ -H\ --nogroup\ --nocolor\ --ignore-dir=tmp\ --ignore-dir=coverage
+" Use ag instead of grep if we have it
+if executable("ag")
+  set grepprg=ag\ --vimgrep\ $*
+  set grepformat=%f:%l:%c:%m
 endif
 
 " Default tabbing
@@ -111,8 +104,6 @@ set expandtab shiftwidth=2 softtabstop=2
 " Show syntax
 syntax on
 
-" Edit the temp crontab in place when we do crontab -e
-au FileType crontab set nobackup nowritebackup
 set backupskip=/tmp/*,/private/tmp/*
 
 " Buffer splits and stuff
@@ -162,31 +153,27 @@ command! AV OpenVertical(alternate#FindAlternate())
 
 
 """ BUNDLES
+set nocompatible
+filetype on
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-Plugin 'gmarik/vundle'
+set rtp+=~/.config/nvim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
 
 " Language server
 Plugin 'neovim/nvim-lspconfig'
-Plugin 'j-hui/fidget.nvim' "
-Plugin 'hrsh7th/nvim-cmp'
-Plugin 'hrsh7th/cmp-nvim-lsp'
-Plugin 'hrsh7th/cmp-vsnip'
-Plugin 'hrsh7th/cmp-path'
-Plugin 'hrsh7th/cmp-buffer'
-Plugin 'hrsh7th/vim-vsnip'
-Plugin 'simrat39/rust-tools.nvim'
+Plugin 'ray-x/guihua.lua'
+Plugin 'ray-x/navigator.lua'
+Plugin 'nvim-treesitter/nvim-treesitter'
+Plugin 'j-hui/fidget.nvim'
 Plugin 'nvim-lua/popup.nvim'
 Plugin 'nvim-lua/plenary.nvim'
 Plugin 'nvim-telescope/telescope.nvim'
-Plugin 'jose-elias-alvarez/typescript.nvim'
-
-lua require('langsupport')
+Plugin 'MunifTanjim/nui.nvim'
+Plugin 'nvim-telescope/telescope-file-browser.nvim'
 
 " interface
 Plugin 'bling/vim-airline'                " Fancy statusline and buffer list
-Plugin 'majutsushi/tagbar'                " Show ctags stack with TagbarToggle
 
 " motion, format
 Plugin 'easymotion/vim-easymotion'
@@ -197,15 +184,10 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " " or
 " " `s{char}{char}{label}`
 " Need one more keystroke, but on average, it may be more comfortable.
-nmap <Space> <Plug>(easymotion-overwin-f2)
+nmap <Space><Space> <Plug>(easymotion-overwin-f2)
 
 " Turn on case-insensitive feature
 let g:EasyMotion_smartcase = 1
-
-" JK motions: Line motions
-map <Leader>e <Plug>(easymotion-j)
-map <Leader>i <Plug>(easymotion-k)
-
 
 Plugin 'goldfeld/vim-seek'                " Seek motion (s); like f but takes two characters to jump to
 Plugin 'nelstrom/vim-visual-star-search'  " Search for text selected in visual mode with '*' or '#'
@@ -228,6 +210,8 @@ Plugin 'compactcode/open.vim'             " Open files that were found by an ext
 Plugin 'rizzatti/dash.vim'                " Search Dash.app for term with <Plug>DashSearch
 Plugin 'triglav/vim-visual-increment'     " use CTRL+A/X to create increasing sequence of numbers or letters via visual mode
 Plugin 'wincent/Command-T'
+Plugin 'dpayne/CodeGPT.nvim'              " :Chat
+Plugin 'github/copilot.vim'
 
 let g:CommandTPreferredImplementation='ruby'
 let g:CommandTMatchWindowAtTop=1 " show window at top
@@ -245,28 +229,24 @@ Plugin 'tpope/vim-markdown'
 Plugin 'mediawiki.vim'
 
 " ruby
-let g:ruby_host_prog = '~/.rbenv/versions/3.1.2/bin/neovim-ruby-host'
+let g:ruby_host_prog = '~/.rbenv/versions/3.2.0/bin/neovim-ruby-host'
 Plugin 'jenrzzz/vim-ruby'
 Plugin 'rake.vim'
 Plugin 'thoughtbot/vim-rspec'
 Plugin 'ingydotnet/yaml-vim'
 Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-cucumber'
-Plugin 'rodjek/vim-puppet'
 
 " python
-Plugin 'python-mode/python-mode'
-Plugin '5long/pytest-vim-compiler'
+" Plugin 'python-mode/python-mode'
+" Plugin '5long/pytest-vim-compiler'
 
 " javascript
 Plugin 'neoclide/vim-jsx-improve'
-Plugin 'pangloss/vim-javascript'
-Plugin 'othree/javascript-libraries-syntax.vim'
-Plugin 'rschmukler/pangloss-vim-indent'
+" Plugin 'rschmukler/pangloss-vim-indent'
 Plugin 'nono/vim-handlebars'
 Plugin 'kchmck/vim-coffee-script'
-Plugin 'ternjs/tern_for_vim'
-Plugin 'leafgarland/typescript-vim'
+" Plugin 'ternjs/tern_for_vim'
+" Plugin 'leafgarland/typescript-vim'
 
 " css/html
 Plugin 'othree/html5.vim'
@@ -285,6 +265,11 @@ Plugin 'hzchirs/vim-material'
 Plugin 'NLKNguyen/papercolor-theme'
 
 Plugin 'rust-lang/rust.vim'
+Plugin 'delphinus/vim-firestore'
+Plugin 'prisma/vim-prisma'
+
+call vundle#end()
+lua require'navigator'.setup({transparency = 0, lsp = { format_on_save = false, diagnostic = { underline = false }}})
 
 let g:markdown_fenced_languages = ['coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml']
 let g:rspec_command = 'Dispatch bundle exec rspec {spec}'
@@ -350,6 +335,17 @@ function EnableTypeScriptReactAlternates()
   let b:alternate_enabled = 1
 endfunction
 
+function! s:CloseNetrw() abort
+  for bufn in range(1, bufnr('$'))
+    if bufexists(bufn) && getbufvar(bufn, '&filetype') ==# 'netrw'
+      silent! execute 'bwipeout ' . bufn
+      if getline(2) =~# '^" Netrw '
+        silent! bwipeout
+      endif
+      return
+    endif
+  endfor
+endfunction
 
 " Automatic commands (if possible)
 if has("autocmd")
@@ -394,8 +390,11 @@ if has("autocmd")
     au FileType groovy setlocal sw=4 sts=4
     au FileType php setlocal sw=4 sts=4 ts=4
 
-    au FileType typescript call EnableTypeScriptAlternates()
-    au FileType typescriptreact call EnableTypeScriptReactAlternates()
+    " au FileType typescript call EnableTypeScriptAlternates()
+    " au FileType typescriptreact call EnableTypeScriptReactAlternates()
+
+    autocmd FileType netrw nnoremap <buffer><silent> <Esc> :call <SID>CloseNetrw()<CR>
+    autocmd FileType netrw nnoremap <buffer><silent> q     :call <SID>CloseNetrw()<CR>
 endif
 
 " Set colorscheme last in case a bundle needs to load
@@ -432,7 +431,6 @@ nmap <F1> <Esc>
 " (thanks ryanb)
 cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 
-" For switching between many opened file by using ctrl+l or ctrl+h
 " TComment mappings
 nnoremap // :TComment<CR>
 vnoremap // :TComment<CR>
@@ -444,7 +442,7 @@ noremap <leader>ss :call StripWhitespace()<CR>
 map <Leader>go :call OpenURL() <CR>
 
 " Use ,gb to show blame
-map <Leader>gb :Gblame <CR>
+map <Leader>gb :Git blame <CR>
 
 " Use ,on to close all but the active window
 map <Leader>on :only <CR>
@@ -458,17 +456,9 @@ map <Leader><Right> :diffget //3 <bar> diffupdate <CR>
 map <Leader><Up> [c
 map <Leader><Down> ]c
 
-" Hide search highlighting with ,h
-map <Leader>h :set invhls <CR>
-
-" Use ,gw to write the current file to the index and working tree
-" (and exit vimdiff mode)
-map <Leader>gw :Gwrite <CR>
-
-" Use ,d to open a diff for the current buffer in a tab
-" Use ,D to close it
-nnoremap <leader>d :GdiffInTab<cr>
-nnoremap <leader>D :tabclose<cr>
+" Disable Shift-Up and Shift-Down in insert mode cause I always hit it by accident
+inoremap <S-Up> <nop>
+inoremap <S-Down> <nop>
 
 " Use C-k or F7 and C-j or F8 to move through buffers and ,n/,m to move through tabs.
 " and F8/F9 to move through quickfix
@@ -496,29 +486,20 @@ imap <c-c> <esc>
 " Search for term in Dash with ,ds
 nmap <silent> <leader>ds <Plug>DashSearch
 
-" Show tagbar with ,tt
-" nmap <silent> <leader>tt :TagbarToggle<CR>
-
 " Highlight current column with ,cc
 nnoremap <leader>cc :call HighlightColumn()<CR>
 
 " Make floating errors readable
 highlight DiagnosticFloatingError guibg='Black'
+nmap <space>e :lua vim.diagnostic.open_float()<CR>
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" MAPS TO JUMP TO SPECIFIC COMMAND-T TARGETS AND FILES
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>gr :topleft :split config/routes.rb<cr>
+" telescope
+lua require("guihua.listview").opts = { transparency = nil }
+lua require("telescope").load_extension "file_browser"
+nnoremap <leader>ff :Telescope find_files<CR>
+nnoremap <leader>fs :Telescope treesitter<CR>
+nnoremap <leader>g :Telescope live_grep<CR>
+nnoremap <leader>h :Telescope git_bcommits<CR>
+
 map <leader>t :CommandT<cr>
-map <leader>gR :call ShowRoutes()<cr>
-map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
-map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
-map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
-map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
-map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>gs :CommandTFlush<cr>\|:CommandT spec<cr>
-map <leader>gg :topleft 100 :split Gemfile<cr>
-map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
-
+lua vim.highlight.priorities.semantic_tokens = 5
