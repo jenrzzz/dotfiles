@@ -11,9 +11,11 @@
 
 # Files
 data.location=~/.task
+include solarized-dark-256.theme
 
-pomodoro.taskwarrior_path=/usr/local/bin/task
-uda.radar_id.type=string
-uda.radar_id.label=Radar
-context.nimbus=project:nimbus or project:infra or project:docapp
-context.allocations=project:allocations or project:infra or project:docapp
+pomodoro.taskwarrior_path=/opt/homebrew/bin/task
+# uda.radar_id.type=string
+# uda.radar_id.label=Radar
+# context.nimbus=project:nimbus or project:infra or project:docapp
+# context.allocations=project:allocations or project:infra or project:docapp
+news.version=2.6.0

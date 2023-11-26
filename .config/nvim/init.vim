@@ -212,6 +212,7 @@ Plugin 'triglav/vim-visual-increment'     " use CTRL+A/X to create increasing se
 Plugin 'wincent/Command-T'
 Plugin 'dpayne/CodeGPT.nvim'              " :Chat
 Plugin 'github/copilot.vim'
+Plugin 'farseer90718/vim-taskwarrior'
 
 let g:CommandTPreferredImplementation='ruby'
 let g:CommandTMatchWindowAtTop=1 " show window at top
@@ -267,6 +268,7 @@ Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'rust-lang/rust.vim'
 Plugin 'delphinus/vim-firestore'
 Plugin 'prisma/vim-prisma'
+Plugin 'hashivim/vim-terraform'
 
 call vundle#end()
 lua require'navigator'.setup({transparency = 0, icons = { icons = false }, lsp = { format_on_save = false }})
@@ -485,6 +487,8 @@ imap <c-c> <esc>
 
 " Search for term in Dash with ,ds
 nmap <silent> <leader>ds <Plug>DashSearch
+nmap <C-n> :cn<CR>
+nmap <C-p> :cp<CR>
 
 " Highlight current column with ,cc
 nnoremap <leader>cc :call HighlightColumn()<CR>
@@ -503,3 +507,8 @@ nnoremap <leader>h :Telescope git_bcommits<CR>
 
 map <leader>t :CommandT<cr>
 lua vim.highlight.priorities.semantic_tokens = 5
+
+augroup HighlightNOTE
+    autocmd!
+    autocmd WinEnter,VimEnter * :silent! call matchadd('Todo', 'NOTE', -1)
+augroup END

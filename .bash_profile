@@ -86,3 +86,5 @@ set -o pipefail
 
 # something weird is happening with tmuxinator
 unset GEM_HOME
+
+complete -C /opt/homebrew/Cellar/tfenv/3.0.0/versions/1.2.9/terraform terraform

@@ -27,3 +27,6 @@ quickfix*.out
 backend/functions/.envrc
 backend/functions/firebase-admin-key.json
 .node-version
+
+firebase-admin-key.json
+.envrc
