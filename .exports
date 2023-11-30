@@ -54,3 +54,6 @@ if command -v rbenv >/dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
 # nodenv shim
 if command -v nodenv >/dev/null 2>&1; then eval "$(nodenv init -)"; fi
+
+# make fzf use ag
+if command -v fzf >/dev/null 2>&1; then export FZF_DEFAULT_COMMAND="ag -g ''"; fi
