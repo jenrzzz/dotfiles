@@ -62,11 +62,21 @@
     attributesfile = ~/.gitattributes
     # Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
     whitespace = space-before-tab,trailing-space
+    pager = delta
     autocrlf = input
-	editor = /usr/bin/vim -u NONE -U NONE -N
+    editor = /usr/bin/vim -u NONE -U NONE -N
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    light = false
+
 
 [diff]
-  algorithm = patience
+    algorithm = patience
+    colorMoved = default
 
 [color]
     # Use colors in Git commands that are capable of colored output when outputting to the terminal
