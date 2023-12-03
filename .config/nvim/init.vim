@@ -55,14 +55,12 @@ try
       set background=dark
       colorscheme jellybeans
       let g:airline_theme = 'jellybeans'
+      let g:jellybeans_use_term_italics = 1
     endif
 catch /^Vim\%((\a\+)\)\=:E185/
   set background=dark
   colorscheme elflord
 endtry
-
-" Make floating errors readable
-"highlight DiagnosticFloatingError guibg='Black'
 
 runtime mappings.vim
 runtime highlights.vim

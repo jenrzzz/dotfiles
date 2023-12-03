@@ -13,8 +13,12 @@ return {
     opts = {},
   },
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.4',
-    dependencies = { 'nvim-lua/plenary.nvim' }
+    "nvim-telescope/telescope.nvim", tag = "0.1.4",
+    dependencies = { "nvim-lua/plenary.nvim" }
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" }
   },
 
   -- themes
