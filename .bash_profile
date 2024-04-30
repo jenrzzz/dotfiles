@@ -1,4 +1,4 @@
-eval $(/opt/homebrew/bin/brew shellenv)
+eval $("${HOMEBREW_EXE:=/usr/local/bin/brew}" shellenv)
 # Print fortune first so we don't get bored
 if command -v fortune &>/dev/null; then
     if command -v cowsay &>/dev/null; then

@@ -216,7 +216,7 @@ alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
 alias luna='ssh -A jenner@luna.jfave.com'
 alias radarget='curl -X GET -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
 alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
-alias editsieve="ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve && sudo sievec /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
+alias editsieve="TERM=xterm-256color ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve && sudo sievec /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
 
 alias biggestfiles="du -a . | sort -n -r | head -n 20"
 alias ducks="du -cks * | sort -rn | head"
