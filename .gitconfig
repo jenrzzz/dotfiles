@@ -124,10 +124,8 @@
     insteadOf = "gist:"
 [user]
     name = Jenner La Fave
-    # email = jenner@jfave.com
-    email = jenner@flux.ai
-    signingkey = 7E3BC2485101508C9BB45A1F345C047656B08155
-    # signingkey = B5989E662182C4FA74E6A5ABF423CA2385368436
+    email = jenner@jfave.com
+    signingkey = B5989E662182C4FA74E6A5ABF423CA2385368436
 [pass]
     signcommits = true
 [branch]
