@@ -1,4 +1,4 @@
-eval $("${HOMEBREW_EXE:=/usr/local/bin/brew}" shellenv)
+eval $("${HOMEBREW_EXE:=/opt/homebrew/bin/brew}" shellenv)
 # Print fortune first so we don't get bored
 if command -v fortune &>/dev/null; then
     if command -v cowsay &>/dev/null; then
@@ -55,6 +55,10 @@ for file in $HOME/.bash-completion/*; do
     [ -r "$file" ] && source "$file"
 done
 
+for file in /opt/homebrew/etc/bash_completion.d/*; do
+    [ -r "$file" ] && source "$file"
+done
+
 # https://github.com/rupa/z
 zpath="$(brew --prefix)/etc/profile.d/z.sh"
 [ -f "$zpath" ] && source "$zpath"
@@ -70,6 +74,10 @@ hash phpenv &>/dev/null && eval "$(phpenv init -)"
 
 # Use pyenv
 hash pyenv &>/dev/null && eval "$(pyenv init -)"
+
+if command -v ngrok &>/dev/null; then
+  eval "$(ngrok completion)"
+fi
 
 # # Init gpg-agent if it's there
 # if hash gpg-agent &>/dev/null; then

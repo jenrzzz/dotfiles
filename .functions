@@ -55,9 +55,12 @@ function grq {
   fi
 }
 
+function location {
+  curl --silent http://localhost:8000/current_location 
+}
 
 function whereami {
-  curl --silent http://api.ipstack.com/71.198.4.87?access_key=8e868cd6afdd87607087fbbaea1c6256 | jq -r '"\(.latitude),\(.longitude)"'
+  location | jq -r '"\(.latitude),\(.longitude)"'
 }
 
 function sunrise-sunset {
