@@ -1,4 +1,12 @@
-eval $("${HOMEBREW_EXE:=/opt/homebrew/bin/brew}" shellenv)
+if [[ -z "$HOMEBREW_EXE" ]]; then
+    if [ -f "/usr/local/bin/brew"]; then
+        HOMEBREW_EXE="/usr/local/bin/brew"
+    elif [ -f "/opt/homebrew/bin/brew" ]; then
+        HOMEBREW_EXE="/opt/homebrew/bin/brew"
+    fi
+fi
+eval $("${HOMEBREW_EXE}" shellenv)
+
 # Print fortune first so we don't get bored
 if command -v fortune &>/dev/null; then
     if command -v cowsay &>/dev/null; then
