@@ -1,0 +1,66 @@
+{
+    "segments": {
+        "right": [
+            {
+                "function": "powerline.segments.common.players.itunes",
+                "name": "player",
+                "args": {
+                    "format": "{title:.18} - {artist:.18}",
+                    "state_symbols": {
+                      "play": "♫"
+                    }
+                }
+            },
+            {
+                "function": "powerline.segments.common.sys.system_load",
+                "args": {
+                    "threshold_good": 2,
+                    "threshold_bad": 3
+                }
+            },
+            {
+                "function": "powerline.segments.common.bat.battery",
+                "args": {
+                    "format": "❤{ac_state}{capacity:3.0%}"
+                }
+            },
+            {
+                "function": "powerline.segments.common.wthr.weather",
+                "args": {
+                    "unit": "F",
+                    "location_query": "94040",
+                    "temp_coldest": 0,
+                    "temp_hottest": 100,
+                    "icons": {
+                      "day": "☀",
+                      "blustery": "🍃",
+                      "rainy": "🌧 ",
+                      "cloudy": "☁",
+                      "snowy": "❄",
+                      "foggy": "🌫",
+                      "sunny": "☀",
+                      "night": "🌙 ",
+                      "windy": "🌬",
+                      "stormy": "🌩 ",
+                      "not_available": "?",
+                      "unknown": "?"
+                    }
+                }
+            },
+            {
+                "function": "powerline.segments.common.time.date",
+                "args": {
+                    "format": "%d %b"
+                }
+            },
+            {
+                "function": "powerline.segments.common.time.date",
+                "name": "time",
+                "args": {
+                    "format": "%H:%M",
+                    "istime": true
+                }
+            }
+        ]
+    }
+}

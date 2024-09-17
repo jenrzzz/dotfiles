@@ -26,6 +26,10 @@ if [[ -d /Users/jenner/Source/contrib/emsdk ]]; then
   export PATH="/Users/jenner/Source/contrib/emsdk:/Users/jenner/Source/contrib/emsdk/node/14.18.2_64bit/bin:/Users/jenner/Source/contrib/emsdk/upstream/emscripten:$PATH"
 fi
 
+if [[ -d /Users/jenner/.cargo/bin ]]; then
+  export PATH="/Users/jenner/.cargo/bin:$PATH"
+fi
+
 # Prepend `~/bin`
 export PATH="$HOME/.bin:$HOME/.local/bin:$PATH"
 
