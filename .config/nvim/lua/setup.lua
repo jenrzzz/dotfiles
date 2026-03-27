@@ -42,6 +42,8 @@ require('other-nvim').setup({
   }
 })
 
+require('mini.align').setup()
+
 require'nvim-treesitter.configs'.setup {
   textobjects = {
     lsp_interop = {

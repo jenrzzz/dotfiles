@@ -36,6 +36,7 @@ return {
   "tpope/vim-speeddating",
   "tpope/vim-unimpaired",
   "glts/vim-radical",
+  { 'echasnovski/mini.align', version = false },
   {
     'numToStr/Comment.nvim',
     opts = {},
