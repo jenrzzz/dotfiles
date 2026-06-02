@@ -123,7 +123,9 @@ function hq {
   "$cmd"
 }
 
-bind -x '"^R":"hq\n"'
+if [[ "${SHELLOPTS}" =~ (vi|emacs) ]]; then
+  bind -x '"^R":"hq\n"'
+fi
 
 # Print return value
 alias returns="?"
@@ -1036,4 +1038,11 @@ function ledsoff {
 
 function ackts {
   ack "$@" **/*.ts{,x}
+}
+
+function removedupes {
+  md5sum * | \
+  sort | \
+  awk 'BEGIN{lasthash = ""} $1 == lasthash {print $2} {lasthash = $1}' | \
+  xargs rm -i
 }

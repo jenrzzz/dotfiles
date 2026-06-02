@@ -197,15 +197,12 @@ color index     blue default    '~D'            # Deleted Mails - use dark color
 source ~/.mutt/gpg.rc
 
 # Accounts
-source ~/.mutt/jenner_lafave.apple.com
 source ~/.mutt/jenner.jfave.com
 
-macro index <f2> '<change-folder>imaps://mail.apple.com<enter>'
-macro index <f3> '<change-folder>imaps://mail.jfave.com<enter>'
+macro index <f2> '<change-folder>imaps://mail.jfave.com<enter>'
 macro index,pager aa 's+Archive<enter>'
 macro index,pager rr '<refresh>'
 
-folder-hook 'apple.com' 'source ~/.mutt/jenner_lafave.apple.com'
 folder-hook 'jfave.com' 'source ~/.mutt/jenner.jfave.com'
 
 

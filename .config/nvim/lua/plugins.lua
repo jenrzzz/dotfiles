@@ -29,7 +29,9 @@ return {
   "gerw/vim-HiLinkTrace",
 
   -- motion
-  "ggandor/leap.nvim",
+  {
+     url = "https://codeberg.org/andyg/leap.nvim",
+  },
 
   -- text objects
   "tpope/vim-surround",
@@ -57,7 +59,6 @@ return {
   {"LintaoAmons/scratch.nvim", event = "VeryLazy"},
   "rgroli/other.nvim",
   "wsdjeg/vim-fetch",
-  "dpayne/CodeGPT.nvim",
   "github/copilot.vim",
   "farseer90718/vim-taskwarrior",
   "onsails/lspkind.nvim",

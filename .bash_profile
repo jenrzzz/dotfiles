@@ -1,5 +1,5 @@
 if [[ -z "$HOMEBREW_EXE" ]]; then
-    if [ -f "/usr/local/bin/brew"]; then
+    if [ -f "/usr/local/bin/brew" ]; then
         HOMEBREW_EXE="/usr/local/bin/brew"
     elif [ -f "/opt/homebrew/bin/brew" ]; then
         HOMEBREW_EXE="/opt/homebrew/bin/brew"
@@ -95,7 +95,7 @@ fi
 # fi
 
 # Unmap Ctrl-S and Ctrl-Q so that they'll work in vim
-stty start undef stop undef
+#stty start undef stop undef
 
 # Don't do weird shit
 set -o pipefail

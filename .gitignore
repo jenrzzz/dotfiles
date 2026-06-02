@@ -19,7 +19,7 @@ Thumbs.db
 .vim
 
 # ctags
-tags
+/tags
 quickfix*.out
 
 .yardoc
@@ -31,3 +31,5 @@ backend/functions/firebase-admin-key.json
 firebase-admin-key.json
 .envrc
 .local
+
+**/.claude/settings.local.json
