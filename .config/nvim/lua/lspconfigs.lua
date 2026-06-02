@@ -47,14 +47,15 @@ local function add_ruby_deps_command(client, bufnr)
   {nargs = "?", complete = function() return {"all"} end})
 end
 
-require("lspconfig").ruby_lsp.setup({
+vim.lsp.config("ruby_lsp", {
   on_attach = function(client, buffer)
     client.server_capabilities.semanticTokensProvider = nil
     add_ruby_deps_command(client, buffer)
   end,
 })
+vim.lsp.enable("ruby_lsp")
 
-require("lspconfig").pylsp.setup({})
+vim.lsp.enable("pylsp")
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
