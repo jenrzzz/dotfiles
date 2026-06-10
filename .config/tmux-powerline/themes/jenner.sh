@@ -38,7 +38,8 @@ TMUX_POWERLINE_SEG_WEATHER_LON=$(cat $HOME/.location/longitude | tr -d '\n')
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"  #I#{?window_flags,#F, }"
+		# Bell rings as a yellow ● instead of "!"; restore the active window's accent fg after.
+		"  #I#{?window_bell_flag,#[fg=colour220]●#[fg=colour74],#{?window_flags,#F, }}"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
 	)
@@ -57,7 +58,9 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 		# Attention flag: an inactive window whose Claude is idle/awaiting input (@cstate=attn,
 		# set by tmux-claude-titles.sh) turns amber so you can spot it without cycling windows.
 		"#{?#{==:#{@cstate},attn},#[fg=colour214],}"
-		"  #I#{?window_flags,#F, }"
+		# Bell rings as a yellow ● instead of the raw "!", then restore the window's base fg
+		# (amber if this window is also flagged for attention, otherwise the muted gray).
+		"  #I#{?window_bell_flag,#[fg=colour220]●#{?#{==:#{@cstate},attn},#[fg=colour214],#[fg=colour244]},#{?window_flags,#F, }}"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
 	)
