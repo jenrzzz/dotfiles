@@ -39,7 +39,7 @@ TMUX_POWERLINE_SEG_WEATHER_LON=$(cat $HOME/.location/longitude | tr -d '\n')
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
 		# Bell rings as a yellow ● instead of "!"; restore the active window's accent fg after.
-		"  #I#{?window_bell_flag,#[fg=colour220]●#[fg=colour74],#{?window_flags,#F, }}"
+		"  #I#{?window_bell_flag,#[fg=colour220]▴#[fg=colour74],#{?window_flags,#F, }}"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
 	)
@@ -60,7 +60,7 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 		"#{?#{==:#{@cstate},attn},#[fg=colour214],}"
 		# Bell rings as a yellow ● instead of the raw "!", then restore the window's base fg
 		# (amber if this window is also flagged for attention, otherwise the muted gray).
-		"  #I#{?window_bell_flag,#[fg=colour220]●#{?#{==:#{@cstate},attn},#[fg=colour214],#[fg=colour244]},#{?window_flags,#F, }}"
+		"  #I#{?window_bell_flag,#[fg=colour220]▴#{?#{==:#{@cstate},attn},#[fg=colour214],#[fg=colour244]},#{?window_flags,#F, }}"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
 	)
@@ -106,7 +106,7 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 		# turns into ⌘/COPY in place — no extra left padding on the session list.
 		"mode_indicator 236 244 ${TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR} 236 236 both_disable separator_disable"
 		"sessions 236 244"
-		"claude_fleet 233 39 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
+		"claude_fleet 233 39 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN} 234 244"
 		#"mode_indicator 165 0"
 		#"ifstat 30 255"
 		#"ifstat_sys 30 255"
