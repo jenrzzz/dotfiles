@@ -18,6 +18,11 @@ fi
 # See Color formatting section below for details on what colors can be used here.
 TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-'234'}
 TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-'74'}
+# Active-window highlight. The old `format inverse` painted the whole (now long) title with
+# the bright accent bg (74) — eye-searing. Use a dim same-hue blue with light text instead.
+# Dial the bg dimmer/brighter here: 23/17 are darker, 238 is a neutral gray, 74 is the original.
+TMUX_POWERLINE_WINDOW_CURRENT_BG=${TMUX_POWERLINE_WINDOW_CURRENT_BG:-'24'}
+TMUX_POWERLINE_WINDOW_CURRENT_FG=${TMUX_POWERLINE_WINDOW_CURRENT_FG:-'254'}
 # shellcheck disable=SC2034
 TMUX_POWERLINE_SEG_AIR_COLOR=$(air_color)
 
@@ -34,13 +39,15 @@ TMUX_POWERLINE_SEG_WEATHER_LON=$(cat $HOME/.location/longitude | tr -d '\n')
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[$(format inverse)]"
+		"#[fg=${TMUX_POWERLINE_WINDOW_CURRENT_BG},bg=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR}]"
 		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
+		"#[fg=${TMUX_POWERLINE_WINDOW_CURRENT_FG},bg=${TMUX_POWERLINE_WINDOW_CURRENT_BG},nobold,noitalics,nounderscore]"
 		" #I#F "
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W} "
-		"#[$(format regular)]"
+		"#[fg=${TMUX_POWERLINE_WINDOW_CURRENT_BG},bg=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR}]"
 		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
+		"#[$(format regular)]"
 	)
 fi
 
