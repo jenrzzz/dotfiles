@@ -54,6 +54,9 @@ fi
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
+		# Attention flag: an inactive window whose Claude is idle/awaiting input (@cstate=attn,
+		# set by tmux-claude-titles.sh) turns amber so you can spot it without cycling windows.
+		"#{?#{==:#{@cstate},attn},#[fg=colour214],}"
 		"  #I#{?window_flags,#F, }"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
@@ -89,10 +92,15 @@ fi
 # separator_foreground_color options must still be specified so that appropriate index
 # of options to support the spacing_disable and separator_disable features can be used
 
+# mode_indicator (leftmost): invisible in normal mode, lights up on prefix / copy-mode. Its
+# per-mode text/colors are configured in ../config.sh (sourced after this theme, so it wins).
+
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
+		"mode_indicator 236 244"
 		"sessions 236 244"
+		"claude_fleet 236 39"
 		#"mode_indicator 165 0"
 		#"ifstat 30 255"
 		#"ifstat_sys 30 255"

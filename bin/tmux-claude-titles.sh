@@ -27,6 +27,7 @@ declare -A win_name      # window_id -> window_name
 declare -A win_path      # window_id -> active pane cwd
 declare -A win_claude    # window_id -> 1 if any pane is Claude
 declare -A win_activity  # window_id -> Claude pane_title
+declare -A win_state     # window_id -> "working" | "attn" (Claude windows only)
 
 while IFS=$'\t' read -r session wid wname active cmd path title; do
 	[[ -n "$wid" ]] || continue
@@ -87,7 +88,28 @@ for wid in "${!win_session[@]}"; do
 
 	if [[ -n "${win_claude[$wid]:-}" ]]; then
 		tmux set-option -w -t "$wid" @ctitle "${win_activity[$wid]}"
+		# State for the powerline attention flag + fleet count: Claude's title leads with a
+		# braille spinner (⠂⠄⠠…) while it's working, and with ✳ when it's idle / awaiting you.
+		if [[ "${win_activity[$wid]}" == "✳"* ]]; then
+			win_state["$wid"]="attn"
+		else
+			win_state["$wid"]="working"
+		fi
+		tmux set-option -w -t "$wid" @cstate "${win_state[$wid]}"
 	else
 		tmux set-option -uw -t "$wid" @ctitle 2>/dev/null || true
+		tmux set-option -uw -t "$wid" @cstate 2>/dev/null || true
 	fi
 done
+
+# Publish a fleet summary for the powerline claude_fleet segment: total Claude windows and how
+# many are idle/awaiting input. Stored as "<total> <attn>" in a global tmux option.
+claude_total=0
+claude_attn=0
+for wid in "${!win_claude[@]}"; do
+	claude_total=$(( claude_total + 1 ))
+	if [[ "${win_state[$wid]:-}" == "attn" ]]; then
+		claude_attn=$(( claude_attn + 1 ))
+	fi
+done
+tmux set-option -g @claude_fleet "$claude_total $claude_attn"
