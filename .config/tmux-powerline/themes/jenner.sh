@@ -101,7 +101,10 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"mode_indicator 236 244"
+		# both_disable + separator_disable strip powerline's wrapping spaces and the (invisible,
+		# same-bg) separator cell, so in normal mode the indicator is just one blank column that
+		# turns into ⌘/COPY in place — no extra left padding on the session list.
+		"mode_indicator 236 244 ${TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR} 236 236 both_disable separator_disable"
 		"sessions 236 244"
 		"claude_fleet 233 39 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
 		#"mode_indicator 165 0"
