@@ -6,7 +6,7 @@ return {
   "tpope/vim-repeat",
   "glts/vim-magnum",
   "MunifTanjim/nui.nvim",
-  {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
+  {"nvim-treesitter/nvim-treesitter", branch = "main", lazy = false, build = ":TSUpdate"},
   {
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -46,6 +46,7 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
 

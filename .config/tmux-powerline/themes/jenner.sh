@@ -38,7 +38,7 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
 		" #I#F "
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
-		" #W "
+		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W} "
 		"#[$(format regular)]"
 		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
 	)
@@ -56,7 +56,7 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
 		"  #I#{?window_flags,#F, }"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
-		" #W  "
+		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
 	)
 fi
 
@@ -92,7 +92,7 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"tmux_session_info 8 15"
+		"sessions 236 244"
 		#"mode_indicator 165 0"
 		#"ifstat 30 255"
 		#"ifstat_sys 30 255"

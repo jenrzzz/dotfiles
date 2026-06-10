@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# tmux-merge-windows — fold other windows of the current session into the current window
+# as tiled panes ("too many windows -> more panes"). Multi-select with TAB.
+# Meant to run inside `display-popup -E` (see .tmux.conf binding `C-a P`).
+
+set -uo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$here/lib/tmux-session-lib.sh"
+
+dest_win="$(tmux display-message -p '#{window_id}')"
+
+# Candidate windows: everything in the current session except the destination and any
+# excluded/utility window. Lines: <window_id>\t<display>.
+candidates=""
+while IFS=$'\t' read -r wid widx wname; do
+	[[ "$wid" == "$dest_win" ]] && continue
+	is_excluded_name "$wname" && continue
+	candidates+="${wid}	${widx}: ${wname}"$'\n'
+done < <(tmux list-windows -F '#{window_id}	#{window_index}	#{window_name}')
+
+[[ -n "$candidates" ]] || { tmux display-message 'No other windows to merge.'; exit 0; }
+
+selection="$(
+	printf '%s' "$candidates" \
+	| fzf --multi --delimiter='\t' --with-nth=2 --height=100% --reverse \
+	      --prompt='merge into panes (TAB to mark)> ' \
+	      --header='enter: merge selected as panes of this window'
+)"
+[[ -n "$selection" ]] || exit 0
+
+# Join every pane of each selected window into the destination window.
+while IFS=$'\t' read -r wid _; do
+	[[ -n "$wid" ]] || continue
+	while IFS= read -r pid; do
+		[[ -n "$pid" ]] || continue
+		tmux join-pane -d -s "$pid" -t "$dest_win" 2>/dev/null || true
+	done < <(tmux list-panes -t "$wid" -F '#{pane_id}')
+done <<<"$selection"
+
+tmux select-layout -t "$dest_win" tiled

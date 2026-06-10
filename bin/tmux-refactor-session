@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# tmux-refactor-session — split the current (bloated) session into per-directory sessions.
+#
+# Each window is grouped by its directory basename; every group whose name differs from
+# the current session is moved into a session named after that basename (created rooted at
+# the window's directory if needed). Utility windows (EXCLUDE_NAMES, e.g. 👻) stay put.
+# On-demand only — bound to `C-a R`; nothing moves automatically.
+
+set -uo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$here/lib/tmux-session-lib.sh"
+
+# Operate on the session named by $1, or the current session when no arg is given.
+cur_session="${1:-$(tmux display-message -p '#S')}"
+
+# Snapshot the windows first (ids are stable as we move them).
+mapfile -t rows < <(tmux list-windows -t "=$cur_session" -F '#{window_id}	#{window_name}	#{pane_current_path}')
+
+declare -A moved_count
+kept=0
+
+for row in "${rows[@]}"; do
+	IFS=$'\t' read -r wid wname path <<<"$row"
+	[[ -n "$wid" ]] || continue
+
+	if is_excluded_name "$wname"; then
+		kept=$(( kept + 1 ))
+		continue
+	fi
+
+	target="$(sanitize_session_name "$(window_dir_basename "$path")")"
+	if [[ "$target" == "$cur_session" ]]; then
+		kept=$(( kept + 1 ))
+		continue
+	fi
+
+	move_window_to_session "$wid" "$target" "$path"
+	moved_count["$target"]=$(( ${moved_count["$target"]:-0} + 1 ))
+done
+
+# Summarize.
+summary=""
+for t in "${!moved_count[@]}"; do
+	summary+="${t}(${moved_count[$t]}) "
+done
+if [[ -n "$summary" ]]; then
+	tmux display-message "Refactored ${cur_session}: → ${summary%% }; kept ${kept} here."
+else
+	tmux display-message "Nothing to refactor in ${cur_session} (kept ${kept} windows)."
+fi

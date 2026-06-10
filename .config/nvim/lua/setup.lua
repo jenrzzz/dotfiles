@@ -44,104 +44,79 @@ require('other-nvim').setup({
 
 require('mini.align').setup()
 
-require'nvim-treesitter.configs'.setup {
-  textobjects = {
-    lsp_interop = {
-      enable = true,
-      border = 'none',
-      floating_preview_opts = {},
-      peek_definition_code = {
-        ["<leader>df"] = "@function.outer",
-        ["<leader>dF"] = "@class.outer",
-      },
-    },
-    select = {
-      enable = true,
+-- nvim-treesitter `main` branch (required for Neovim 0.11+/0.12).
+-- The `master`-branch `require'nvim-treesitter.configs'.setup{}` module system
+-- is gone; parsers are managed with :TSInstall / :TSUpdate, and textobjects are
+-- configured via the new module API below with explicit keymaps.
+local ok_ts, nvim_treesitter = pcall(require, "nvim-treesitter")
+if ok_ts then
+  nvim_treesitter.setup({})
+end
 
+local ok_to, textobjects = pcall(require, "nvim-treesitter-textobjects")
+if ok_to then
+  textobjects.setup({
+    select = {
       -- Automatically jump forward to textobj, similar to targets.vim
       lookahead = true,
-
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        -- You can optionally set descriptions to the mappings (used in the desc parameter of
-        -- nvim_buf_set_keymap) which plugins like which-key display
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        -- You can also use captures from other query groups like `locals.scm`
-        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-      },
-      -- You can choose the select mode (default is charwise 'v')
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * method: eg 'v' or 'o'
-      -- and should return the mode ('v', 'V', or '<c-v>') or a table
-      -- mapping query_strings to modes.
+      -- Per-textobject selection mode (charwise 'v', linewise 'V', blockwise '<c-v>')
       selection_modes = {
-        ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'V', -- linewise
-        ['@class.outer'] = '<c-v>', -- blockwise
+        ["@parameter.outer"] = "v",
+        ["@function.outer"] = "V",
+        ["@class.outer"] = "<c-v>",
       },
-      -- If you set this to `true` (default is `false`) then any textobject is
-      -- extended to include preceding or succeeding whitespace. Succeeding
-      -- whitespace has priority in order to act similarly to eg the built-in
-      -- `ap`.
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * selection_mode: eg 'v'
-      -- and should return true of false
+      -- Extend the textobject to include surrounding whitespace, like built-in `ap`
       include_surrounding_whitespace = true,
     },
-    swap = {
-      enable = true,
-      swap_next = {
-        ["<leader>a"] = "@parameter.inner",
-      },
-      swap_previous = {
-        ["<leader>A"] = "@parameter.inner",
-      },
-    },
     move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        ["]m"] = "@function.outer",
-        ["]]"] = { query = "@class.outer", desc = "Next class start" },
-        --
-        -- You can use regex matching (i.e. lua pattern) and/or pass a list in a "query" key to group multiple queires.
-        ["]o"] = "@loop.*",
-        -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
-        --
-        -- You can pass a query group to use query from `queries/<lang>/<query_group>.scm file in your runtime path.
-        -- Below example nvim-treesitter's `locals.scm` and `folds.scm`. They also provide highlights.scm and indent.scm.
-        ["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
-        ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
-      },
-      goto_next_end = {
-        ["]M"] = "@function.outer",
-        ["]["] = "@class.outer",
-      },
-      goto_previous_start = {
-        ["[m"] = "@function.outer",
-        ["[["] = "@class.outer",
-      },
-      goto_previous_end = {
-        ["[M"] = "@function.outer",
-        ["[]"] = "@class.outer",
-      },
-      -- Below will go to either the start or the end, whichever is closer.
-      -- Use if you want more granular movements
-      -- Make it even more gradual by adding multiple queries and regex.
-      goto_next = {
-        ["]d"] = "@conditional.outer",
-      },
-      goto_previous = {
-        ["[d"] = "@conditional.outer",
-      }
+      set_jumps = true, -- store movements in the jumplist
     },
-  },
-}
+  })
+
+  local select = require("nvim-treesitter-textobjects.select")
+  local swap = require("nvim-treesitter-textobjects.swap")
+  local move = require("nvim-treesitter-textobjects.move")
+
+  -- select
+  local function sel(obj, group)
+    return function()
+      select.select_textobject(obj, group or "textobjects")
+    end
+  end
+  vim.keymap.set({ "x", "o" }, "af", sel("@function.outer"), { desc = "Select outer function" })
+  vim.keymap.set({ "x", "o" }, "if", sel("@function.inner"), { desc = "Select inner function" })
+  vim.keymap.set({ "x", "o" }, "ac", sel("@class.outer"), { desc = "Select outer class" })
+  vim.keymap.set({ "x", "o" }, "ic", sel("@class.inner"), { desc = "Select inner part of a class region" })
+  vim.keymap.set({ "x", "o" }, "as", sel("@scope", "locals"), { desc = "Select language scope" })
+
+  -- swap
+  vim.keymap.set("n", "<leader>a", function() swap.swap_next("@parameter.inner") end, { desc = "Swap next parameter" })
+  vim.keymap.set("n", "<leader>A", function() swap.swap_previous("@parameter.inner") end, { desc = "Swap previous parameter" })
+
+  -- move
+  local function mv(fn, obj, group)
+    return function()
+      fn(obj, group or "textobjects")
+    end
+  end
+  vim.keymap.set({ "n", "x", "o" }, "]m", mv(move.goto_next_start, "@function.outer"), { desc = "Next function start" })
+  vim.keymap.set({ "n", "x", "o" }, "]]", mv(move.goto_next_start, "@class.outer"), { desc = "Next class start" })
+  vim.keymap.set({ "n", "x", "o" }, "]o", mv(move.goto_next_start, { "@loop.inner", "@loop.outer" }), { desc = "Next loop start" })
+  vim.keymap.set({ "n", "x", "o" }, "]s", mv(move.goto_next_start, "@scope", "locals"), { desc = "Next scope" })
+  vim.keymap.set({ "n", "x", "o" }, "]z", mv(move.goto_next_start, "@fold", "folds"), { desc = "Next fold" })
+
+  vim.keymap.set({ "n", "x", "o" }, "]M", mv(move.goto_next_end, "@function.outer"), { desc = "Next function end" })
+  vim.keymap.set({ "n", "x", "o" }, "][", mv(move.goto_next_end, "@class.outer"), { desc = "Next class end" })
+
+  vim.keymap.set({ "n", "x", "o" }, "[m", mv(move.goto_previous_start, "@function.outer"), { desc = "Previous function start" })
+  vim.keymap.set({ "n", "x", "o" }, "[[", mv(move.goto_previous_start, "@class.outer"), { desc = "Previous class start" })
+
+  vim.keymap.set({ "n", "x", "o" }, "[M", mv(move.goto_previous_end, "@function.outer"), { desc = "Previous function end" })
+  vim.keymap.set({ "n", "x", "o" }, "[]", mv(move.goto_previous_end, "@class.outer"), { desc = "Previous class end" })
+
+  vim.keymap.set({ "n", "x", "o" }, "]d", mv(move.goto_next, "@conditional.outer"), { desc = "Next conditional" })
+  vim.keymap.set({ "n", "x", "o" }, "[d", mv(move.goto_previous, "@conditional.outer"), { desc = "Previous conditional" })
+  -- NOTE: the `main` branch dropped the `lsp_interop` module, so the old
+  -- <leader>df / <leader>dF "peek definition" textobject mappings are gone.
+end
 
