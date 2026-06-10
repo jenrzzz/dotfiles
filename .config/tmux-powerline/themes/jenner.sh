@@ -103,7 +103,7 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
 		"mode_indicator 236 244"
 		"sessions 236 244"
-		"claude_fleet 236 39"
+		"claude_fleet 233 39 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
 		#"mode_indicator 165 0"
 		#"ifstat 30 255"
 		#"ifstat_sys 30 255"
