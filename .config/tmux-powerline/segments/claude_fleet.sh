@@ -12,9 +12,9 @@ run_segment() {
 	attn="${fleet##* }"
 	[ "${total:-0}" -gt 0 ] || return 0
 
-	out="✳ ${total}"
+	out="${total} ✳"
 	if [ "${attn:-0}" -gt 0 ]; then
-		out="${out} #[fg=colour214]●${attn}#[fg=${TMUX_POWERLINE_CUR_SEGMENT_FG}]"
+		out="${out} #[fg=colour214]${attn} ●#[fg=${TMUX_POWERLINE_CUR_SEGMENT_FG}]"
 	fi
 	echo "${out}"
 	return 0
