@@ -18,11 +18,10 @@ fi
 # See Color formatting section below for details on what colors can be used here.
 TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-'234'}
 TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-'74'}
-# Active-window highlight. No background block (a filled bar lit up the whole, now long, title
-# and burned the eyes) — instead the active window stands out by weight + accent color alone:
-# bold text in the accent blue on the normal bg. Change the color/weight here.
-TMUX_POWERLINE_WINDOW_CURRENT_FG=${TMUX_POWERLINE_WINDOW_CURRENT_FG:-'74'}
-TMUX_POWERLINE_WINDOW_CURRENT_ATTR=${TMUX_POWERLINE_WINDOW_CURRENT_ATTR:-'bold,noitalics,nounderscore'}
+# Active-window highlight is set as a tmux *base* style (window-status-current-style in
+# .tmux.conf: accent blue + bold), not inline here — inline #[bold] inside this cached #()
+# format string flickered on redraw. The format below is pure layout; inactive windows get
+# the muted window-status-style. No background block (a filled bar lit up the whole long title).
 # shellcheck disable=SC2034
 TMUX_POWERLINE_SEG_AIR_COLOR=$(air_color)
 
@@ -39,11 +38,9 @@ TMUX_POWERLINE_SEG_WEATHER_LON=$(cat $HOME/.location/longitude | tr -d '\n')
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=${TMUX_POWERLINE_WINDOW_CURRENT_FG},bg=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR},${TMUX_POWERLINE_WINDOW_CURRENT_ATTR}]"
 		"  #I#{?window_flags,#F, }"
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
 		" #{?#{@ctitle},#{@ctitle},#{@cdir}#W}  "
-		"#[$(format regular)]"
 	)
 fi
 
