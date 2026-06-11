@@ -1,0 +1,18 @@
+# ripgrep config (loaded via $RIPGREP_CONFIG_PATH, set in the shell config).
+# Replaces the old ack + .ackrc. rg already honors .gitignore/.ignore, so this
+# just adds smart-case and the custom file types ack used to define.
+
+# Case-insensitive unless the pattern has uppercase
+--smart-case
+
+# Never descend into .git
+--glob=!.git/
+
+# Custom types (ported from .ackrc)
+--type-add=puppet:*.pp
+--type-add=plaintext:*.md,*.mdown,*.mkdn,*.textile,*.rst,*.txt
+--type-add=erb:*.erb,*.rhtml
+
+# A couple of extra ignores beyond .gitignore
+--glob=!tags
+--glob=!*.min.js

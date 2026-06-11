@@ -1,0 +1,13 @@
+# Per-host git overlay — the real file is ~/.config/git/local (gitignored, or
+# materialized by dot-secrets on trusted hosts). Included from .gitconfig via
+# `[include] path = ~/.config/git/local`. If absent (Coder, fresh devservers),
+# git simply doesn't sign and commits never fail for a missing key.
+#
+# Copy to ~/.config/git/local and fill in your key:
+
+[user]
+    signingkey = YOUR_GPG_KEY_ID_OR_SSH_KEY
+[commit]
+    gpgsign = true
+[tag]
+    gpgsign = true

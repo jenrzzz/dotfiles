@@ -27,13 +27,6 @@ export HISTSIZE=32768 HISTFILESIZE=32768
 export HISTCONTROL=ignoredups
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
-# Go.
-export GOPATH="$HOME/Source/go"
-command -v path_prepend >/dev/null 2>&1 && path_prepend "$GOPATH/bin"
-
-# pnpm (location differs by platform).
-if is_mac; then export PNPM_HOME="$HOME/Library/pnpm"; else export PNPM_HOME="$HOME/.local/share/pnpm"; fi
-command -v path_prepend >/dev/null 2>&1 && path_prepend "$PNPM_HOME"
 export PATH
 
 # Ansible: no cowsay.
@@ -49,6 +42,10 @@ if has dircolors || has gdircolors; then
     fi
     unset _dc
 fi
+
+# ripgrep: load its config from the XDG location (replaces ack/.ackrc).
+has rg && [ -r "$XDG_CONFIG_HOME/ripgrep/config" ] && \
+    export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/config"
 
 # fzf: drive it with fd (fallback ripgrep); include hidden files, skip .git.
 if has fzf; then

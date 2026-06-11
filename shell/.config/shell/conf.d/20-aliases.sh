@@ -24,8 +24,6 @@ alias vimq="nvim -u NONE"
 alias mux="tmuxinator"
 alias fuck="tmuxinator"
 alias timestamp='date +"%Y%m%d%H%M%S"'
-alias reload='source ~/.bash_profile'
-alias jpass="PASSWORD_STORE_DIR=~/Dropbox/.password-store pass"
 
 # git
 alias gs='git s'
@@ -78,14 +76,6 @@ alias disable-bracketed-paste="printf '\e[?2004l'"
 # Public IP (dig is cross-platform)
 has dig && alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 
-# HTTP verb helpers (lwp-request), if installed
-if has lwp-request; then
-    for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-        alias "$method"="lwp-request -m '$method'"
-    done
-    unset method
-fi
-
 # Coreutils niceties that BSD/macOS lack (no-op wherever the real tool exists)
 has hd      || alias hd="hexdump -C"
 has md5sum  || alias md5sum="md5"
@@ -99,36 +89,26 @@ has python3 && alias urlencode='python3 -c "import sys,urllib.parse as u; print(
 # GPG: list the recipients of an encrypted message
 has gpg && alias list-recipients="gpg --batch --decrypt --list-only --status-fd 1 2>/dev/null | awk '/^\[GNUPG:\] ENC_TO / { print \$3 }' | while read key; do (gpg --list-keys \$key >/dev/null 2>&1 && gpg --list-keys \$key) || echo \"-- unknown key ID: \$key\"; done"
 
-# Tool-gated shortcuts
-has bundle  && { alias be="bundle exec"; alias bs="bundle show"; }
-if has rails; then
-    alias ra="bundle exec rails"
-    alias rc="bundle exec rails console"
-    alias rgen="bundle exec rails generate"
-fi
-has foreman && alias "serve!"="foreman start -f Procfile.dev"
+# Convert a batch of flac files to mp3
 has ffmpeg  && alias flac2mp3='for f in *.flac; do </dev/null ffmpeg -i "$f" -qscale:a 0 "${f/%flac/mp3}"; done'
 
 # --- macOS only -------------------------------------------------------------
 if is_mac; then
     alias o="open"
     alias oo="open ."
-    alias update='sudo softwareupdate -i -a; brew update && brew upgrade; has npm && npm update -g'
-    alias localip="ipconfig getifaddr en0"
+    alias update='sudo softwareupdate -i -a; brew update && brew upgrade'
+    alias localip="echo -n 'en0: '; ipconfig getifaddr en0; echo -n 'en1: '; ipconfig getifaddr en1; echo ''"
     alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
     alias routerip="netstat -rn | grep default | tr -s ' ' | cut -d ' ' -f 2"
     alias flush="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
     alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-    alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-    alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
     alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
     alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
     alias spotoff="sudo mdutil -a -i off"
     alias spoton="sudo mdutil -a -i on"
     alias plistbuddy="/usr/libexec/PlistBuddy"
     alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
-    alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py'
     alias stfu="osascript -e 'set volume output muted true'"
     alias pumpitup="osascript -e 'set volume 7'"
     alias obscuro='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'  # lock screen
@@ -137,6 +117,6 @@ fi
 # --- linux only -------------------------------------------------------------
 if is_linux; then
     has xdg-open && { alias o="xdg-open"; alias oo="xdg-open ."; }
-    if   has apt-get; then alias update='sudo apt-get update && sudo apt-get upgrade'
+    if   has apt-get; then alias update='sudo apt update && sudo apt dist-upgrade'
     elif has dnf;     then alias update='sudo dnf upgrade --refresh'; fi
 fi

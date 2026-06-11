@@ -1,0 +1,35 @@
+# Global gitignore — XDG default location ($XDG_CONFIG_HOME/git/ignore), applied
+# to every repo. Repo-specific patterns belong in each repo's own .gitignore.
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows / misc OS
+Desktop.ini
+Thumbs.db
+
+# Editor / tooling cruft
+*.swp
+*.swo
+*~
+.vim/
+tags
+/tags
+quickfix*.out
+.yardoc/
+
+# Languages
+*.pyc
+__pycache__/
+.virtualenv/
+
+# Tools
+.direnv/
+
+# Claude local (machine-specific) settings
+**/.claude/settings.local.json

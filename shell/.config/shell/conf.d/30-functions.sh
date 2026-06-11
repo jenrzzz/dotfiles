@@ -156,7 +156,6 @@ explain() { local url="https://explainshell.com/explain/$1?args="; shift; for i 
 gitplz() { openurl "https://google.com/search?q=git+$(IFS=+; echo "$*")"; }
 
 # --- search / files ---------------------------------------------------------
-ackts() { rg "$@" -g '*.ts' -g '*.tsx'; }                 # was ack; now ripgrep
 whatlistenson() { grep "\s$1/" /etc/services; }
 alias whatrunson="whatlistenson"
 removedupes() { md5sum * | sort | awk 'BEGIN{h=""} $1==h{print $2} {h=$1}' | xargs rm -i; }
@@ -180,9 +179,6 @@ gif-ify() {
     [ -n "$1" ] && [ -n "$2" ] || { echo "Usage: gif-ify <input.mov> <output.gif>"; return 1; }
     ffmpeg -i "$1" -pix_fmt rgb24 /tmp/gifify.gif && convert -layers Optimize /tmp/gifify.gif "$2" && rm -f /tmp/gifify.gif
 }
-
-# --- fun --------------------------------------------------------------------
-play2048() { perl -e 'my $host="http://2048.semantics3.com/hi/";my $cmd="curl --silent -L ${host}start";my $out=`$cmd`;my $id=$out;$id=~s/.*?ID:\s(\w+).*/$1/si;my %k=("w",0,"d",1,"s",2,"a",3);print STDERR $out,"\n";while(1){print STDERR "Input (w/a/s/d):\n";my $i=<stdin>;chomp($i);if(defined($k{$i})){$i=$k{$i}}else{next}my $o=`curl --silent ${host}state/$id/move/$i`;print STDERR "\n$o\n";exit(0) if $o=~/Message:/si}'; }
 
 # --- macOS only -------------------------------------------------------------
 if is_mac; then

@@ -18,9 +18,3 @@ for _d in $_compdirs; do
     for _f in "$_d"/*; do [ -r "$_f" ] && . "$_f"; done
 done
 unset _compdirs _d _f
-
-# macOS-only completions.
-if is_mac; then
-    complete -W "NSGlobalDomain" defaults
-    complete -o nospace -W "Contacts Calendar Dock Finder Mail Safari Music SystemUIServer Terminal" killall
-fi

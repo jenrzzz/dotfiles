@@ -1,0 +1,142 @@
+# vim: et sw=4 sts=4:
+[alias]
+    l  = log --pretty=onelinereltime --graph -n 20
+    ll = log --pretty=onelinereltime --graph
+    graphall = -c core.pager='less -SFRX' log --pretty=onelineall --graph --date-order
+
+    # Working tree status, short format
+    s = status -s
+
+    # Diff between the latest commit and the current state
+    d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
+
+    # `git di $n` shows the diff $n revisions ago vs the current state
+    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+
+    # Pull current repo and all its submodules
+    p = !"git pull; git submodule foreach git pull origin master"
+
+    # Clone including submodules
+    c = clone --recursive
+
+    # Commit all changes
+    ca = !git add -A && git commit -av
+
+    # Switch to a branch, creating it if necessary
+    go = checkout -B
+
+    tags = tag -l
+    branches = branch -a
+    remotes = remote -v
+
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+    undopush = "!git push -f origin HEAD^:$(git branch-name)"
+
+    # Assume-unchanged helpers
+    assumed  = "!git ls-files -v | grep ^h | cut -c 3-"
+    assume   = update-index --assume-unchanged
+    unassume = update-index --no-assume-unchanged
+
+    # Snapshot the working tree into a stash without losing it
+    snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+    standup = "!git log --since yesterday --author $(git config user.email)"
+
+    # Quick merge resolution: git ours/theirs <path>
+    ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
+    theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+
+[pretty]
+    onelineall     = format:"%C(auto)%h %C(auto)%d %s %Cblue[%cn] %Cgreen[%cD]%Creset"
+    onelinereltime = format:"%C(auto)%h%Creset %s %Cblue%cr%Creset"
+
+[apply]
+    whitespace = warn
+
+[core]
+    # Global ignore/attributes use the XDG default locations
+    # ($XDG_CONFIG_HOME/git/{ignore,attributes}) — no explicit path needed.
+    whitespace = space-before-tab,trailing-space
+    pager = delta
+    autocrlf = input
+    # editor comes from $EDITOR (=nvim), set in the shell config.
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    light = false
+
+[diff]
+    algorithm = patience
+    colorMoved = default
+
+[color]
+    ui = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[merge]
+    log = true
+    conflictstyle = zdiff3
+    tool = nvimdiff
+
+[push]
+    default = simple
+
+[branch]
+    autosetuprebase = always
+[branch "master"]
+    merge = refs/heads/master
+[remote "origin"]
+    push = HEAD
+
+# URL shorthands
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+    insteadOf = "github:"
+[url "git@gist.github.com:"]
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+    insteadOf = "gist:"
+
+[user]
+    name = Jenner La Fave
+    email = jenner@jfave.com
+
+[rerere]
+    enabled = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    required = true
+    process = git-lfs filter-process
+
+[gpg]
+    program = gpg
+
+[init]
+    defaultBranch = main
+
+# Per-host overlay (signing key + commit.gpgsign live here, on hosts that have
+# the key). Absent on Coder/devservers, so commits there are simply unsigned and
+# never fail. Materialized by dot-secrets; see .config/git/local.example.
+[include]
+    path = ~/.config/git/local

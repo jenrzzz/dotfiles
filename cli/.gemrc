@@ -1,0 +1,10 @@
+---
+:backtrace: false
+:bulk_threshold: 1000
+:sources:
+- https://rubygems.org
+:update_sources: true
+:verbose: true
+benchmark: false
+# Skip generating docs on install (modern flag; was --no-ri --no-rdoc)
+gem: "--no-document"
