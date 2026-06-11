@@ -1,0 +1,1 @@
+erikw/tmux-powerline vendored at upstream commit: 6aea97f0da6fcbf961ade75ccf2d63083f818540

@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#
+# tmux-sessionizer — fuzzy jump-to / create-a tmux session.
+#
+# Candidates: running sessions + top-level project dirs + zoxide frecency dirs.
+# Pick a running session  -> switch to it.
+# Pick a directory        -> switch to its session (named after the dir), creating it
+#                            rooted at that dir if it doesn't exist yet.
+#
+# Meant to run inside `display-popup -E` (see .tmux.conf binding `C-a J`).
+
+set -uo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$here/lib/tmux-session-lib.sh"
+
+# Cross-platform helpers (is_mac). Prefer the dotfiles platform library.
+if ! type is_mac >/dev/null 2>&1; then
+	if [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/lib/platform.sh" ]; then
+		. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/lib/platform.sh"
+	else
+		is_mac() { [ "$(uname -s)" = Darwin ]; }
+	fi
+fi
+
+# Where projects live, by OS.
+if is_mac; then
+	PROJECT_ROOTS=("$HOME/Library/CloudStorage/Dropbox/Source")
+else
+	PROJECT_ROOTS=("$HOME/src" "$HOME/Source")
+fi
+EXTRA_DIRS=("$HOME/.dotfiles")
+
+# Build candidate lines, tab-separated: <kind>\t<payload>\t<display>
+# fzf shows only the display column.
+build_candidates() {
+	# Running sessions first (most useful, already warm).
+	while IFS= read -r s; do
+		[[ -n "$s" ]] && printf 's\t%s\t● %s\n' "$s" "$s"
+	done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+
+	# Project directories.
+	local root d
+	for root in "${PROJECT_ROOTS[@]}"; do
+		[[ -d "$root" ]] || continue
+		for d in "$root"/*/; do
+			[[ -d "$d" ]] || continue
+			d="${d%/}"
+			printf 'd\t%s\t○ %s\n' "$d" "$(basename "$d")"
+		done
+	done
+	for d in "${EXTRA_DIRS[@]}"; do
+		[[ -d "$d" ]] && printf 'd\t%s\t○ %s\n' "$d" "$(basename "$d")"
+	done
+
+	# zoxide frecency dirs (replaces the old rupa/z ~/.z parsing).
+	if command -v zoxide >/dev/null 2>&1; then
+		while IFS= read -r p; do
+			[[ -d "$p" ]] && printf 'd\t%s\t⟳ %s\n' "$p" "$p"
+		done < <(zoxide query -l 2>/dev/null)
+	fi
+}
+
+# De-dup directory rows by path (keep the first, which prefers PROJECT_ROOTS ordering),
+# and always keep session rows.
+selection="$(build_candidates \
+	| awk -F'\t' '!($1=="d" && seen[$2]++)' \
+	| fzf --ansi --delimiter='\t' --with-nth=3 \
+	      --prompt='session> ' --height=100% --reverse \
+	      --header='enter: switch/create   esc: cancel')"
+
+[[ -n "$selection" ]] || exit 0
+
+kind="$(cut -f1 <<<"$selection")"
+payload="$(cut -f2 <<<"$selection")"
+
+case "$kind" in
+s)
+	tmux switch-client -t "=$payload"
+	;;
+d)
+	name="$(sanitize_session_name "$(basename "$payload")")"
+	if ! tmux has-session -t "=$name" 2>/dev/null; then
+		tmux new-session -ds "$name" -c "$payload"
+	fi
+	tmux switch-client -t "=$name"
+	;;
+esac
