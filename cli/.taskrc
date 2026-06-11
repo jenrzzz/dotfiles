@@ -2,7 +2,6 @@
 
 # Data + theme
 data.location=~/.task
-include solarized-dark-256.theme
 
 # (Dropped the hardcoded pomodoro.taskwarrior_path=/opt/homebrew/bin/task — let
 #  the plugin find task on PATH instead.)

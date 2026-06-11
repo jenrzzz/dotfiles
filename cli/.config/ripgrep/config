@@ -7,12 +7,3 @@
 
 # Never descend into .git
 --glob=!.git/
-
-# Custom types (ported from .ackrc)
---type-add=puppet:*.pp
---type-add=plaintext:*.md,*.mdown,*.mkdn,*.textile,*.rst,*.txt
---type-add=erb:*.erb,*.rhtml
-
-# A couple of extra ignores beyond .gitignore
---glob=!tags
---glob=!*.min.js
