@@ -1,0 +1,55 @@
+# test/Dockerfile.linux — lean Linux test bed for iterating on the dotfiles,
+# faithful to the Coder devbox (~/Source/infra/coolify/devbox/workspace/Dockerfile).
+# Mirrors the devbox's shell-relevant environment: ubuntu 24.04, coder uid 1000,
+# asdf in /opt/asdf, ripgrep/fd/fzf/xclip, stow, git-delta. Deliberately skips
+# the slow/irrelevant bits (runtime source compiles, tailscale, code-server);
+# neovim is added at the nvim phase.
+FROM ubuntu:24.04
+
+ARG TZ=America/Los_Angeles
+ENV TZ="$TZ" \
+    DEBIAN_FRONTEND=noninteractive \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+# --- Base packages: dev loop + the CLI tools the dotfiles expect on Linux -----
+# ripgrep/fd/fzf back the nvim + shell config; xclip stands in for macOS pbcopy;
+# stow is the installer; the rest mirror the devbox base.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl wget gnupg git openssh-client tmux less \
+      build-essential pkg-config jq unzip locales sudo \
+      bash-completion ripgrep fd-find fzf xclip stow \
+  && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen \
+  && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
+  && rm -rf /var/lib/apt/lists/*
+
+# --- git-delta (the .gitconfig pager) — same version the devbox pins ----------
+ARG DELTA_VERSION=0.18.2
+RUN arch="$(dpkg --print-architecture)" \
+  && curl -fsSLo /tmp/delta.deb \
+       "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_${arch}.deb" \
+  && dpkg -i /tmp/delta.deb && rm /tmp/delta.deb
+
+# --- asdf in /opt/asdf, mirroring the devbox (presence is enough to exercise --
+#     the dotfiles' tool-init cooperation; we don't compile runtimes here) ------
+ENV ASDF_DIR=/opt/asdf \
+    ASDF_DATA_DIR=/opt/asdf \
+    PATH=/opt/asdf/shims:/opt/asdf/bin:$PATH
+RUN git clone --depth 1 --branch v0.14.1 https://github.com/asdf-vm/asdf.git /opt/asdf \
+  && printf '%s\n' \
+       'export ASDF_DIR=/opt/asdf' \
+       'export ASDF_DATA_DIR=/opt/asdf' \
+       '. /opt/asdf/asdf.sh' \
+       > /etc/profile.d/asdf.sh
+
+# --- Non-root `coder` user (uid 1000, passwordless sudo) — matches the devbox --
+RUN userdel -r ubuntu 2>/dev/null || true \
+  && useradd -m -s /bin/bash -u 1000 coder \
+  && echo 'coder ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/coder \
+  && chmod 0440 /etc/sudoers.d/coder
+
+USER coder
+WORKDIR /home/coder
+# The repo is bind-mounted at /home/coder/.dotfiles by test/linux.sh.
+CMD ["sleep", "infinity"]
