@@ -7,7 +7,7 @@
 #
 # Exposes
 #   vars : OS (mac|linux|other)  ARCH  BREW_PREFIX  XDG_CONFIG_HOME
-#   pred : is_mac  is_linux  is_tmux  is_dark_mode  have <cmd>
+#   pred : is_mac  is_linux  is_tmux  is_dark_mode  has <cmd>
 #   wrap : clip / clipout (clipboard)  openurl  cpu_count  gnu <coreutil>
 
 [ -n "${__PLATFORM_SH:-}" ] && return 0 2>/dev/null || __PLATFORM_SH=1
@@ -26,7 +26,7 @@ export OS ARCH XDG_CONFIG_HOME
 is_mac()   { [ "$OS" = mac ]; }
 is_linux() { [ "$OS" = linux ]; }
 is_tmux()  { [ -n "${TMUX:-}" ]; }
-have()     { command -v "$1" >/dev/null 2>&1; }
+has()     { command -v "$1" >/dev/null 2>&1; }
 
 # --- brew prefix (Apple Silicon, then Intel, then Linuxbrew) ----------------
 BREW_PREFIX=
@@ -40,28 +40,28 @@ export BREW_PREFIX
 # macOS ships BSD coreutils; Homebrew installs the GNU ones g-prefixed (gstat,
 # gdate, …). On Linux the plain names already are GNU. Resolve the right one:
 #   "$(gnu stat)" -c %s file      "$(gnu date)" -d @0
-gnu() { if have "g$1"; then printf 'g%s' "$1"; else printf '%s' "$1"; fi; }
+gnu() { if has "g$1"; then printf 'g%s' "$1"; else printf '%s' "$1"; fi; }
 
 # --- clipboard (pbcopy/pbpaste ↔ wl-clipboard ↔ xclip ↔ xsel) ---------------
 clip() {     # stdin -> clipboard
-  if   have pbcopy;  then pbcopy
-  elif have wl-copy; then wl-copy
-  elif have xclip;   then xclip -selection clipboard
-  elif have xsel;    then xsel --clipboard --input
+  if   has pbcopy;  then pbcopy
+  elif has wl-copy; then wl-copy
+  elif has xclip;   then xclip -selection clipboard
+  elif has xsel;    then xsel --clipboard --input
   else cat >/dev/null; printf 'clip: no clipboard tool found\n' >&2; return 1; fi
 }
 clipout() {  # clipboard -> stdout   (named clipout, not paste, to avoid shadowing the paste(1) coreutil)
-  if   have pbpaste;  then pbpaste
-  elif have wl-paste; then wl-paste
-  elif have xclip;    then xclip -selection clipboard -o
-  elif have xsel;     then xsel --clipboard --output
+  if   has pbpaste;  then pbpaste
+  elif has wl-paste; then wl-paste
+  elif has xclip;    then xclip -selection clipboard -o
+  elif has xsel;     then xsel --clipboard --output
   else printf 'clipout: no clipboard tool found\n' >&2; return 1; fi
 }
 
 # --- misc capability wrappers ----------------------------------------------
 openurl() {  # open(1) on mac, xdg-open on linux
-  if   have open;     then open "$@"
-  elif have xdg-open; then xdg-open "$@" >/dev/null 2>&1
+  if   has open;     then open "$@"
+  elif has xdg-open; then xdg-open "$@" >/dev/null 2>&1
   else printf 'openurl: no opener found\n' >&2; return 1; fi
 }
 cpu_count() { if is_mac; then sysctl -n hw.ncpu; else nproc; fi; }

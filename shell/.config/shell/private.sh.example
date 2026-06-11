@@ -1,0 +1,62 @@
+# private.sh.example — template for the untracked private overlay.
+#
+# Copy to ~/.config/shell/private.sh (gitignored) — or let `dot-secrets` fetch it
+# from Bitwarden — on hosts that need the Apple/work + personal-infra bits. It's
+# sourced LAST by .bash_profile, so it can override anything. On machines without
+# it (Coder, fresh devservers) these functions simply don't exist, no errors.
+
+# --- personal hosts ---------------------------------------------------------
+alias ass="cd ~/Source/apple"
+alias luna='ssh -A jenner@luna.jfave.com'
+alias lunaprox='ssh -AD 8080 jenner@luna.jfave.com'
+alias radarget='curl -X GET  -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
+alias radarpost='curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --negotiate -u : '
+alias editsieve="TERM=xterm-256color ssh -tt jenner@luna.jfave.com 'sudo vim /var/mail/vmail/jfave.com/jenner/.dovecot.sieve && sudo sievec /var/mail/vmail/jfave.com/jenner/.dovecot.sieve'"
+
+banish() { for f in "$@"; do scp "$f" jenner@luna.jfave.com:~/; done; }
+
+# --- LED controller (personal infra at 10.0.0.73) ---------------------------
+_leds_req() { curl -H 'Content-Type: application/json' -d "$1" 10.0.0.73/leds; }
+rainblow() { _leds_req "{\"program\": \"rainblow.py\",     \"args\": [\"${1:-0.5}\", \"${2:-0.001}\"]}"; }
+rainglow() { _leds_req "{\"program\": \"rainglow.py\",     \"args\": [\"${1:-0.5}\", \"${2:-0.001}\"]}"; }
+rainbow()  { _leds_req "{\"program\": \"rainbowWave.py\",  \"args\": [\"${1:-0.5}\", \"${2:-0.001}\"]}"; }
+leds()     { _leds_req "{\"program\": \"stress-leds.py\",  \"args\": [\"${1:-cyan}\", \"${2:-0.5}\"]}"; }
+ledsoff()  { leds red 0; }
+
+# --- Apple Orchard deploy API ----------------------------------------------
+# export ORCHARD_TEST_APP_ID=...
+# export ORCHARD_PROD_APP_ID=...
+orchard_email() { git config --get remote.orchard.email; }
+orchard_token() { git config --get remote.orchard.token; }
+orchardreq() { curl -sS -H "X-API-EMAIL: $(orchard_email)" -H "X-API-Token: $(orchard_token)" "$@"; }
+orchard_app_availability_zones() { orchardreq "https://orchard.apple.com/api/v1/applications/$1/application_availability_zones"; }
+orchard_instance_types() { orchardreq "https://orchard.apple.com/api/v1/applications/$1/application_availability_zones/$2/instance_types"; }
+orchard_find_instance() { orchard_instance_types "$1" "$2" | jq ".[] | select (.name == \"$3\")"; }
+
+deploy!() { local env="${1:-test}"; [ "$env" = prod ] && env=production; echo "Deploying $(reponame) to $env..."; date; git push "$env"; }
+instance!() {
+    local env="${1:-test}"; [ "$env" = prod ] && env=production
+    echo "Spinning up a new $env instance of $(reponame)..."
+    [ "$env" = production ] && ssh -Attt git@orchard.apple.com pty-request "ioswt/$(reponame)" \
+                           || ssh -Attt git@orchard.apple.com pty-request "ioswt/$(reponame)-${env}"
+}
+scale!() {
+    local env="${1:-}" type="${2:-}" count="${3:-}" appid
+    [ "$env" = prod ] && env=production
+    [ "$env" = production ] && appid="$ORCHARD_PROD_APP_ID" || appid="$ORCHARD_TEST_APP_ID"
+    [ -z "$appid" ] && { echo "Set ORCHARD_PROD_APP_ID / ORCHARD_TEST_APP_ID."; return 1; }
+    [ -z "$env" ] || [ -z "$type" ] || [ -z "$count" ] && { echo "Usage: scale! <env> <type> <count>"; return 1; }
+    local az iid; az=$(orchard_app_availability_zones "$appid" | jq '.[0].id'); iid=$(orchard_find_instance "$appid" "$az" "$type" | jq .id)
+    orchardreq -X PUT -d "{\"instances\": $count}" -H "Content-Type: application/json" \
+        "https://orchard.apple.com/api/v1/applications/${appid}/application_availability_zones/${az}/instance_types/${iid}"
+}
+
+applehostinfo() { curl -s http://hostsweb.corp.apple.com/hosts 2>/dev/null | grep -i "$1"; }
+timecardify() { cat "${1:--}" | cut -d ',' -f 2-3 | tail +2 | tr "\n" ',' | tr -d '"' | sed 's/,$//'; }
+generate-apple-csr() {
+    local host="$1"; shift; [ -z "$host" ] && { echo "Usage: generate-apple-csr <hostname>"; return 1; }
+    [[ "$host" == *.* ]] || host="${host}.apple.com"
+    local key="${host}.key.pem"
+    if [ -f "$key" ]; then openssl req -key "$key" -subj "/CN=${host}" "$@"
+    else openssl req -newkey rsa:2048 -nodes -sha256 -keyout "$key" -subj "/CN=${host}" "$@"; fi
+}

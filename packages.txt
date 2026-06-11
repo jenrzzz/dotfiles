@@ -1,0 +1,19 @@
+# Linux packages for the dotfiles (apt/dnf names). The bootstrap installs these:
+#   sudo apt-get install -y $(grep -vE '^\s*#|^\s*$' packages.txt)
+# NOTE: `eza` is not in Ubuntu apt before 24.10, and `bat`/`fd` install under
+# alternate binary names (batcat/fdfind) on Debian/Ubuntu — bootstrap.sh handles
+# the eza release-binary install and the bat/fd symlinks.
+git
+tmux
+curl
+wget
+gnupg
+jq
+stow
+direnv
+ripgrep
+fd-find
+fzf
+bat
+zoxide
+xclip

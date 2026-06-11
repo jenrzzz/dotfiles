@@ -19,10 +19,16 @@ ENV TZ="$TZ" \
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl wget gnupg git openssh-client tmux less \
       build-essential pkg-config jq unzip locales sudo \
-      bash-completion ripgrep fd-find fzf xclip stow \
+      bash-completion ripgrep fd-find fzf xclip stow bat zoxide \
   && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen \
   && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
+  && ln -sf /usr/bin/batcat /usr/local/bin/bat \
   && rm -rf /var/lib/apt/lists/*
+
+# --- eza (not in Ubuntu apt < 24.10; install the release binary) --------------
+RUN arch="$(uname -m)" \
+  && curl -fsSL "https://github.com/eza-community/eza/releases/latest/download/eza_${arch}-unknown-linux-gnu.tar.gz" -o /tmp/eza.tgz \
+  && tar -xzf /tmp/eza.tgz -C /usr/local/bin && rm /tmp/eza.tgz
 
 # --- git-delta (the .gitconfig pager) — same version the devbox pins ----------
 ARG DELTA_VERSION=0.18.2
