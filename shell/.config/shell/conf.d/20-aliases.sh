@@ -24,6 +24,7 @@ alias vimq="nvim -u NONE"
 alias mux="tmuxinator"
 alias fuck="tmuxinator"
 alias timestamp='date +"%Y%m%d%H%M%S"'
+has neomutt && alias mutt='neomutt'   # neomutt is the maintained fork; keep the muscle memory
 
 # git
 alias gs='git s'

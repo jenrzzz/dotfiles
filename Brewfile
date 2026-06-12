@@ -26,3 +26,4 @@ brew "jq"
 # Misc
 brew "gnupg"
 brew "pass"
+brew "neomutt"
