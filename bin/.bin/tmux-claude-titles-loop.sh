@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 #
-# tmux-claude-titles-loop.sh — once per second while the tmux server is alive, keep the
-# hub windows (👻/😍) linked at indices 0/1 of every session and refresh window titles.
-# Started from .tmux.conf via `run-shell -b`. A pidfile guard keeps a single instance per
-# server (macOS ships no `flock`).
+# tmux-claude-titles-loop.sh — once per second, keep the hub windows (👻/😍) linked at
+# indices 0/1 of every session and refresh window titles. Runs continuously and no-ops
+# whenever no tmux server is up, so it can be owned by a long-lived supervisor. On macOS
+# it's started by a LaunchAgent (com.jenner.tmux-claude-titles); on other systems from
+# .tmux.conf via `run-shell -b`. A pidfile guard keeps a single instance per user (macOS
+# ships no `flock`), so a LaunchAgent copy and any run-shell copy can't double-run.
 
 set -uo pipefail
 
@@ -28,8 +30,10 @@ fi
 echo $$ > "$pidfile"
 trap 'rm -f "$pidfile"' EXIT
 
-while tmux has-session 2>/dev/null; do
-	"$hub" 2>/dev/null || true
-	"$worker" 2>/dev/null || true
+while true; do
+	if tmux has-session 2>/dev/null; then
+		"$hub" 2>/dev/null || true
+		"$worker" 2>/dev/null || true
+	fi
 	sleep 1
 done
