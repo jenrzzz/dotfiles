@@ -11,11 +11,15 @@
         <string>/Users/jenner/.bin/tmux-claude-titles-loop.sh</string>
     </array>
     <!-- launchd hands agents a bare PATH; the loop and its workers shell out to `tmux`
-         (Homebrew) plus the usual coreutils. -->
+         (Homebrew) plus the usual coreutils. LANG forces a UTF-8 locale: without it the
+         agent runs in the C locale, where tmux rewrites the TAB separators in our `-F`
+         format strings as '_' and the worker's IFS=tab parsing skips every pane. -->
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
         <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
     </dict>
     <key>RunAtLoad</key>
     <true/>

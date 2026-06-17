@@ -9,6 +9,12 @@
 
 set -uo pipefail
 
+# launchd (and a bare `run-shell`) can hand us the C locale with no LANG/LC_*. In C locale
+# tmux sanitizes the TAB separators in our `-F` format strings into '_', which breaks the
+# worker's `IFS=$'\t' read` parsing (every pane row gets skipped). Force a UTF-8 ctype so
+# tabs survive, regardless of who launches us.
+export LC_CTYPE="${LC_CTYPE:-UTF-8}"
+
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 hub="$here/tmux-hub-windows.sh"
 worker="$here/tmux-claude-titles.sh"
