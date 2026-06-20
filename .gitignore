@@ -33,3 +33,15 @@ firebase-admin-key.json
 .local
 
 **/.claude/settings.local.json
+
+# Secrets — materialized into $HOME by dot-secrets (see secrets/), never tracked.
+# These are real files, not symlinks into the repo, so git can't pick them up;
+# this block is belt-and-suspenders.
+.config/fastmail/
+.config/gh/hosts.yml
+.config/github-copilot/
+.config/shell/private.sh
+.config/git/local
+.mutt/certificates
+.mutt/jenner.jfave.com
+.mutt/swootrc
