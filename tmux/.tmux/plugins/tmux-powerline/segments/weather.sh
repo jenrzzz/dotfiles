@@ -78,9 +78,9 @@ __process_settings() {
 # wttr.in provider: location is a city name, zip/postal code, airport code, or
 # empty for IP-based geolocation. Parses the j1 JSON so we can pick a day- or
 # night-appropriate condition glyph (wttr's own %c emoji is day/night-agnostic —
-# it shows ☀️ even at night). Returns "<condition-emoji> <temp>°<unit>".
+# it shows ☀️ even at night). Returns "<condition-emoji> <temp>°<unit> <wind-arrow><speed>".
 __wttr() {
-	local location unit_field unit_sym out code temp rise set is_day emoji
+	local location unit_field unit_sym out code temp rise set is_day emoji wspeed wdeg wind
 	location="${TMUX_POWERLINE_SEG_WEATHER_LOCATION:-}"
 	if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
 		unit_field="temp_F"; unit_sym="F"
@@ -115,10 +115,34 @@ __wttr() {
 		set=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.weather[0].astronomy[0].sunset // empty' 2>/dev/null)
 		is_day=$(__wttr_is_day "$rise" "$set")
 		emoji=$(__wttr_symbol "$code" "$is_day")
-		printf '%s %s°%s' "$emoji" "$temp" "$unit_sym" | tee "${tmp_file}"
+		# Compact wind: a downwind arrow (matching wttr) + speed, no unit text.
+		# Disable with TMUX_POWERLINE_SEG_WEATHER_SHOW_WIND=false.
+		wind=""
+		if [ "${TMUX_POWERLINE_SEG_WEATHER_SHOW_WIND:-true}" = "true" ]; then
+			if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
+				wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedMiles // empty' 2>/dev/null)
+			else
+				wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedKmph // empty' 2>/dev/null)
+			fi
+			wdeg=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].winddirDegree // empty' 2>/dev/null)
+			[ -n "$wspeed" ] && [ -n "$wdeg" ] && wind=" $(__wttr_wind_arrow "$wdeg")${wspeed}"
+		fi
+		printf '%s %s°%s%s' "$emoji" "$temp" "$unit_sym" "$wind" | tee "${tmp_file}"
 	elif [ -f "${tmp_file}" ]; then
 		__read_tmp_file
 	fi
+}
+
+# Compass arrow pointing downwind (the way wttr renders it) for a "from" bearing in degrees.
+__wttr_wind_arrow() {
+	local deg="$1" toward idx
+	case "$deg" in ''|*[!0-9]*) return ;; esac
+	toward=$(( (deg + 180) % 360 ))
+	idx=$(( ((toward + 22) / 45) % 8 ))
+	case "$idx" in
+	0) printf '↑' ;; 1) printf '↗' ;; 2) printf '→' ;; 3) printf '↘' ;;
+	4) printf '↓' ;; 5) printf '↙' ;; 6) printf '←' ;; 7) printf '↖' ;;
+	esac
 }
 
 # Parse a "HH:MM AM/PM" clock into minutes-since-midnight.
