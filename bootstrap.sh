@@ -1,91 +1,199 @@
-#!/bin/bash
-STARTWD="$(dirname "$0")"
-cd $STARTWD
-STARTWD=`pwd`
+#!/usr/bin/env bash
+#
+# bootstrap.sh — install these dotfiles with GNU Stow, cross-platform.
+#
+# Idempotent: safe to re-run. Symlinks every package's tree into $HOME via stow,
+# optionally installs the OS packages first, and optionally materializes secrets.
+#
+#   ./bootstrap.sh [--yes] [--no-install] [--with-secrets]
+#                  [--only-core] [--packages "shell git tmux …"]
+#
+#   --yes            non-interactive; assume "yes" to the install-packages prompt
+#   --no-install     skip the OS package install (just stow) — tools assumed present
+#   --with-secrets   after stowing, run `dot-secrets sync` to fetch per-host secrets
+#   --only-core      stow just the portable core (no mutt/secrets/launchd)
+#   --packages "…"   stow exactly this set instead of the computed default
+#
+# Coder / headless one-liner:
+#   git clone https://github.com/jenrzzz/dotfiles ~/.dotfiles \
+#     && ~/.dotfiles/bootstrap.sh --yes --with-secrets
 
-echo -n "Updating dotfiles... "
-git pull --quiet origin master
-echo "done"
-declare -a link_files=(.ackrc .aliases .bash-completion .bash_login .bash_profile .bash_prompt .bashrc .brew .dircolors.256dark .exports .functions \
-                       .gemrc .gitattributes .gitconfig .gitignore .gvimrc .hgignore .inputrc .irbrc .local .path .mutt .tmux.conf .screenrc \
-                       .vimrc .wgetrc .zlogin .zshrc)
+set -euo pipefail
 
-function doIt() {
-    touch ~/.hushlogin
-    for f in ${link_files[@]}; do
-        if [[ -e ~/$f ]]; then
-            if [[ -L ~/$f ]]; then
-                echo "    $f is already linked... skipping"
-            else
-                read -p "$f already exists in your home directory. Do you want to remove it, save a copy, or leave it alone? (r/s/l) " -n 1
-                echo
-                case $REPLY in
-                    r)
-                        echo "    Removing $f and linking..."
-                        rm -f ~/$f
-                        ln -s `pwd`/$f ~/$f
-                        ;;
-                    s)
-                        echo "    Saving old $f as $f.old"
-                        mv ~/$f ~/$f.old
-                        ln -s `pwd`/$f ~/$f
-                        ;;
-                    l)
-                        echo "    Skipping $f."
-                        ;;
-                esac
-            fi
-        else
-            ln -s `pwd`/$f ~/$f
-            echo "    Linked $f."
-        fi
-    done
-}
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_NAME="$(basename "$REPO")"
 
-function cp_ssh_cfg() {
-    cp ssh_config ~/.ssh/config && chmod 0600 ~/.ssh/config
-}
+# Platform library (OS / has / is_mac / is_linux). Sourced from the repo so the
+# bootstrap works before anything is stowed into $HOME.
+# shellcheck source=shell/.config/shell/lib/platform.sh
+. "$REPO/shell/.config/shell/lib/platform.sh"
 
-function install_vundle() {
-    if [[ ! -d ~/.vim/bundle ]]; then
-        echo -e "\nIt looks like vim might not be installed, but we'll dump vundle in ~/.vim/bundle anyways."
-        mkdir -p ~/.vim/bundle
-    fi
-    git clone --quiet https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-}
+# --- package sets -----------------------------------------------------------
+# Core: portable, no external-service dependencies. mutt+secrets are portable
+# too but service-ish; launchd is mac-only infra.
+CORE_PKGS="shell git tmux nvim cli scripts"
+EXTRA_PKGS="mutt secrets"
 
-if [ "$1" == "--force" -o "$1" == "-f" ]; then
-    doIt
+# --- flags ------------------------------------------------------------------
+ASSUME_YES=0
+DO_INSTALL=1
+WITH_SECRETS=0
+ONLY_CORE=0
+PKGS_OVERRIDE=""
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--yes|-y)        ASSUME_YES=1 ;;
+		--no-install)    DO_INSTALL=0 ;;
+		--with-secrets)  WITH_SECRETS=1 ;;
+		--only-core)     ONLY_CORE=1 ;;
+		--packages)      shift; PKGS_OVERRIDE="${1:-}" ;;
+		-h|--help)       sed -n '3,21p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+		*) printf 'bootstrap: unknown argument: %s\n' "$1" >&2; exit 2 ;;
+	esac
+	shift
+done
+
+log()  { printf 'bootstrap: %s\n' "$*"; }
+die()  { printf 'bootstrap: %s\n' "$*" >&2; exit 1; }
+
+# Compute the package list to stow.
+if [ -n "$PKGS_OVERRIDE" ]; then
+	PKGS="$PKGS_OVERRIDE"
+elif [ "$ONLY_CORE" = 1 ]; then
+	PKGS="$CORE_PKGS"
 else
-    read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-#        if [[ ! -d ~/.vim/bundle/vundle ]]; then
-#          echo -n "Installing vundle... "
-#          install_vundle
-#          echo "done"
-#        else
-#          echo -n "Updating vundle... "
-#          cd ~/.vim/bundle/vundle
-#          git pull --quiet
-#          echo "done"
-#        fi
-        cd $STARTWD
-        echo "Copying dotfiles..."
-        doIt
-        echo "done."
-
-        read -p "Do you want to copy ssh_config? (y/n) " -n 1
-        echo
-        if [[ $REPLY =~ [Yy]$ ]]; then
-            echo -n "Copying ssh config... "
-            ([[ -d ~/.ssh ]] && cp_ssh_cfg) || mkdir ~/.ssh && cp_ssh_cfg
-            echo "done."
-        fi
-    fi
+	PKGS="$CORE_PKGS $EXTRA_PKGS"
 fi
-unset doIt
-unset cp_ssh_cfg
-unset install_vundle
-unset STARTWD
-source ~/.bash_profile
+
+# --- ensure stow ------------------------------------------------------------
+ensure_stow() {
+	has stow && return 0
+	log "GNU Stow not found; installing it…"
+	if is_mac; then
+		has brew || die "Homebrew required to install stow on macOS (https://brew.sh)."
+		brew install stow
+	elif has apt-get; then
+		sudo apt-get update -qq && sudo apt-get install -y stow
+	elif has dnf; then
+		sudo dnf install -y stow
+	else
+		die "no supported package manager (brew/apt/dnf) to install stow."
+	fi
+}
+
+# --- headless git rewrite ---------------------------------------------------
+# Coder boxes clone over HTTPS and have no SSH key; rewrite any git@github.com:
+# remotes (the .gitconfig / submodules may use them) to HTTPS for this user.
+ensure_https_github() {
+	is_mac && return 0   # local macs keep their SSH workflow
+	git config --global url."https://github.com/".insteadOf "git@github.com:" || true
+}
+
+# --- OS package install (optional) ------------------------------------------
+install_packages_mac() {
+	has brew || { log "skip install: Homebrew not present"; return 0; }
+	log "brew bundle (Brewfile)…"
+	brew bundle --file="$REPO/Brewfile"
+}
+
+# On Debian/Ubuntu a few tools install under alternate names or aren't packaged;
+# bridge them into ~/.local/bin (already first on PATH) without sudo.
+linux_shims() {
+	mkdir -p "$HOME/.local/bin"
+	has bat || { has batcat && ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"; }
+	has fd  || { has fdfind && ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"; }
+	if ! has eza; then
+		log "installing eza release binary → ~/.local/bin…"
+		local url="https://github.com/eza-community/eza/releases/latest/download/eza_${ARCH}-unknown-linux-gnu.tar.gz"
+		if curl -fsSL "$url" -o /tmp/eza.tgz; then
+			tar -xzf /tmp/eza.tgz -C "$HOME/.local/bin" && rm -f /tmp/eza.tgz
+		else
+			log "eza install failed (non-fatal)"
+		fi
+	fi
+}
+
+install_packages_linux() {
+	local pkgs
+	pkgs="$(grep -vE '^\s*#|^\s*$' "$REPO/packages.txt" | tr '\n' ' ')"
+	if has apt-get; then
+		log "apt-get install: $pkgs"
+		sudo apt-get update -qq || true
+		# shellcheck disable=SC2086  # intentional word-splitting of the package list
+		sudo apt-get install -y $pkgs || log "some apt packages failed (continuing)"
+		linux_shims
+	elif has dnf; then
+		log "dnf install: $pkgs"
+		# shellcheck disable=SC2086  # intentional word-splitting of the package list
+		sudo dnf install -y $pkgs || log "some dnf packages failed (continuing)"
+	else
+		log "no apt/dnf found; skipping package install (install manually: $pkgs)"
+	fi
+}
+
+maybe_install_packages() {
+	[ "$DO_INSTALL" = 1 ] || { log "skip OS package install (--no-install)"; return 0; }
+	if [ "$ASSUME_YES" != 1 ]; then
+		printf 'bootstrap: install OS packages first? [y/N] '
+		read -r reply
+		case "$reply" in [Yy]*) ;; *) log "skipping OS package install"; return 0 ;; esac
+	fi
+	if is_mac; then install_packages_mac; else install_packages_linux; fi
+}
+
+# --- clear the old symlink-farm so stow won't conflict ----------------------
+# The legacy bootstrap `ln -s`'d these into $HOME pointing at top-level repo
+# files that the package-ization deleted, so those links now DANGLE. Remove the
+# dangling ones (they would block stow); current valid stow links resolve fine
+# and are left for --restow to refresh.
+unlink_legacy() {
+	local legacy f tgt
+	legacy=".ackrc .aliases .bash-completion .bash_login .bash_profile .bash_prompt \
+	        .bashrc .brew .dircolors.256dark .exports .functions .gemrc .gitattributes \
+	        .gitconfig .gitignore .gvimrc .hgignore .inputrc .irbrc .path .tmux.conf \
+	        .screenrc .vimrc .wgetrc .zlogin .zshrc"
+	for f in $legacy; do
+		[ -L "$HOME/$f" ] && ! [ -e "$HOME/$f" ] || continue   # symlink that no longer resolves
+		tgt="$(readlink "$HOME/$f")"
+		case "$tgt" in
+			"$REPO"/*|*/"$REPO_NAME"/*|"$REPO_NAME"/*)
+				rm -f "$HOME/$f"; log "unlinked dangling ~/$f" ;;
+		esac
+	done
+}
+
+# --- stow -------------------------------------------------------------------
+# --no-folding so shell/tmux/nvim/cli can all contribute into one real ~/.config
+# (stow would otherwise fold ~/.config into a single symlink owned by one pkg).
+stow_pkgs() {
+	log "stow: $PKGS"
+	# shellcheck disable=SC2086  # word-splitting PKGS is intentional
+	stow --dir "$REPO" --target "$HOME" --restow --no-folding $PKGS
+	# launchd is mac-only infra (Decision 5); stow it unless the set was trimmed
+	# or explicitly overridden.
+	if is_mac && [ "$ONLY_CORE" != 1 ] && [ -z "$PKGS_OVERRIDE" ]; then
+		log "stow: launchd (mac)"
+		stow --dir "$REPO" --target "$HOME" --restow --no-folding launchd
+	fi
+}
+
+# --- secrets ----------------------------------------------------------------
+sync_secrets() {
+	[ "$WITH_SECRETS" = 1 ] || return 0
+	local ds="$HOME/bin/dot-secrets"
+	[ -x "$ds" ] || ds="$REPO/scripts/bin/dot-secrets"
+	[ -x "$ds" ] || { log "dot-secrets not found; skipping secrets sync"; return 0; }
+	log "syncing secrets (dot-secrets)…"
+	"$ds" sync || log "dot-secrets sync had issues (see above)"
+}
+
+# --- run --------------------------------------------------------------------
+log "repo: $REPO   os: $OS"
+ensure_stow
+ensure_https_github
+maybe_install_packages
+unlink_legacy
+stow_pkgs
+sync_secrets
+log "done. open a fresh login shell (exec bash -l) to pick up the new config."
