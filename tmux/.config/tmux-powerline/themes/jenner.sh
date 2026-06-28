@@ -38,17 +38,12 @@ TMUX_POWERLINE_SEG_AIR_COLOR=$(air_color)
 TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR:-$TMUX_POWERLINE_SEPARATOR_RIGHT_BOLD}
 TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR:-$TMUX_POWERLINE_SEPARATOR_LEFT_BOLD}
 
+# Weather via wttr.in: LOCATION accepts a city ("Brooklyn"), zip/postal code ("10001"),
+# or airport code ("SFO"); empty falls back to IP geolocation. No API key, no lat/lon.
+# Override per-host with $WEATHER_LOCATION. On network failure the segment self-omits.
+TMUX_POWERLINE_SEG_WEATHER_DATA_PROVIDER="wttr"
 TMUX_POWERLINE_SEG_WEATHER_UNIT="f"
-# Location for the weather segment: env vars first (set per-host), then ~/.location/* files,
-# else left empty so the segment is omitted below (no erroring on hosts with no location).
-TMUX_POWERLINE_SEG_WEATHER_LAT="${WEATHER_LAT:-${TMUX_POWERLINE_SEG_WEATHER_LAT:-}}"
-TMUX_POWERLINE_SEG_WEATHER_LON="${WEATHER_LON:-${TMUX_POWERLINE_SEG_WEATHER_LON:-}}"
-if [ -z "$TMUX_POWERLINE_SEG_WEATHER_LAT" ] && [ -r "$HOME/.location/latitude" ]; then
-	TMUX_POWERLINE_SEG_WEATHER_LAT="$(tr -d '\n' < "$HOME/.location/latitude")"
-fi
-if [ -z "$TMUX_POWERLINE_SEG_WEATHER_LON" ] && [ -r "$HOME/.location/longitude" ]; then
-	TMUX_POWERLINE_SEG_WEATHER_LON="$(tr -d '\n' < "$HOME/.location/longitude")"
-fi
+TMUX_POWERLINE_SEG_WEATHER_LOCATION="${WEATHER_LOCATION:-${TMUX_POWERLINE_SEG_WEATHER_LOCATION:-}}"
 
 # See `man tmux` for additional formatting options for the status line.
 # The `format regular` and `format inverse` functions are provided as conveniences
@@ -103,15 +98,14 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 fi
 
 # Right side. now_playing/battery are macOS-only (osascript / pmset) so they're gated on is_mac;
-# weather is included only when a location resolved above; the rest are portable.
+# weather (wttr.in) self-omits on failure; the rest are portable.
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=()
 	if is_mac; then TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS+=("now_playing 233 37"); fi
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS+=("load 235 245")
-	if [ -n "$TMUX_POWERLINE_SEG_WEATHER_LAT" ] && [ -n "$TMUX_POWERLINE_SEG_WEATHER_LON" ]; then
-		TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS+=("weather 234 185")
-	fi
+	# wttr.in handles its own location/fallback and self-omits on failure, so always include it.
+	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS+=("weather 234 185")
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS+=(
 		"date_day 235 136"
 		"date 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"

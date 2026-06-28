@@ -39,6 +39,7 @@ run_segment() {
 	local weather
 	case "$TMUX_POWERLINE_SEG_WEATHER_DATA_PROVIDER" in
 	"yrno") weather=$(__yrno) ;;
+	"wttr") weather=$(__wttr) ;;
 	*)
 		echo "Unknown weather provider [$TMUX_POWERLINE_SEG_WEATHER_DATA_PROVIDER]"
 		return 1
@@ -65,10 +66,95 @@ __process_settings() {
 	if [ -z "$TMUX_POWERLINE_SEG_WEATHER_JSON" ]; then
 		export TMUX_POWERLINE_SEG_WEATHER_JSON="${TMUX_POWERLINE_SEG_WEATHER_JSON_DEFAULT}"
 	fi
-	if [ -z "$TMUX_POWERLINE_SEG_WEATHER_LON" ] && [ -z "$TMUX_POWERLINE_SEG_WEATHER_LAT" ]; then
+	# yr.no needs explicit coords; wttr.in accepts a city/zip/airport string or
+	# falls back to IP geolocation when empty, so it never requires lat/lon.
+	if [ "$TMUX_POWERLINE_SEG_WEATHER_DATA_PROVIDER" = "yrno" ] \
+		&& [ -z "$TMUX_POWERLINE_SEG_WEATHER_LON" ] && [ -z "$TMUX_POWERLINE_SEG_WEATHER_LAT" ]; then
 		echo "No location defined."
 		exit 8
 	fi
+}
+
+# wttr.in provider: location is a city name, zip/postal code, airport code, or
+# empty for IP-based geolocation. Parses the j1 JSON so we can pick a day- or
+# night-appropriate condition glyph (wttr's own %c emoji is day/night-agnostic —
+# it shows ☀️ even at night). Returns "<condition-emoji> <temp>°<unit>".
+__wttr() {
+	local location unit_field unit_sym out code temp rise set is_day emoji
+	location="${TMUX_POWERLINE_SEG_WEATHER_LOCATION:-}"
+	if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
+		unit_field="temp_F"; unit_sym="F"
+	else
+		unit_field="temp_C"; unit_sym="C"
+	fi
+
+	# Serve from cache if still fresh (don't hit the network every redraw).
+	if [ -f "$tmp_file" ]; then
+		local last_update time_now up_to_date
+		if shell_is_osx || shell_is_bsd; then
+			last_update=$(stat -f "%m" "${tmp_file}")
+		elif shell_is_linux; then
+			last_update=$(stat -c "%Y" "${tmp_file}")
+		fi
+		time_now=$(date +%s)
+		up_to_date=$(echo "(${time_now}-${last_update}) < ${TMUX_POWERLINE_SEG_WEATHER_UPDATE_PERIOD}" | bc)
+		if [ "$up_to_date" -eq 1 ]; then
+			__read_tmp_file
+		fi
+	fi
+
+	if out=$(curl --max-time 4 -s "https://wttr.in/${location}?format=j1"); then
+		code=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].weatherCode // empty' 2>/dev/null)
+		temp=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r ".current_condition[0].${unit_field} // empty" 2>/dev/null)
+		if [ -z "$code" ] || [ -z "$temp" ]; then
+			# Not a valid forecast (error page / network hiccup) → keep last good value.
+			[ -f "${tmp_file}" ] && __read_tmp_file
+			return
+		fi
+		rise=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.weather[0].astronomy[0].sunrise // empty' 2>/dev/null)
+		set=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.weather[0].astronomy[0].sunset // empty' 2>/dev/null)
+		is_day=$(__wttr_is_day "$rise" "$set")
+		emoji=$(__wttr_symbol "$code" "$is_day")
+		printf '%s %s°%s' "$emoji" "$temp" "$unit_sym" | tee "${tmp_file}"
+	elif [ -f "${tmp_file}" ]; then
+		__read_tmp_file
+	fi
+}
+
+# Parse a "HH:MM AM/PM" clock into minutes-since-midnight.
+__wttr_clock_to_min() {
+	local t="$1" hh mm ap
+	hh="${t%%:*}"; t="${t#*:}"; mm="${t%% *}"; ap="${t##* }"
+	hh=$((10#$hh % 12)); [ "$ap" = "PM" ] && hh=$((hh + 12))
+	echo $((hh * 60 + 10#$mm))
+}
+
+# Day if the *local system* clock is between the location's sunrise and sunset.
+# Accurate for local/IP weather (system tz == location tz); for a far-away city
+# near dawn/dusk it may be off, which only ever swaps a sun/moon glyph.
+__wttr_is_day() {
+	local rise="$1" set="$2" r s now
+	[ -z "$rise" ] || [ -z "$set" ] && { echo 1; return; }
+	r=$(__wttr_clock_to_min "$rise"); s=$(__wttr_clock_to_min "$set")
+	now=$((10#$(date +%H) * 60 + 10#$(date +%M)))
+	if [ "$now" -ge "$r" ] && [ "$now" -lt "$s" ]; then echo 1; else echo 0; fi
+}
+
+# Map a WWO weather code (https://www.worldweatheronline.com/weather-api) to a glyph.
+# Only clear (113) and partly-cloudy (116) differ by day/night; the rest don't.
+__wttr_symbol() {
+	local code="$1" day="$2"
+	case "$code" in
+	113) [ "$day" = 1 ] && echo "☀️ " || echo "🌙" ;;
+	116) [ "$day" = 1 ] && echo "⛅" || echo "🌗" ;;
+	119 | 122) echo "☁️ " ;;
+	143 | 248 | 260) echo "🌫 " ;;
+	176 | 263 | 266 | 281 | 284 | 293 | 296 | 299 | 302 | 305 | 308 | 311 | 314 | 353 | 356 | 359) echo "🌧 " ;;
+	182 | 185 | 317 | 320 | 350 | 362 | 365 | 374 | 377) echo "🌨 " ;;
+	179 | 227 | 230 | 323 | 326 | 329 | 332 | 335 | 338 | 368 | 371) echo "❄️ " ;;
+	200 | 386 | 389 | 392 | 395) echo "⛈️ " ;;
+	*) echo "?" ;;
+	esac
 }
 
 __yrno() {
