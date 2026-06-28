@@ -18,3 +18,5 @@ bat
 zoxide
 xclip
 neomutt
+fortune-mod
+cowsay

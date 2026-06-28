@@ -27,3 +27,5 @@ brew "jq"
 brew "gnupg"
 brew "pass"
 brew "neomutt"
+brew "fortune"        # login greeting (with `tips`); see shell/.bash_profile
+brew "cowsay"

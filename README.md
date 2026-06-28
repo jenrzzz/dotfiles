@@ -38,6 +38,8 @@ git clone https://github.com/jenrzzz/dotfiles ~/.dotfiles \
 - **Secrets:** `dot-secrets` materializes per-host secrets from Vaultwarden outside any package
   (`~/.config/dot-secrets/manifest.tsv` is the wiring).
 - **tmux automation:** session/window tooling under `scripts/bin/` → `~/bin`; keys in `TMUX-CHEATSHEET.md`.
+- **Login tips:** `tips` prints a workflow reminder for these configs at login (next to `fortune`);
+  database in `~/.config/tips/tips.txt`, grown with the `/tips-gen` Claude Code command.
 - **Linux testing:** `test/linux.sh gate` runs a fresh-clone install in an Ubuntu container.
 - `attic/` holds dropped legacy configs, kept for reference (never stowed).
 

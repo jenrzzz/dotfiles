@@ -27,9 +27,12 @@ shopt -s nocaseglob histappend cdspell 2>/dev/null
 for _opt in autocd globstar; do shopt -s "$_opt" 2>/dev/null; done
 unset _opt
 
-# 6. A welcome fortune, just for fun, if the tools are around.
-if [ -n "$PS1" ] && has fortune; then
-    if has cowsay; then fortune | cowsay; else fortune; fi
+# 6. A welcome tip + fortune, just for fun, if the tools are around.
+if [ -n "$PS1" ]; then
+    has tips && tips
+    if has fortune; then
+        if has cowsay; then fortune | cowsay; else fortune; fi
+    fi
 fi
 
 # 7. Private, untracked overlay (Apple/work + machine-specific bits). Sourced

@@ -1,0 +1,158 @@
+# tips.txt — personal workflow tips, shown at login by `tips` (see scripts/bin/tips).
+#
+# Format: records separated by a line containing only `%`. Each record's first
+# line is `category: <name>`; the rest is the tip body (1-2 lines is ideal).
+# Lines beginning with `#` here are just comments to humans — they are part of a
+# record's body only if you put them inside one, so keep them at the very top.
+#
+# Grow this file with `/tips-gen` (reads your configs and appends fresh tips).
+
+category: tmux
+C-a J — fuzzy jump to or create a session, over running sessions + project dirs + zoxide history.
+%
+category: tmux
+C-a M moves the current window to another (or brand-new) session; C-a P merges other windows into this one as tiled panes (TAB to multi-select).
+%
+category: tmux
+C-a R refactors a bloated session into one session per directory basename. Nothing ever moves on its own — it's on-demand only.
+%
+category: tmux
+A session with 6+ windows flashes an amber ⚠ in the statusline — your cue to hit C-a R.
+%
+category: tmux
+Panes are vim keys: C-a h/j/k/l selects left/down/up/right, C-a a cycles to the next pane.
+%
+category: tmux
+C-a z zooms the current pane fullscreen (toggle) — focus on one thing, then pop back.
+%
+category: tmux
+C-a + arrow resizes the current pane and is repeatable: hold prefix once and keep tapping.
+%
+category: tmux
+C-a ( / ) step prev/next session (repeatable); C-a g toggles back to the last session.
+%
+category: tmux
+C-a C-h / C-a C-l step prev/next window (repeatable); C-a r toggles the last window.
+%
+category: tmux
+C-a ^T splits a 25% horizontal pane — handy for a small status or log pane.
+%
+category: tmux
+The 👻 window (htop) and 😍 window (mutt) are mirrored into every session and always left in place.
+%
+category: bash
+gq fuzzy-picks changed git files with a delta preview; gaq stages, gsq stashes, grq restores them.
+%
+category: bash
+sbq fuzzy-picks a branch and checks it out; bq just previews branches with delta.
+%
+category: bash
+qq fuzzy-picks files with a bat preview; vq does the same and opens the picks in nvim.
+%
+category: bash
+Ctrl-R is rebound to hq: fuzzy-search your eternal history and run the chosen command.
+%
+category: bash
+cdq fuzzy-cd's into any subdirectory up to 4 levels deep.
+%
+category: bash
+mark <name> bookmarks the current dir; jump <name> returns to it; marks lists them all.
+%
+category: bash
+mkd <dir> makes a directory and cd's into it in one step.
+%
+category: bash
+scratchd spins up a throwaway dir (and changes your prompt); unscratch -r cd's back and deletes it.
+%
+category: bash
+`c` trims the trailing newline and copies stdin to the clipboard — e.g. `pwd | c`.
+%
+category: bash
+calc '2^10/3' does scale-10 math via bc; json pretty-prints JSON from a pipe or an argument.
+%
+category: bash
+server [port] serves the current dir over HTTP (default 8000) and opens it in the browser.
+%
+category: bash
+Forgot a name? `functions` lists everything in 30-functions.sh; `aliases` lists 20-aliases.sh.
+%
+category: bash
+Quick keys: g=git, vim=nvim, s=cd ~/Source; .. ... .... climb directories.
+%
+category: bash
+map = xargs -n1, so `somecmd | map other` runs `other` once per line.
+%
+category: nvim
+Leader is comma. ,t = fuzzy file finder (fzf), ,f = treesitter symbols in the current file.
+%
+category: nvim
+,s = LSP workspace symbols, ,d = LSP document symbols (both via telescope).
+%
+category: nvim
+K = hover docs, gd = go to definition, gD = go to declaration (mapped on LspAttach).
+%
+category: nvim
+[d / ]d jump prev/next diagnostic; <space>e opens the diagnostic float; F1 toggles diagnostics.
+%
+category: nvim
+In insert mode C-l inserts " => " and C-k inserts "->"; C-c is a stand-in for ESC.
+%
+category: nvim
+,gb = git blame, ,ss strips trailing whitespace, ,go opens the URL under the cursor's line.
+%
+category: nvim
+C-j / C-k cycle buffers; C-n / C-p step through the quickfix list.
+%
+category: nvim
+In visual mode, @ runs a macro over every line of the selection.
+%
+category: nvim
+,ll opens the alternate file (other-nvim), ,lv opens it in a vsplit. :Lazy manages plugins.
+%
+category: git
+ca adds everything and commits with a verbose diff; go <branch> checks out, creating it if needed.
+%
+category: git
+git l / ll show a pretty graph log with relative times; graphall shows every branch by date.
+%
+category: git
+undopush force-pushes to undo your last push (HEAD^ over the current branch).
+%
+category: git
+snapshot stashes the working tree but keeps it applied — a quick safety net before something risky.
+%
+category: git
+standup shows your commits since yesterday, filtered to your email.
+%
+category: git
+Mid-conflict, git ours <path> / git theirs <path> picks a side and stages it for you.
+%
+category: git
+assume <path> hides local changes from git; unassume restores tracking; assumed lists them.
+%
+category: git
+Clone shorthands: gh:user/repo → GitHub SSH, gst:id → gist. e.g. git c gh:you/dotfiles.
+%
+category: git
+delta is the pager with navigate on — press n / N to jump between diff hunks.
+%
+category: git
+Aliases: gca = commit -a, gpom = push origin master, fixup = rebase -i HEAD~2.
+%
+category: claude-code
+Plan mode researches and writes a plan without touching files — you approve before any edit lands.
+%
+category: claude-code
+/code-review checks your working diff for bugs and cleanups before you push.
+%
+category: claude-code
+/tips-gen reads your configs and appends fresh tips to this database — run it whenever you add bindings.
+%
+category: claude-code
+Type / to browse slash commands; this repo ships its own under .claude/commands/.
+%
+category: claude-code
+Prefix a prompt with ! to run a shell command inline, so its output joins the conversation.
+%
+category: claude-code
+Mention a file by path with @ to pull it into context instead of pasting its contents.

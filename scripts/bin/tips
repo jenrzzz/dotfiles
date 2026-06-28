@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#
+# tips — a tiny fortune(1) for THIS dotfiles setup.
+#
+# Prints short, actionable reminders specific to these configs: tmux keys, shell
+# aliases/functions, nvim maps, git aliases, and Claude Code. Shown at login next
+# to the real fortune (see shell/.bash_profile). The database lives at
+# ~/.config/tips/tips.txt and is grown over time by the `/tips-gen` slash command.
+#
+# Data format: records separated by a line containing only `%`. Each record's
+# first line is `category: <name>`; the remaining lines are the tip body.
+#
+# Usage:
+#   tips                one random tip (default)
+#   tips -n N           N random tips
+#   tips -c CATEGORY    a random tip from one category (combine with -n)
+#   tips -a             every tip, in order
+#   tips -l             list categories with counts
+#   tips -h             this help
+
+set -uo pipefail
+
+TIPS_DATA="${TIPS_DATA:-${XDG_CONFIG_HOME:-$HOME/.config}/tips/tips.txt}"
+
+usage() {
+	cat <<'EOF'
+tips — print a workflow tip from your personal tips database.
+
+Usage:
+  tips                one random tip (default)
+  tips -n N           N random tips
+  tips -c CATEGORY    a random tip from one category (tmux|bash|nvim|git|claude-code)
+  tips -a             every tip, in order
+  tips -l             list categories with counts
+  tips -h             this help
+EOF
+}
+
+mode=random
+count=1
+category=
+
+while getopts ":n:c:alh" opt; do
+	case "$opt" in
+		n) count="$OPTARG" ;;
+		c) category="$OPTARG" ;;
+		a) mode=all ;;
+		l) mode=list ;;
+		h) usage; exit 0 ;;
+		:) echo "tips: -$OPTARG needs an argument" >&2; exit 2 ;;
+		\?) echo "tips: unknown option -$OPTARG" >&2; usage >&2; exit 2 ;;
+	esac
+done
+
+case "$count" in
+	''|*[!0-9]*) echo "tips: -n needs a positive integer" >&2; exit 2 ;;
+esac
+
+# Silent no-op when the database isn't present yet (e.g. at login before stow).
+[ -r "$TIPS_DATA" ] || exit 0
+
+# Color only on a TTY, and never when NO_COLOR is set.
+use_color=0
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then use_color=1; fi
+
+awk -v mode="$mode" -v count="$count" -v category="$category" -v color="$use_color" '
+BEGIN { srand(); n = 0; nl = 0 }
+
+# Accumulate lines into the current record; "%" on its own line ends it.
+{
+	if ($0 == "%") { flush(); next }
+	buf[nl++] = $0
+}
+
+END {
+	flush()  # last record (file need not end with "%")
+
+	if (mode == "list") { do_list(); exit }
+	if (mode == "all")  { for (i = 0; i < n; i++) { if (i > 0) print ""; emit(i) } exit }
+
+	# random mode: collect candidate indices, optionally filtered by category.
+	m = 0
+	for (i = 0; i < n; i++)
+		if (category == "" || cat[i] == category) idx[m++] = i
+	if (m == 0) {
+		if (category != "")
+			print "tips: no tips in category \"" category "\"" > "/dev/stderr"
+		exit
+	}
+	# Fisher-Yates shuffle, then take the first `count`.
+	for (i = m - 1; i > 0; i--) { j = int(rand() * (i + 1)); t = idx[i]; idx[i] = idx[j]; idx[j] = t }
+	k = (count < m) ? count : m
+	for (i = 0; i < k; i++) { if (i > 0) print ""; emit(idx[i]) }
+}
+
+# Parse the buffered lines into cat[n] / bodies[n].
+function flush(   i2, line, c, body, started) {
+	if (nl == 0) return
+	c = ""; body = ""; started = 0
+	for (i2 = 0; i2 < nl; i2++) {
+		line = buf[i2]
+		if (c == "" && line ~ /^category:[ \t]*/) {
+			c = line
+			sub(/^category:[ \t]*/, "", c)
+			gsub(/[ \t]+$/, "", c)
+			continue
+		}
+		if (!started && line ~ /^[ \t]*$/) continue   # skip leading blanks
+		started = 1
+		body = (body == "") ? line : body "\n" line
+	}
+	sub(/\n+$/, "", body)                              # trim trailing blanks
+	if (c != "" && body != "") { cat[n] = c; bodies[n] = body; n++ }
+	nl = 0
+}
+
+# Print one tip: "💡 <category> · <first line>" then indented continuation lines.
+function emit(i2,   parts, np, j2, c_cat, c_dim, c_rst) {
+	if (color == "1") { c_cat = "\033[1;36m"; c_dim = "\033[2m"; c_rst = "\033[0m" }
+	np = split(bodies[i2], parts, "\n")
+	printf "💡 %s%s%s %s·%s %s\n", c_cat, cat[i2], c_rst, c_dim, c_rst, parts[1]
+	for (j2 = 2; j2 <= np; j2++) printf "   %s\n", parts[j2]
+}
+
+# List categories alphabetically with counts.
+function do_list(   i2, c, order, no, a, b, t, total) {
+	no = 0
+	for (i2 = 0; i2 < n; i2++) {
+		c = cat[i2]
+		if (!(c in cnt)) order[no++] = c
+		cnt[c]++
+	}
+	for (a = 0; a < no; a++)
+		for (b = a + 1; b < no; b++)
+			if (order[b] < order[a]) { t = order[a]; order[a] = order[b]; order[b] = t }
+	total = 0
+	for (a = 0; a < no; a++) { printf "%-14s %d\n", order[a], cnt[order[a]]; total += cnt[order[a]] }
+	printf "%-14s %d\n", "(total)", total
+}
+' "$TIPS_DATA"
