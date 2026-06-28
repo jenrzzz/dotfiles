@@ -49,3 +49,7 @@ firebase-admin-key.json
 # Coolify API tokens (untracked 2026-06-27; rotate + scrub from history)
 .config/coolify/
 .nvimlog
+
+# Dead configs with leaked creds (untracked; rotate/scrub in Step 8)
+.irssi/
+.config/gallery-dl/
