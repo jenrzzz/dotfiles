@@ -80,7 +80,8 @@ __process_settings() {
 # night-appropriate condition glyph (wttr's own %c emoji is day/night-agnostic —
 # it shows ☀️ even at night). Returns "<condition-emoji> <temp>°<unit> <wind-arrow><speed>".
 __wttr() {
-	local location unit_field unit_sym out code temp rise set is_day emoji wspeed wdeg wind
+	local location unit_field unit_sym out code temp rise set is_day emoji
+	local wspeed wdeg pad feels thr delta hum humglyph extra
 	location="${TMUX_POWERLINE_SEG_WEATHER_LOCATION:-}"
 	if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
 		unit_field="temp_F"; unit_sym="F"
@@ -115,22 +116,55 @@ __wttr() {
 		set=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.weather[0].astronomy[0].sunset // empty' 2>/dev/null)
 		is_day=$(__wttr_is_day "$rise" "$set")
 		emoji=$(__wttr_symbol "$code" "$is_day")
-		# Compact wind: a downwind arrow (matching wttr) + speed, no unit text.
-		# Disable with TMUX_POWERLINE_SEG_WEATHER_SHOW_WIND=false.
-		wind=""
-		if [ "${TMUX_POWERLINE_SEG_WEATHER_SHOW_WIND:-true}" = "true" ]; then
-			if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
-				wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedMiles // empty' 2>/dev/null)
-			else
-				wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedKmph // empty' 2>/dev/null)
+		# Adaptive extra metric, chosen by how "feels like" compares to actual temp:
+		#   notably colder (wind chill) -> wind     (downwind arrow + speed)
+		#   notably warmer (mugginess)  -> humidity (💧 + percent)
+		#   about the same              -> nothing
+		# Threshold is in the active unit (degF default 3; C users may prefer 2).
+		# Disable entirely with TMUX_POWERLINE_SEG_WEATHER_SHOW_EXTRA=false.
+		# Wind speed is superscript; humidity is plain digits + %. A hair space (U+200A)
+		# keeps them off the glyph (swap pad to U+2009 thin, U+202F, or a plain space).
+		extra=""
+		pad=$'\u200a'
+		humglyph="💧"; [ -n "$TMUX_POWERLINE_SEG_WEATHER_HUMIDITY_GLYPH" ] && humglyph="$TMUX_POWERLINE_SEG_WEATHER_HUMIDITY_GLYPH"
+		if [ "${TMUX_POWERLINE_SEG_WEATHER_SHOW_EXTRA:-true}" = "true" ]; then
+			feels=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r ".current_condition[0].FeelsLike${unit_sym} // empty" 2>/dev/null)
+			thr="${TMUX_POWERLINE_SEG_WEATHER_FEELS_THRESHOLD:-3}"
+			if [ -n "$feels" ] && [ -n "$temp" ]; then
+				delta=$((feels - temp))
+				if [ "$delta" -le $((-thr)) ]; then
+					if [ "$TMUX_POWERLINE_SEG_WEATHER_UNIT" = "f" ]; then
+						wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedMiles // empty' 2>/dev/null)
+					else
+						wspeed=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].windspeedKmph // empty' 2>/dev/null)
+					fi
+					wdeg=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].winddirDegree // empty' 2>/dev/null)
+					[ -n "$wspeed" ] && [ -n "$wdeg" ] && extra=" $(__wttr_wind_arrow "$wdeg")${pad}$(__wttr_superscript "$wspeed")"
+				elif [ "$delta" -ge "$thr" ]; then
+					hum=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].humidity // empty' 2>/dev/null)
+					[ -n "$hum" ] && extra=" ${humglyph}${pad}${hum}%"
+				fi
 			fi
-			wdeg=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].winddirDegree // empty' 2>/dev/null)
-			[ -n "$wspeed" ] && [ -n "$wdeg" ] && wind=" $(__wttr_wind_arrow "$wdeg")${wspeed}"
 		fi
-		printf '%s %s°%s%s' "$emoji" "$temp" "$unit_sym" "$wind" | tee "${tmp_file}"
+		printf '%s %s°%s%s' "$emoji" "$temp" "$unit_sym" "$extra" | tee "${tmp_file}"
 	elif [ -f "${tmp_file}" ]; then
 		__read_tmp_file
 	fi
+}
+
+# Render an integer as Unicode superscript digits (⁰¹²³⁴⁵⁶⁷⁸⁹), via ANSI-C escapes
+# so they survive editing. Lets the wind speed sit compactly against the arrow.
+__wttr_superscript() {
+	local n="$1" out="" i c
+	for ((i = 0; i < ${#n}; i++)); do
+		case "${n:i:1}" in
+		0) c=$'\u2070' ;; 1) c=$'\u00b9' ;; 2) c=$'\u00b2' ;; 3) c=$'\u00b3' ;;
+		4) c=$'\u2074' ;; 5) c=$'\u2075' ;; 6) c=$'\u2076' ;; 7) c=$'\u2077' ;;
+		8) c=$'\u2078' ;; 9) c=$'\u2079' ;; *) c="${n:i:1}" ;;
+		esac
+		out="${out}${c}"
+	done
+	printf '%s' "$out"
 }
 
 # Compass arrow pointing downwind (the way wttr renders it) for a "from" bearing in degrees.
