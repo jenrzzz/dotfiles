@@ -45,3 +45,7 @@ firebase-admin-key.json
 .mutt/certificates
 .mutt/jenner.jfave.com
 .mutt/swootrc
+
+# Coolify API tokens (untracked 2026-06-27; rotate + scrub from history)
+.config/coolify/
+.nvimlog
