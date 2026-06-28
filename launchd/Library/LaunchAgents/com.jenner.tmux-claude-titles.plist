@@ -4,11 +4,11 @@
 <dict>
     <key>Label</key>
     <string>com.jenner.tmux-claude-titles</string>
-    <!-- Runs ~/.bin/tmux-claude-titles-loop.sh, which loops forever and no-ops while no
+    <!-- Runs ~/bin/tmux-claude-titles-loop.sh, which loops forever and no-ops while no
          tmux server is up. launchd owns its lifecycle instead of tmux's `run-shell -b`. -->
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/jenner/.bin/tmux-claude-titles-loop.sh</string>
+        <string>/Users/jenner/bin/tmux-claude-titles-loop.sh</string>
     </array>
     <!-- launchd hands agents a bare PATH; the loop and its workers shell out to `tmux`
          (Homebrew) plus the usual coreutils. LANG forces a UTF-8 locale: without it the

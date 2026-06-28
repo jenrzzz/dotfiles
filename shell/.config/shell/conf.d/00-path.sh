@@ -14,7 +14,7 @@ path_prepend() {
 
 # User-local bins (highest priority).
 path_prepend "$HOME/.local/bin"
-path_prepend "$HOME/.bin"
+path_prepend "$HOME/bin"
 
 # Language/tool bins, each guarded by existence.
 path_prepend "$HOME/.cargo/bin"
