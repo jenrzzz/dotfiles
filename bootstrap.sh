@@ -85,9 +85,15 @@ ensure_stow() {
 # --- headless git rewrite ---------------------------------------------------
 # Coder boxes clone over HTTPS and have no SSH key; rewrite any git@github.com:
 # remotes (the .gitconfig / submodules may use them) to HTTPS for this user.
+# Write to the XDG global config ($XDG_CONFIG_HOME/git/config), NOT ~/.gitconfig:
+# the git package owns ~/.gitconfig (a symlink), so --global would either create a
+# conflicting real file before stow or write into the repo afterward. This file is
+# read by git, not a stow target, and never tracked.
 ensure_https_github() {
 	is_mac && return 0   # local macs keep their SSH workflow
-	git config --global url."https://github.com/".insteadOf "git@github.com:" || true
+	mkdir -p "$XDG_CONFIG_HOME/git"
+	git config --file "$XDG_CONFIG_HOME/git/config" \
+		url."https://github.com/".insteadOf "git@github.com:" || true
 }
 
 # --- OS package install (optional) ------------------------------------------
@@ -154,13 +160,36 @@ unlink_legacy() {
 	        .gitconfig .gitignore .gvimrc .hgignore .inputrc .irbrc .path .tmux.conf \
 	        .screenrc .vimrc .wgetrc .zlogin .zshrc"
 	for f in $legacy; do
-		[ -L "$HOME/$f" ] && ! [ -e "$HOME/$f" ] || continue   # symlink that no longer resolves
+		# only dangling symlinks (a link whose target no longer resolves)
+		if ! { [ -L "$HOME/$f" ] && [ ! -e "$HOME/$f" ]; }; then continue; fi
 		tgt="$(readlink "$HOME/$f")"
 		case "$tgt" in
 			"$REPO"/*|*/"$REPO_NAME"/*|"$REPO_NAME"/*)
 				rm -f "$HOME/$f"; log "unlinked dangling ~/$f" ;;
 		esac
 	done
+}
+
+# --- back up pre-existing real files that would block stow ------------------
+# A fresh OS image ships real $HOME dotfiles (Ubuntu's /etc/skel gives every user
+# a .bashrc and .profile). Stow refuses to overlay a real file and aborts the
+# whole run, so move any such conflicting file aside to *.pre-stow.bak first.
+# Only touches real files / foreign symlinks at conflict paths — never our own
+# stow links or real directories (which --no-folding merges into).
+backup_conflicts() {
+	local sim rel f
+	# shellcheck disable=SC2086  # intentional word-splitting of PKGS
+	sim="$(stow -n -v --dir "$REPO" --target "$HOME" --no-folding $PKGS 2>&1 || true)"
+	printf '%s\n' "$sim" \
+		| sed -n 's/.*existing target is neither a link nor a directory: //p' \
+		| while IFS= read -r rel; do
+			[ -n "$rel" ] || continue
+			f="$HOME/$rel"
+			if [ -e "$f" ] && [ ! -L "$f" ] && [ ! -d "$f" ]; then
+				mv "$f" "$f.pre-stow.bak"
+				log "backed up pre-existing ~/$rel -> ~/$rel.pre-stow.bak"
+			fi
+		done
 }
 
 # --- stow -------------------------------------------------------------------
@@ -194,6 +223,7 @@ ensure_stow
 ensure_https_github
 maybe_install_packages
 unlink_legacy
+backup_conflicts
 stow_pkgs
 sync_secrets
 log "done. open a fresh login shell (exec bash -l) to pick up the new config."
