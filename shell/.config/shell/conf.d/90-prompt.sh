@@ -25,10 +25,29 @@ parse_git_branch() {
     git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)$(parse_git_in_rebase)/"
 }
 
+# --- path shortening --------------------------------------------------------
+# \w can only fold $HOME -> ~. But ~/Source and ~/Dropbox are symlinks into
+# ~/Library/CloudStorage/Dropbox, and tools that resolve symlinks (editors, z,
+# "open in terminal") hand the shell the physical CloudStorage path — so \w
+# would print the long form. Collapse the prefix back through both symlinks,
+# then abbreviate $HOME. Used in PS1 as \$(__short_pwd) so it runs each prompt.
+__short_pwd() {
+    local d="$PWD"
+    d="${d/#$HOME\/Library\/CloudStorage\/Dropbox\/Source/$HOME/Source}"
+    d="${d/#$HOME\/Library\/CloudStorage\/Dropbox/$HOME/Dropbox}"
+    # Abbreviate $HOME -> ~ by prefix strip. A literal ~ in a ${var/pat/repl}
+    # replacement gets tilde-expanded back to $HOME under bash 5.x, so avoid it.
+    case "$d" in
+        "$HOME")   printf '~' ;;
+        "$HOME"/*) printf '~%s' "${d#"$HOME"}" ;;
+        *)         printf '%s' "$d" ;;
+    esac
+}
+
 # --- prompts (default + scratch) --------------------------------------------
 _pg='$([[ -n $(git branch 2>/dev/null) ]] && echo " on ")\[$PROMPT_GIT\]$(parse_git_branch)'
-export PS1_DEFAULT="\[$PROMPT_USER\]\u\[$PROMPT_AT\]@\[$PROMPT_HOST\]\h\[$PROMPT_PUNCT\]:\[$PROMPT_PATH\]\w\[$PROMPT_PUNCT\]${_pg}\[$PROMPT_PUNCT\]\$ \[$RESET\]"
-export PS1_SCRATCH="\[$PROMPT_USER\]\u\[$PROMPT_AT\]@\[$PROMPT_HOST\]\h\[$PROMPT_PUNCT\]:\[$PROMPT_PATH\]\w\[$PROMPT_PUNCT\]${_pg}\[$PROMPT_PUNCT\] [scratch] \$ \[$RESET\]"
+export PS1_DEFAULT="\[$PROMPT_USER\]\u\[$PROMPT_AT\]@\[$PROMPT_HOST\]\h\[$PROMPT_PUNCT\]:\[$PROMPT_PATH\]\$(__short_pwd)\[$PROMPT_PUNCT\]${_pg}\[$PROMPT_PUNCT\]\$ \[$RESET\]"
+export PS1_SCRATCH="\[$PROMPT_USER\]\u\[$PROMPT_AT\]@\[$PROMPT_HOST\]\h\[$PROMPT_PUNCT\]:\[$PROMPT_PATH\]\$(__short_pwd)\[$PROMPT_PUNCT\]${_pg}\[$PROMPT_PUNCT\] [scratch] \$ \[$RESET\]"
 unset _pg
 export PS1="$PS1_DEFAULT"
 
