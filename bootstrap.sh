@@ -180,8 +180,13 @@ backup_conflicts() {
 	local sim rel f
 	# shellcheck disable=SC2086  # intentional word-splitting of PKGS
 	sim="$(stow -n -v --dir "$REPO" --target "$HOME" --no-folding $PKGS 2>&1 || true)"
+	# Match both stow message dialects:
+	#   older: "existing target is neither a link nor a directory: <rel>"
+	#   2.4.x: "cannot stow <pkgpath> over existing target <rel> since neither a link nor a directory…"
 	printf '%s\n' "$sim" \
-		| sed -n 's/.*existing target is neither a link nor a directory: //p' \
+		| sed -n \
+			-e 's/.*existing target is neither a link nor a directory: //p' \
+			-e 's/.*over existing target \(.*\) since neither a link nor a directory.*/\1/p' \
 		| while IFS= read -r rel; do
 			[ -n "$rel" ] || continue
 			f="$HOME/$rel"
