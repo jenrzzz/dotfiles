@@ -9,8 +9,17 @@
 	# Use patched font symbols.
 	export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true"
 
-	# The theme to use.
-	export TMUX_POWERLINE_THEME="jenner"
+	# The theme to use. Honor a pre-set $TMUX_POWERLINE_THEME (e.g. `export TMUX_POWERLINE_THEME=meta-green`
+	# in ~/.extra) so themes can be tried/picked per host; else auto-pick on Meta hosts, jenner locally.
+	# Distinct per-host accents (see themes/meta-*.sh) make full-screen local vs. devserver tmux
+	# windows unmistakable.
+	if [ -z "$TMUX_POWERLINE_THEME" ]; then
+		if [ -r /etc/fbwhoami ]; then
+			export TMUX_POWERLINE_THEME="meta-crimson"
+		else
+			export TMUX_POWERLINE_THEME="jenner"
+		fi
+	fi
 	# Overlay directory to look for themes. There you can put your own themes outside the repo. Fallback will still be the "themes" directory in the repo.
 	export TMUX_POWERLINE_DIR_USER_THEMES="${XDG_CONFIG_HOME:-$HOME/.config}/tmux-powerline/themes"
 	# Overlay directory to look for segments. There you can put your own segments outside the repo. Fallback will still be the "segments" directory in the repo.
