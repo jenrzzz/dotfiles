@@ -8,9 +8,10 @@
 # tmux-move-window, tmux-merge-windows, and tmux-refactor-session.
 
 # A pane is running Claude Code when its foreground command looks like a version string
-# (the `claude` binary's process name is its version, e.g. "2.1.169"), or literally contains
-# "claude" (belt-and-suspenders in case the process naming changes). Update if both break.
-is_claude_cmd() { [[ "$1" =~ ^[0-9]+\.[0-9]+ || "$1" == *claude* ]]; }
+# (the `claude` binary's process name is its version, e.g. "2.1.169" or "2_1_195" — newer
+# builds use underscores), or literally contains "claude" (belt-and-suspenders in case the
+# process naming changes). Update if both break.
+is_claude_cmd() { [[ "$1" =~ ^[0-9]+[._][0-9]+ || "$1" == *claude* ]]; }
 
 # Windows whose name matches an entry here are fixed-purpose utility windows (the htop/mutt
 # 👻 and 😍): they are linked into every session at indices 0/1 (see tmux-hub-windows.sh),
