@@ -18,6 +18,7 @@ export LC_CTYPE="${LC_CTYPE:-UTF-8}"
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 hub="$here/tmux-hub-windows.sh"
 worker="$here/tmux-claude-titles.sh"
+statuslines="$here/tmux-status-lines.sh"
 pidfile="${TMPDIR:-/tmp}/tmux-claude-titles.pid"
 
 # Bail out if a previous loop is still running. The PID must be both alive *and* actually
@@ -40,6 +41,7 @@ while true; do
 	if tmux has-session 2>/dev/null; then
 		"$hub" 2>/dev/null || true
 		"$worker" 2>/dev/null || true
+		"$statuslines" 2>/dev/null || true
 	fi
 	sleep 1
 done

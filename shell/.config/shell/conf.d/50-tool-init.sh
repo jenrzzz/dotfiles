@@ -12,9 +12,13 @@ elif has asdf; then                                       # 0.16+ binary
     path_prepend "${ASDF_DATA_DIR:-$HOME/.asdf}/shims"; export PATH
 fi
 
-# Legacy per-language managers only if asdf isn't in charge.
+# rbenv takes precedence over asdf for Ruby: init it AFTER the asdf block so its
+# shims get prepended ahead of asdf's. Resolution order becomes:
+#   rbenv ruby  →  asdf ruby  →  system /usr/bin/ruby
+has rbenv && eval "$(rbenv init - bash)"
+
+# Other legacy per-language managers only if asdf isn't in charge.
 if ! has asdf; then
-    has rbenv  && eval "$(rbenv init -)"
     has nodenv && eval "$(nodenv init -)"
     has pyenv  && eval "$(pyenv init - bash)"
 fi

@@ -101,6 +101,14 @@ with the `jenner` theme + custom segments. User-facing keybinding reference: `TM
   renders as live, session-aware window titles. `@ctitle` = Claude's live activity for Claude
   windows; `@cdir` = a `basename:` prefix shown only when a window's dir differs from its session's
   plurality ("baseline") dir.
+- `tmux-status-lines.sh` — gives a session a *two-line* status bar (window list on its own
+  full-width row) once it has `TMUX_TWOLINE_THRESHOLD` (default 6) non-hub windows, reverting to
+  single-line below that. Per-session via `set-option -t` over tmux-powerline's dual-line machinery;
+  an `@twoline` marker makes it idempotent (no redraw in steady state). The window row "floats":
+  its fill + per-session `window-status-style` use `TMUX_TWOLINE_WINDOW_BG` (default `colour16` =
+  pure black; use `default` for terminal-bg/transparent), leaving the global `status-style` bar on
+  the segment row untouched. The macOS LaunchAgent has no shell env, so override by editing the
+  script default, not the env var.
 
 **On-demand tools** (bound in `.tmux.conf`, nothing moves automatically):
 - `C-a J` → `tmux-sessionizer` — fuzzy jump-to / create-a session over running sessions + project
