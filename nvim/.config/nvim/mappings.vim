@@ -58,3 +58,14 @@ nnoremap <F1> :lua toggle_diagnostics()<CR>
 nnoremap <leader>ll <cmd>:Other<CR>
 nnoremap <leader>lv <cmd>:OtherVSplit<CR>
 nnoremap <leader>lc <cmd>:OtherClear<CR>
+
+" Meta work-host mappings: telescope pickers + Meta keymaps (meta.nvim). Only on
+" hosts with the Meta plugin dir, so personal/macOS mappings above are unchanged.
+if isdirectory('/usr/share/fb-editor-support/nvim')
+  nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+  nnoremap <leader>fb <cmd>Telescope buffers<cr>
+  nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
+  nnoremap <leader>f, <cmd>Telescope resume<cr>
+  nnoremap <leader>T :!t %:t:r<CR>
+  lua require("meta.keymaps")
+endif

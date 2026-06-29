@@ -56,3 +56,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
   end,
 })
+
+-- Meta work-host LSP servers (pyre/hhvm/thrift/eslint/…) + arclint formatting.
+-- No-op off Meta hosts so the personal config above is unaffected.
+if vim.fn.isdirectory("/usr/share/fb-editor-support/nvim") == 1 then
+  require("meta_local").lsp()
+end

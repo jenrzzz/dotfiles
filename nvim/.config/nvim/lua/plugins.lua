@@ -1,4 +1,4 @@
-return {
+local spec = {
   { "folke/lazy.nvim", version = "*" }, -- package manager
   -- libraries
   "neovim/nvim-lspconfig",
@@ -70,3 +70,11 @@ return {
     },
   },
 }
+
+-- On Meta work hosts (where the prepackaged nvim plugin exists) append the Meta-only
+-- plugin specs. Personal/macOS hosts skip this entirely, keeping the config clean.
+if vim.fn.isdirectory("/usr/share/fb-editor-support/nvim") == 1 then
+  vim.list_extend(spec, require("meta_plugins"))
+end
+
+return spec

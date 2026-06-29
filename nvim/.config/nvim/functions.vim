@@ -45,3 +45,8 @@ endfunction
 command! InsertTime :normal a<c-r>=strftime('%F %H:%M:%S.0 %z')<cr>
 command! FindConditionals :normal /\<if\>\|\<unless\>\|\<and\>\|\<or\>\|||\|&&<cr>
 command! GdiffInTab tabedit %|vsplit|Gdiff
+
+" Meta work-host commands (meta.nvim). No-op off Meta hosts.
+if isdirectory('/usr/share/fb-editor-support/nvim')
+  lua require("meta.cmds")
+endif

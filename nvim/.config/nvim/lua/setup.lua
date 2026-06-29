@@ -119,3 +119,8 @@ if ok_to then
   -- <leader>df / <leader>dF "peek definition" textobject mappings are gone.
 end
 
+-- Meta work-host plugin setup (telescope extensions, metamate, slog). No-op off Meta.
+if vim.fn.isdirectory("/usr/share/fb-editor-support/nvim") == 1 then
+  require("meta_local").setup()
+end
+
