@@ -44,7 +44,8 @@ hq() {  # fuzzy-search the eternal history and stage the chosen command
 
 # --- small helpers ----------------------------------------------------------
 alias returns="?"
-?() { local val=$?; if [ $# -gt 0 ]; then "$@"; val=$?; fi; echo "returned $val"; }
+# `function` keyword form (not `?()`) — bash rejects `?` as a POSIX function name.
+function ? { local val=$?; if [ $# -gt 0 ]; then "$@"; val=$?; fi; echo "returned $val"; }
 
 # Interactive rename when called with a single existing file (else real mv)
 mv() {
