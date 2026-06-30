@@ -144,3 +144,11 @@
 # never fail. Materialized by dot-secrets; see .config/git/local.example.
 [include]
     path = ~/.config/git/local
+[http "https://git.internal.tfbnw.net"]
+	sslCert = /var/facebook/credentials/jenner/x509/jenner.pem
+	sslKey = /var/facebook/credentials/jenner/x509/jenner.pem
+[http "https://mononoke-git-lfs.internal.tfbnw.net"]
+	sslCert = /var/facebook/credentials/jenner/x509/jenner.pem
+	sslKey = /var/facebook/credentials/jenner/x509/jenner.pem
+[http "https://manifold.c2p.facebook.net"]
+	sslCert = /var/facebook/credentials/jenner/x509/jenner.pem
