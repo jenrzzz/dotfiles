@@ -67,6 +67,15 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 TMUX_POWERLINE_SEG_WEATHER_DATA_PROVIDER="wttr"
 TMUX_POWERLINE_SEG_WEATHER_UNIT="f"
 TMUX_POWERLINE_SEG_WEATHER_LOCATION="${WEATHER_LOCATION:-${TMUX_POWERLINE_SEG_WEATHER_LOCATION:-}}"
+# Meta Linux devservers have no direct egress: the weather segment shells out to a bare
+# curl(1) with no proxy, so the wttr.in fetch dies at DNS. Export fwdproxy for the render
+# process (curl inherits it) — only on a Meta Linux host and only if nothing's set already,
+# so local macOS / non-Meta boxes with direct egress are left alone. Override $FWDPROXY to
+# point elsewhere. wttr.in must be allowlisted for the user's fwdproxy identity to resolve.
+if is_linux && [ -r /etc/fbwhoami ] && [ -z "${https_proxy:-}" ]; then
+	export http_proxy="${FWDPROXY:-http://fwdproxy:8080}"
+	export https_proxy="${FWDPROXY:-http://fwdproxy:8080}"
+fi
 
 # See `man tmux` for additional formatting options for the status line.
 # The `format regular` and `format inverse` functions are provided as conveniences
@@ -116,7 +125,7 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 		# turns into ⌘/COPY in place — no extra left padding on the session list.
 		"mode_indicator 236 244 ${TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR} 236 236 both_disable separator_disable"
 		"sessions 236 244"
-		"claude_fleet ${META_FLEET_BG} ${META_FLEET_FG} ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN} 234 244"
+		"claude_fleet ${META_FLEET_BG} ${META_FLEET_FG} ${TMUX_POWERLINE_SEPARATOR_RIGHT_BOLD} 234 ${META_FLEET_BG}"
 	)
 fi
 
