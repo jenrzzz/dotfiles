@@ -10,6 +10,8 @@ brew "stow"           # the installer
 brew "asdf"           # runtime version manager (Node/Ruby/Python)
 brew "direnv"
 
+brew "bitwarden-cli"
+
 # GNU coreutils so the `gnu` resolver finds gls/gstat/gdate/gdircolors on macOS
 brew "coreutils"
 brew "findutils"

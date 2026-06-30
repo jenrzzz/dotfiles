@@ -14,11 +14,9 @@ alias sudo='sudo '                 # let the next word be alias-expanded after s
 
 # Shortcuts
 alias s="cd ~/Source"
-alias d="cd ~/Dropbox"
 alias g="git"
 alias b="bundle "
 alias t="task"
-alias tw="task"
 alias vim="nvim"
 alias vimq="nvim -u NONE"
 alias mux="tmuxinator"
