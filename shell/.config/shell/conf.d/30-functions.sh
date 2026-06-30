@@ -63,7 +63,13 @@ gitop() {                                                 # cd to the git repo r
     cd "$root" || return
 }
 reponame() { basename "$(git rev-parse --show-toplevel)"; }
-if has git; then diff() { git diff --no-index --color-words "$@"; }; fi   # colorful diff
+
+if has git; then 
+  function diff() {
+    git diff --no-index --color-words "$@"
+  }
+fi   # colorful diff
+
 calc() {
     local result; result="$(printf 'scale=10;%s\n' "$*" | bc --mathlib | tr -d '\\\n')"
     if [[ "$result" == *.* ]]; then
