@@ -135,6 +135,9 @@
 [init]
     defaultBranch = main
 
+[credential]
+    helper = store
+
 # Per-host overlay (signing key + commit.gpgsign live here, on hosts that have
 # the key). Absent on Coder/devservers, so commits there are simply unsigned and
 # never fail. Materialized by dot-secrets; see .config/git/local.example.
