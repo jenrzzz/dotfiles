@@ -151,7 +151,6 @@ reset ispell                    # ispell binary (compile time default)
 reset sendmail                  # Default sendmail
 reset shell                     # Take shell from /etc/passwd 
 reset tmpdir                    # tmp-Dir (use compile time default)
-reset visual                    # use $VISUAL as builtin editor.
 set display_filter=""           # pipe message through this filter before displaying
 set editor="nvim -c 'set syntax=mail ft=mail enc=utf-8' +7 %s"
 set folder=~/Mail               # where are the mailboxes (+ and = are shortcuts)
@@ -199,8 +198,9 @@ source ~/.mutt/gpg.rc
 source ~/.mutt/jenner.jfave.com
 
 macro index <f2> '<change-folder>imaps://mail.jfave.com<enter>'
+bind index,pager a noop         # free 'a' so the two-key 'aa' macro doesn't warn
 macro index,pager aa 's+Archive<enter>'
-macro index,pager rr '<refresh>'
+macro index,pager R '<refresh>' # overrides default recall-message; 'r' stays reply
 
 folder-hook 'jfave.com' 'source ~/.mutt/jenner.jfave.com'
 
