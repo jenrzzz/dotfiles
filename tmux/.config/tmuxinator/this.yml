@@ -7,7 +7,7 @@ windows:
   - boo:
     - tmux rename-window -t boo "👻 "
     - tmux select-layout main-vertical
-    - tmux split-window -d "mutt; bash -i"
+    - tmux split-window -d "neomutt; bash -i"
     - htop; bash -i
 
   - baz:
