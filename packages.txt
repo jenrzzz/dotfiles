@@ -9,6 +9,9 @@ curl
 wget
 gnupg
 jq
+# bc: tmux-powerline's weather segment uses it for its cache-freshness check; without
+# it the check errors out and the segment refetches wttr.in on every status redraw.
+bc
 stow
 direnv
 ripgrep
