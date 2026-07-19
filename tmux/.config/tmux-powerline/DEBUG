@@ -1,0 +1,17 @@
+Presence of this file enables TEMPORARY tmux-powerline debug logging to
+/tmp/tmux-powerline-debug/ — chasing the "status-right goes blank on a fresh devbox" bug.
+
+What gets logged:
+  runs.log        one line per powerline.sh left/right render (rc, byte count)
+  dump.*          full env + stderr + xtrace for any render that came back EMPTY (max 40)
+  main-tmux.log   traced main.tmux run at server start (catches errexit aborts)
+  weather.log     every live wttr.in fetch (curl rc, byte count)
+  snapshots.log   status-right/status-format option values every ~10s (who set it to ''?)
+  server-env.PID  the tmux server's real environment (what #() jobs inherit)
+
+To disable: delete this file (git rm tmux/.config/tmux-powerline/DEBUG && restow tmux).
+Instrumented files (all marked "TEMPORARY DEBUG"):
+  tmux/.tmux/plugins/tmux-powerline/powerline.sh
+  tmux/.tmux/plugins/tmux-powerline/main.tmux
+  tmux/.tmux/plugins/tmux-powerline/segments/weather.sh
+  scripts/bin/tmux-claude-titles-loop.sh (calls scripts/bin/tmux-debug-snapshot.sh)

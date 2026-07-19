@@ -8,6 +8,20 @@ set -o pipefail
 TMUX_POWERLINE_DIR_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export TMUX_POWERLINE_DIR_HOME
 
+# --- TEMPORARY DEBUG INSTRUMENTATION (remove with ~/.config/tmux-powerline/DEBUG) -------
+# main.tmux runs under errexit: if any set-option here fails, everything after it is
+# silently skipped and the status bar comes up half-configured. With the DEBUG flag file
+# present, trace every command and record the exit so an aborted run is visible.
+if [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/tmux-powerline/DEBUG" ]; then
+	mkdir -p /tmp/tmux-powerline-debug 2>/dev/null || true
+	exec 2>>/tmp/tmux-powerline-debug/main-tmux.log
+	echo "=== main.tmux start $(date '+%F %T') pid=$$ TMUX=${TMUX:-none}" >&2
+	env | sort | sed 's/^/    env: /' >&2
+	trap 'echo "=== main.tmux EXIT rc=$? at line $LINENO $(date "+%F %T")" >&2' EXIT
+	set -x
+fi
+# ----------------------------------------------------------------------------------------
+
 # Obtain the left/right status length settings by reading the tmux-powerline config.
 source "${TMUX_POWERLINE_DIR_HOME}/lib/headers.sh"
 process_settings
