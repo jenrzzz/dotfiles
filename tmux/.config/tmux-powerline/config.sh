@@ -13,7 +13,7 @@
 	# in ~/.extra) so themes can be tried/picked per host; else auto-pick on Meta hosts, jenner locally.
 	# Distinct per-host accents (see themes/meta-*.sh) make full-screen local vs. devserver tmux
 	# windows unmistakable.
-	if [ -z "$TMUX_POWERLINE_THEME" ]; then
+	if [ -z "${TMUX_POWERLINE_THEME:-}" ]; then
 		if [ -r /etc/fbwhoami ]; then
 			export TMUX_POWERLINE_THEME="meta-crimson"
 		else
