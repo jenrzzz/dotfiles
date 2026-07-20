@@ -19,6 +19,7 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 hub="$here/tmux-hub-windows.sh"
 worker="$here/tmux-claude-titles.sh"
 statuslines="$here/tmux-status-lines.sh"
+powerline="$HOME/.tmux/plugins/tmux-powerline/powerline.sh"
 pidfile="${TMPDIR:-/tmp}/tmux-claude-titles.pid"
 
 # Bail out if a previous loop is still running. The PID must be both alive *and* actually
@@ -42,6 +43,16 @@ while true; do
 		"$hub" 2>/dev/null || true
 		"$worker" 2>/dev/null || true
 		"$statuslines" 2>/dev/null || true
+		# Self-heal status-right. Moshi's connect command ends with
+		# `tmux set -g status-right '' ; ... ; new-session -A`; when it's the one starting
+		# the server (every fresh devbox), those sets run *after* .tmux.conf's main.tmux,
+		# clobbering the powerline command and leaving the right side permanently blank.
+		# The global option always resolves to a value, so empty means someone explicitly
+		# blanked it — put powerline back. Muting is untouched: it works through mute
+		# files that powerline.sh reads, never through this option.
+		if [[ -x "$powerline" && -z "$(tmux show-options -qgv status-right 2>/dev/null)" ]]; then
+			tmux set-option -g status-right "#($powerline right)" 2>/dev/null || true
+		fi
 	fi
 	sleep 1
 done
