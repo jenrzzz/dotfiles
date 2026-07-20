@@ -104,13 +104,7 @@ __wttr() {
 		fi
 	fi
 
-	out=$(curl --max-time 4 -s "https://wttr.in/${location}?format=j1")
-	curl_rc=$?
-	# TEMPORARY DEBUG (see ~/.config/tmux-powerline/DEBUG): record every live wttr fetch.
-	if [ -d /tmp/tmux-powerline-debug ]; then
-		echo "$(date '+%F %T') wttr location='${location}' curl_rc=${curl_rc} bytes=${#out}" >> /tmp/tmux-powerline-debug/weather.log
-	fi
-	if [ "$curl_rc" -eq 0 ]; then
+	if out=$(curl --max-time 4 -s "https://wttr.in/${location}?format=j1"); then
 		code=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r '.current_condition[0].weatherCode // empty' 2>/dev/null)
 		temp=$(printf '%s' "$out" | "$TMUX_POWERLINE_SEG_WEATHER_JSON" -r ".current_condition[0].${unit_field} // empty" 2>/dev/null)
 		if [ -z "$code" ] || [ -z "$temp" ]; then

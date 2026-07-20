@@ -37,19 +37,11 @@ fi
 echo $$ > "$pidfile"
 trap 'rm -f "$pidfile"' EXIT
 
-# TEMPORARY DEBUG (see ~/.config/tmux-powerline/DEBUG): status-option snapshot every ~10s.
-snapshot="$here/tmux-debug-snapshot.sh"
-tick=0
-
 while true; do
 	if tmux has-session 2>/dev/null; then
 		"$hub" 2>/dev/null || true
 		"$worker" 2>/dev/null || true
 		"$statuslines" 2>/dev/null || true
-		if (( tick % 10 == 0 )) && [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/tmux-powerline/DEBUG" ]; then
-			"$snapshot" 2>/dev/null || true
-		fi
 	fi
-	tick=$(( tick + 1 ))
 	sleep 1
 done
