@@ -20,7 +20,7 @@ endif
 
 .DEFAULT_GOAL := help
 
-.PHONY: help bootstrap stow core unstow secrets packages
+.PHONY: help bootstrap stow core unstow secrets packages services
 
 help:
 	@echo "dotfiles — make targets:"
@@ -30,6 +30,7 @@ help:
 	@echo "  unstow      remove all stowed symlinks"
 	@echo "  secrets     stow + sync per-host secrets (dot-secrets)"
 	@echo "  packages    install OS packages only (brew bundle / apt / dnf)"
+	@echo "  services    (macOS) install text services into ~/Library/Services"
 
 bootstrap:
 	./bootstrap.sh --yes --with-secrets
@@ -56,4 +57,13 @@ else
 	elif command -v dnf >/dev/null; then \
 		sudo dnf install -y $$(grep -vE '^\s*#|^\s*$$' packages.txt); \
 	else echo "no apt/dnf found"; fi
+endif
+
+# macOS text services (Quick Actions). Installed as real files, not stowed —
+# sandboxed apps can't follow a symlink out to the repo. See services/README.md.
+services:
+ifeq ($(UNAME),Darwin)
+	python3 "$(REPO)/services/build.py"
+else
+	@echo "services: macOS only; skipping"
 endif

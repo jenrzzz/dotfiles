@@ -209,7 +209,19 @@ stow_pkgs() {
 	if is_mac && [ "$ONLY_CORE" != 1 ] && [ -z "$PKGS_OVERRIDE" ]; then
 		log "stow: launchd (mac)"
 		stow --dir "$REPO" --target "$HOME" --restow --no-folding launchd
+		install_services
 	fi
+}
+
+# --- macOS Services / Quick Actions -----------------------------------------
+# NOT stowed: sandboxed apps (Notes.app) refuse to read a service bundle whose
+# files symlink out to ~/.dotfiles (outside their sandbox container), so we
+# install *real* files into ~/Library/Services via the generator instead.
+install_services() {
+	is_mac || return 0
+	has python3 || { log "skip services: python3 not found"; return 0; }
+	log "install: macOS text services (~/Library/Services)"
+	python3 "$REPO/services/build.py"
 }
 
 # --- secrets ----------------------------------------------------------------
